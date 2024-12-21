@@ -1,5 +1,4 @@
-﻿
-using Infra.Core;
+﻿using Infra.Core.Abstract;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

@@ -77,7 +77,6 @@ namespace Microsoft.AspNetCore.Builder
         {
             app.Map(checkPath, applicationBuilder => applicationBuilder.Run(async context =>
             {
-                Console.WriteLine("This is health check");
                 context.Response.StatusCode = (int)HttpStatusCode.OK;
                 await context.Response.WriteAsync("OK");
             }));

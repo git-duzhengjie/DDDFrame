@@ -1,4 +1,5 @@
-﻿using Infra.EF.PG.Entities;
+﻿using Infra.Core.Abstract;
+using Infra.EF.PG.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -26,7 +27,7 @@ namespace Infra.EF.PG
         {
             base.OnModelCreating(modelBuilder);
             IgnoreTypes(modelBuilder);
-            var entities=this.GetType().Assembly.GetTypes().Where(x=>x.IsAssignableFrom(typeof(Entity)));
+            var entities=this.GetType().Assembly.GetTypes().Where(x=>x.IsAssignableFrom(typeof(EntityBase)));
             foreach (var info in entities)
             {
                 modelBuilder.Entity(info);
@@ -59,6 +60,48 @@ namespace Infra.EF.PG
             });
 
             modelBuilder.AddJsonFields();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public object GetValue(long id,Type type,bool isTracking=false)
+        {
+            var frameDbType = typeof(FrameDbContext<>).MakeGenericType(type);
+            return frameDbType.InvokeMethod("GetValue", [id,isTracking]);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<object> GetValueAsync(long id, Type type,bool isTracking)
+        {
+            var frameDbType = typeof(FrameDbContext<>).MakeGenericType(type);
+            return await Task.Run(() =>
+            {
+                return frameDbType.InvokeMethod("GetValue", [id,isTracking]);
+            });
+        }
+    }
+
+    public class FrameDbContext<T> where T : EntityBase
+    {
+        public T GetValue(int id,FrameDbContext frameDbContext,bool isTracking=false)
+        {
+            if (isTracking)
+            {
+                return frameDbContext.Set<T>().FirstOrDefault(x => x.Id == id);
+            }
+            else
+            {
+                return frameDbContext.Set<T>().AsNoTracking().FirstOrDefault(x=>x.Id == id);
+            }
         }
     }
 }

@@ -10,7 +10,7 @@
   },
   "Routes": [
     {
-      "UpstreamPathTemplate": "/WebApplication1{everything}",
+      "UpstreamPathTemplate": "/LetUsMarry{everything}",
       "UpstreamHttpMethod": [
         "Get",
         "Put",
@@ -18,8 +18,38 @@
         "Delete"
       ],
       "DownstreamScheme": "http",
-      "DownstreamPathTemplate": "/WebApplication1/{everything}",
-      "ServiceName": "test",
+      "DownstreamPathTemplate": "/LetUsMarry/{everything}",
+      "ServiceName": "LetUsMarry",
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      }
+    },
+    {
+      "UpstreamPathTemplate": "/Cloud{everything}",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Put",
+        "Post",
+        "Delete"
+      ],
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/Cloud/{everything}",
+      "ServiceName": "Cloud",
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      }
+    },
+    {
+      "UpstreamPathTemplate": "/File{everything}",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Put",
+        "Post",
+        "Delete"
+      ],
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/File/{everything}",
+      "ServiceName": "file",
       "LoadBalancerOptions": {
         "Type": "RoundRobin"
       }

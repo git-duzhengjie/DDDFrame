@@ -2,7 +2,7 @@
 using Infra.WebApi;
 using System.Reflection;
 using Infra.Core.System.Extensions;
-using Infra.Core;
+using Infra.Core.Abstract;
 
 namespace Infra.WebApi
 {
@@ -69,7 +69,9 @@ namespace Infra.WebApi
                     {
                         if (startAssembly is null)
                             startAssembly = Assembly.GetEntryAssembly();
-                        var description = startAssembly.GetCustomAttribute<AssemblyDescriptionAttribute>().Description;
+                        var description = startAssembly
+                            .GetCustomAttribute<AssemblyDescriptionAttribute>()
+                            ?.Description??"";
                         var assemblyName = startAssembly.GetName();
                         var version = assemblyName.Version;
                         var fullName = assemblyName.Name.ToLower();

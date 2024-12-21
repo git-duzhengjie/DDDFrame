@@ -89,5 +89,24 @@ namespace System
         {
             return @this == null ? string.Empty : @this.ToString();
         }
+
+        /// <summary>
+        /// 将t2的值赋给t1
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="t1"></param>
+        /// <param name="t2"></param>
+        public static void SetValue<T>(this T t1,T t2)
+        {
+            var properties=typeof(T).GetProperties();
+            foreach (var property in properties)
+            {
+                if (property.CanWrite && property.CanRead)
+                {
+                    var value = property.GetValue(t2);
+                    property.SetValue(t1, value, null);
+                }
+            }
+        }
     }
 }

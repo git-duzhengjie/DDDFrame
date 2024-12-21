@@ -1,7 +1,7 @@
 ﻿
 using System;
 
-namespace Infra.Core
+namespace Infra.Core.Abstract
 {
     /// <summary>
     /// 服务接口

@@ -1,5 +1,4 @@
-﻿
-using Infra.Core;
+﻿using Infra.Core.Abstract;
 using Infra.WebApi;
 using System.Reflection;
 
@@ -13,6 +12,7 @@ namespace Infra.WebApi.Extensions
         private static Object lockObj = new();
         private static Assembly webApiAssembly;
         private static Assembly appAssembly;
+        private static Assembly domainAssembly;
 
         /// <summary>
         /// 获取WebApiAssembly程序集
@@ -43,16 +43,35 @@ namespace Infra.WebApi.Extensions
                 {
                     if (appAssembly is null)
                     {
-                        var appAssemblyName = serviceInfo.AssemblyFullName.Replace("WebApi", "Application");
-                        appAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x => x.FullName.EqualsIgnoreCase(appAssemblyName));
+                        var appAssemblyName = serviceInfo.AssemblyName + ".Application";
+                        var appAssemblyFullName = serviceInfo.AssemblyFullName.Replace(serviceInfo.AssemblyName,appAssemblyName);
+                        appAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x => x.FullName.EqualsIgnoreCase(appAssemblyFullName));
                         if (appAssembly is null)
                             appAssembly = Assembly.Load(appAssemblyName);
-                        //var appAssemblyPath = serviceInfo.AssemblyLocation.Replace(".WebApi.dll", ".Application.dll");
-                        ///appAssembly = Assembly.LoadFrom(appAssemblyPath);
                     }
                 }
             }
             return appAssembly;
+        }
+        /// <summary>
+        /// 获取Application程序集
+        /// </summary>
+        /// <returns></returns>
+        public static Assembly GetDomainAssembly(this IServiceInfo serviceInfo)
+        {
+            if (domainAssembly is null)
+            {
+                lock (lockObj)
+                {
+                    if (domainAssembly is null)
+                    {
+                        var domainAssemblyName = serviceInfo.AssemblyName + ".Domain";
+                        var domainAssemblyFullName = serviceInfo.AssemblyFullName.Replace(serviceInfo.AssemblyName, domainAssemblyName);
+                        domainAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x => x.FullName.EqualsIgnoreCase(domainAssemblyFullName));
+                    }
+                }
+            }
+            return domainAssembly;
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Microsoft.EntityFrameworkCore.ChangeTracking
 {
@@ -7,7 +9,7 @@ namespace Microsoft.EntityFrameworkCore.ChangeTracking
 
         private static string Json(T instance)
         {
-            return JsonConvert.SerializeObject(instance);
+            return System.Text.Json.JsonSerializer.Serialize(instance);
         }
 
         private static T DoGetSnapshot(T instance)
@@ -16,7 +18,7 @@ namespace Microsoft.EntityFrameworkCore.ChangeTracking
             if (instance is ICloneable cloneable)
                 return (T)cloneable.Clone();
 
-            var result = (T)JsonConvert.DeserializeObject(Json(instance), typeof(T));
+            var result = (T)JsonSerializer.Deserialize(Json(instance), typeof(T));
             return result;
 
         }

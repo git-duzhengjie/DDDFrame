@@ -11,7 +11,6 @@ using Infra.WebApi;
 using Infra.WebApi.Configuration;
 using Infra.WebApi.DependencyInjection;
 using Infra.WebApi.Middleware;
-using Infra.Core;
 using Infra.Consul.Configuration;
 using Infra.WebApi.Extensions;
 using Prometheus;
@@ -20,7 +19,7 @@ using Infra.WebApi.Consts.RegistrationCenter;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Http;
-using TestGrpc;
+using Infra.Core.Abstract;
 
 namespace Microsoft.AspNetCore.Builder
 {
@@ -67,7 +66,7 @@ namespace Microsoft.AspNetCore.Builder
                 c.RouteTemplate = $"/{serviceInfo.ShortName}/swagger/{{documentName}}/swagger.json";
                 c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
                 {
-                    swaggerDoc.Servers = new List<OpenApiServer> { new() { Url = $"/", Description = serviceInfo.Description } };
+                    swaggerDoc.Servers = [new() { Url = $"/", Description = serviceInfo.Description }];
                 });
             }
             );

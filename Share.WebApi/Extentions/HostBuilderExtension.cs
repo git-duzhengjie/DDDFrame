@@ -1,6 +1,5 @@
 ﻿
 using Infra.Consul.Configuration;
-using Infra.Core;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Infra.WebApi;
 using NLog.Web;
 using Microsoft.AspNetCore.Builder;
+using Infra.Core.Abstract;
 
 namespace Microsoft.Extensions.Hosting
 {
@@ -20,7 +20,7 @@ namespace Microsoft.Extensions.Hosting
             where TRegistrar : IDependencyInjection
         {
             if (hostBuilder is null) throw new ArgumentNullException(nameof(hostBuilder));
-            hostBuilder.Configuration.AddJsonFile($"{AppContext.BaseDirectory}/appsettings.json", true, true);
+            hostBuilder.Configuration.AddJsonFile($"{AppContext.BaseDirectory}/appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", true, true);
             hostBuilder.Configuration.AddConsulConfiguration(hostBuilder.Configuration.GetConsulSection().Get<ConsulConfig>(),true);
             var services=hostBuilder.Services;
             var startupAssembly = typeof(TRegistrar).Assembly;

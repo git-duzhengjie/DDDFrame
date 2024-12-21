@@ -1,6 +1,4 @@
-﻿
-using Infra.Core;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -22,6 +20,10 @@ using Infra.WebApi.Extensions;
 using Infra.Consul.Configuration;
 using Infra.WebApi.Extentions;
 using UniversalRPC.Extensions;
+using Infra.Core.Abstract;
+using Infra.Core.Json;
+using System.Text.Json;
+using Infra.WebApi.Service;
 
 namespace Infra.WebApi.DependInjection
 {
@@ -67,8 +69,76 @@ namespace Infra.WebApi.DependInjection
             //AddHealthChecks();
             AddMiniProfiler();
             AddApplicationServices();
+            AddDomainServices();
+            AddStrategies();
+            AddFactories();
             AddConsul();
             AddRpc();
+        }
+
+        private void AddDomainServices()
+        {
+            var domainAssembly = ServiceInfo.GetDomainAssembly();
+            if (domainAssembly is not null)
+            {
+                var modelTypes = domainAssembly.GetTypes()
+                    .Where(m => m.IsAssignableTo(typeof(IDomainService)) && m.IsNotAbstractClass(true))
+                    .ToArray();
+                foreach (var modelType in modelTypes)
+                {
+                    Services.AddScoped(modelType);
+                }
+            }
+        }
+        private void AddStrategies()
+        {
+            var appAssembly = ServiceInfo.GetApplicationAssembly();
+            if (appAssembly is not null)
+            {
+                var modelTypes = appAssembly.GetTypes()
+                    .Where(m => m.IsAssignableTo(typeof(IStrategy)) && m.IsNotAbstractClass(true))
+                    .ToArray();
+                foreach (var modelType in modelTypes)
+                {
+                    Services.AddScoped(modelType);
+                }
+            }
+            var domainAssembly = ServiceInfo.GetDomainAssembly();
+            if (domainAssembly is not null)
+            {
+                var modelTypes = domainAssembly.GetTypes()
+                    .Where(m => m.IsAssignableTo(typeof(IStrategy)) && m.IsNotAbstractClass(true))
+                    .ToArray();
+                foreach (var modelType in modelTypes)
+                {
+                    Services.AddScoped(modelType);
+                }
+            }
+        }
+        private void AddFactories()
+        {
+            var appAssembly = ServiceInfo.GetApplicationAssembly();
+            if (appAssembly is not null)
+            {
+                var modelTypes = appAssembly.GetTypes()
+                    .Where(m => m.IsAssignableTo(typeof(IFactory)) && m.IsNotAbstractClass(true))
+                    .ToArray();
+                foreach (var modelType in modelTypes)
+                {
+                    Services.AddScoped(modelType);
+                }
+            }
+            var domainAssembly = ServiceInfo.GetDomainAssembly();
+            if (domainAssembly is not null)
+            {
+                var modelTypes = domainAssembly.GetTypes()
+                    .Where(m => m.IsAssignableTo(typeof(IFactory)) && m.IsNotAbstractClass(true))
+                    .ToArray();
+                foreach (var modelType in modelTypes)
+                {
+                    Services.AddScoped(modelType);
+                }
+            }
         }
 
         private void AddRpc()
@@ -100,12 +170,12 @@ namespace Infra.WebApi.DependInjection
         /// </summary>
         protected virtual void AddControllers()
         {
+            Services.Configure<JsonSerializerOptions>((options) =>
+            {
+                options.SetJsonSerializerOptions();
+            });
             Services.AddControllers(options => options.Filters.Add(typeof(CustomExceptionFilterAttribute)))
-            //.AddNewtonsoftJson(options =>
-            //{
-            //    JsonSettings.SetJsonSerializerSettings(options.SerializerSettings);
-            //})
-            ;
+                .AddFrameJson((options) => { });
 
             //参数验证返回信息格式调整
             Services.Configure<ApiBehaviorOptions>(options =>
@@ -256,7 +326,13 @@ namespace Infra.WebApi.DependInjection
                     }
                 });
                 c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{ServiceInfo.AssemblyName}.xml"));
-                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{ServiceInfo.AssemblyName.Replace("WebApi", "Application.Contracts")}.xml"));
+                var contractXml = Path.Combine(AppContext.BaseDirectory,
+                    $"{ServiceInfo.AssemblyName.Replace(".WebApi", "")}.Application.Contract.xml");
+                if (File.Exists(contractXml))
+                {
+                    c.IncludeXmlComments(contractXml);
+                }
+                
             });
 
             Services.AddFluentValidationRulesToSwagger();
@@ -298,10 +374,17 @@ namespace Infra.WebApi.DependInjection
             var appAssembly = ServiceInfo.GetApplicationAssembly();
             if (appAssembly is not null)
             {
-                var modelType = appAssembly.GetTypes().FirstOrDefault(m => m.IsAssignableTo(typeof(IDependencyInjection)) && m.IsNotAbstractClass(true));
-                if (modelType is not null)
+                var modelAbstractTypes = appAssembly.GetTypes()
+                    .Where(m => m.IsAssignableTo(typeof(IAppService)) && m.IsInterface)
+                    .ToArray();
+                foreach(var modelAbstractType in modelAbstractTypes)
                 {
-                    var lougeServiceCollection = Activator.CreateInstance(modelType, Services) as IDependencyInjection;
+                    var modelType = appAssembly.GetTypes()
+                    .FirstOrDefault(m => m.IsAssignableTo(modelAbstractType) && m.IsNotAbstractClass(true));
+                    if (modelType != null)
+                    {
+                        Services.AddScoped(modelAbstractType,modelType);
+                    }
                 }
             }
         }
