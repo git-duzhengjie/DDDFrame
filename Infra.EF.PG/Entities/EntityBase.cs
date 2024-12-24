@@ -2,7 +2,7 @@
 
 namespace Infra.EF.PG.Entities
 {
-    public abstract class EntityBase:FrameObjectBase,IEntity
+    public abstract class EntityBase:FrameobjectBase,IEntity
     {
         /// <summary>
         /// 唯一id

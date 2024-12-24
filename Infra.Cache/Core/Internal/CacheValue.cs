@@ -13,7 +13,7 @@ namespace Infra.Cache.Core
         /// </summary>
         /// <param name="value">值</param>
         /// <param name="hasValue">是否有值</param>
-        public CacheValue(T value, Boolean hasValue)
+        public CacheValue(T value, bool hasValue)
         {
             Value = value;
             HasValue = hasValue;
@@ -22,12 +22,12 @@ namespace Infra.Cache.Core
         /// <summary>
         /// 是否有值
         /// </summary>
-        public Boolean HasValue { get; }
+        public bool HasValue { get; }
 
         /// <summary>
         /// 值是否为空
         /// </summary>
-        public Boolean IsNull => Value == null;
+        public bool IsNull => Value == null;
 
         /// <summary>
         /// 值

@@ -6,7 +6,7 @@ namespace System.Linq.Expressions
     public static class ExpressionLogicalOperatorsExtension
     {
         // https://stackoverflow.com/questions/457316/combining-two-expressions-expressionfunct-bool/457328#457328
-        public static Expression<Func<T, Boolean>> Or<T>(this Expression<Func<T, Boolean>> @this, Expression<Func<T, Boolean>> expr)
+        public static Expression<Func<T, bool>> Or<T>(this Expression<Func<T, bool>> @this, Expression<Func<T, bool>> expr)
         {
             var parameter = Expression.Parameter(typeof(T));
 
@@ -15,14 +15,14 @@ namespace System.Linq.Expressions
             var rightVisitor = new ReplaceExpressionVisitor(expr.Parameters[0], parameter);
             var right = rightVisitor.Visit(expr.Body);
 
-            return Expression.Lambda<Func<T, Boolean>>(
+            return Expression.Lambda<Func<T, bool>>(
                 Expression.OrElse(left, right), parameter);
         }
 
-        public static Expression<Func<T, Boolean>> OrIf<T>(this Expression<Func<T, Boolean>> @this, Boolean condition, Expression<Func<T, Boolean>> expr)
+        public static Expression<Func<T, bool>> OrIf<T>(this Expression<Func<T, bool>> @this, bool condition, Expression<Func<T, bool>> expr)
             => condition ? Or<T>(@this, expr) : @this;
 
-        public static Expression<Func<T, Boolean>> And<T>(this Expression<Func<T, Boolean>> @this, Expression<Func<T, Boolean>> expr)
+        public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> @this, Expression<Func<T, bool>> expr)
         {
             var parameter = Expression.Parameter(typeof(T));
 
@@ -31,19 +31,19 @@ namespace System.Linq.Expressions
             var rightVisitor = new ReplaceExpressionVisitor(expr.Parameters[0], parameter);
             var right = rightVisitor.Visit(expr.Body);
 
-            return Expression.Lambda<Func<T, Boolean>>(
+            return Expression.Lambda<Func<T, bool>>(
                 Expression.AndAlso(left, right), parameter);
         }
 
-        public static Expression<Func<T, Boolean>> AndIf<T>(this Expression<Func<T, Boolean>> @this, Boolean condition, Expression<Func<T, Boolean>> expr)
+        public static Expression<Func<T, bool>> AndIf<T>(this Expression<Func<T, bool>> @this, bool condition, Expression<Func<T, bool>> expr)
             => condition ? And<T>(@this, expr) : @this;
 
         [Obsolete("Obsoleted")]
-        public static Expression<Func<T, Boolean>> True<T>()
+        public static Expression<Func<T, bool>> True<T>()
             => f => true;
 
         [Obsolete("Obsoleted")]
-        public static Expression<Func<T, Boolean>> False<T>()
+        public static Expression<Func<T, bool>> False<T>()
             => f => false;
 
         private static MemberExpression ExtractMemberExpression(Expression expression)

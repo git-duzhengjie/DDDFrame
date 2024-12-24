@@ -81,14 +81,14 @@ namespace Infra.Cache
         /// </summary>
         /// <returns>The async.</returns>
         /// <param name="cacheKey">Cache key.</param>
-        Task<Boolean> ExistsAsync(String cacheKey);
+        Task<bool> ExistsAsync(String cacheKey);
 
         /// <summary>
         /// Exists the specified cacheKey.
         /// </summary>
         /// <returns>The exists.</returns>
         /// <param name="cacheKey">Cache key.</param>
-        Boolean Exists(String cacheKey);
+        bool Exists(String cacheKey);
 
         /// <summary>
         /// Tries the set.
@@ -98,7 +98,7 @@ namespace Infra.Cache
         /// <param name="cacheValue">Cache value.</param>
         /// <param name="expiration">Expiration.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        Boolean TrySet<T>(String cacheKey, T cacheValue, TimeSpan expiration);
+        bool TrySet<T>(String cacheKey, T cacheValue, TimeSpan expiration);
 
         /// <summary>
         /// Tries the set async.
@@ -108,7 +108,7 @@ namespace Infra.Cache
         /// <param name="cacheValue">Cache value.</param>
         /// <param name="expiration">Expiration.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        Task<Boolean> TrySetAsync<T>(String cacheKey, T cacheValue, TimeSpan expiration);
+        Task<bool> TrySetAsync<T>(String cacheKey, T cacheValue, TimeSpan expiration);
 
         /// <summary>
         /// Sets all.
@@ -177,8 +177,8 @@ namespace Infra.Cache
         /// </summary>
         /// <returns>The async.</returns>
         /// <param name="cacheKey">Cache key.</param>
-        /// <param name="type">Object Type.</param>
-        Task<Object> GetAsync(String cacheKey, Type type);
+        /// <param name="type">object Type.</param>
+        Task<object> GetAsync(String cacheKey, Type type);
 
         /// <summary>
         /// Set the keys  TTL

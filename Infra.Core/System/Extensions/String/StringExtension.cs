@@ -53,7 +53,7 @@ namespace System
         /// </summary>
         /// <param name="this">The @this to act on.</param>
         /// <returns>true if null or empty, false if not.</returns>
-        public static Boolean IsNullOrEmpty(this string @this) => string.IsNullOrEmpty(@this);
+        public static bool IsNullOrEmpty(this string @this) => string.IsNullOrEmpty(@this);
 
         /// <summary>
         ///     A string extension method that query if '@this' is not null and not empty.
@@ -96,7 +96,7 @@ namespace System
         /// <param name="input">The string to search for a match.</param>
         /// <param name="pattern">The regular expression pattern to match.</param>
         /// <returns>true if the regular expression finds a match; otherwise, false.</returns>
-        public static Boolean IsMatch(this string input, string pattern) => Regex.IsMatch(input, pattern);
+        public static bool IsMatch(this string input, string pattern) => Regex.IsMatch(input, pattern);
 
         /// <summary>
         ///     Indicates whether the specified regular expression finds a match in the specified input string, using the
@@ -174,13 +174,13 @@ namespace System
 
         /// <summary>
         ///     Replaces the format item in a specified string with the text equivalent of the value of a corresponding
-        ///     Object instance in a specified array.
+        ///     object instance in a specified array.
         /// </summary>
         /// <param name="this">A string containing zero or more format items.</param>
-        /// <param name="values">An Object array containing zero or more objects to format.</param>
+        /// <param name="values">An object array containing zero or more objects to format.</param>
         /// <returns>
         ///     A copy of format in which the format items have been replaced by the string equivalent of the corresponding
-        ///     instances of Object in args.
+        ///     instances of object in args.
         /// </returns>
         public static string FormatWith(this string @this, params object[] values) => string.Format(@this, values);
 
@@ -322,7 +322,7 @@ namespace System
         /// </summary>
         /// <param name="this">The @this to act on.</param>
         /// <returns>@this as a byte[].</returns>
-        public static byte[] ToByteArray(this string @this) => Encoding.UTF8.GetBytes(@this);
+        public static byte[] TobyteArray(this string @this) => Encoding.UTF8.GetBytes(@this);
 
         /// <summary>
         ///     A string extension method that converts the @this to a byte array.
@@ -330,7 +330,7 @@ namespace System
         /// <param name="this">The @this to act on.</param>
         /// <param name="encoding">encoding</param>
         /// <returns>@this as a byte[].</returns>
-        public static byte[] ToByteArray(this string @this, Encoding encoding) => encoding.GetBytes(@this);
+        public static byte[] TobyteArray(this string @this, Encoding encoding) => encoding.GetBytes(@this);
 
         public static byte[] GetBytes(this string str) => str.GetBytes(Encoding.UTF8);
 

@@ -12,13 +12,13 @@ namespace Infra.Consul.Configuration
         #region <变量>
 
         private readonly ConsulConfig _config;
-        private readonly Boolean _reloadOnChanges;
+        private readonly bool _reloadOnChanges;
 
         #endregion <变量>
 
         #region <构造方法和析构方法>
 
-        public DefaultConsulConfigurationSource(ConsulConfig config, Boolean reloadOnChanges)
+        public DefaultConsulConfigurationSource(ConsulConfig config, bool reloadOnChanges)
         {
             _config = config;
             _reloadOnChanges = reloadOnChanges;

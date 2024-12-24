@@ -101,7 +101,9 @@ namespace Infra.Cache.StackExchange
                     //Cluster
                     if (server.ServerType == ServerType.Cluster)
                     {
-                        masters.AddRange(server.ClusterConfiguration.Nodes.Where(n => !n.IsReplica).Select(n => n.EndPoint));
+                        masters.AddRange(server.ClusterConfiguration.Nodes.Where(n => !n.IsReplica)
+                            .Where(x=>x.EndPoint!=null)
+                            .Select(n => n.EndPoint));
                         break;
                     }
                     // Single , Master-Slave

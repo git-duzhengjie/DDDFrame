@@ -19,7 +19,7 @@ namespace Infra.Cache.StackExchange
         /// </summary>
         /// <returns>The async.</returns>
         /// <param name="cacheKey">Cache key.</param>
-        /// <param name="type">Object Type.</param>
+        /// <param name="type">object Type.</param>
         protected override async Task<object> BaseGetAsync(string cacheKey, Type type)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));

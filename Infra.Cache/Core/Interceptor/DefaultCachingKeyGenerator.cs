@@ -23,7 +23,7 @@ namespace Louge.Infra.Core.Interceptor
         //    return GenerateCacheKey(methodInfo, prefix, methodArguments);
         //}
 
-        public String GetCacheKey(MethodInfo methodInfo, Object[] args, String prefix)
+        public String GetCacheKey(MethodInfo methodInfo, object[] args, String prefix)
         {
             IEnumerable<String> methodArguments = new[] { "0" };
             if (args?.Any() == true)
@@ -40,7 +40,7 @@ namespace Louge.Infra.Core.Interceptor
             return GenerateCacheKey(methodInfo, prefix, methodArguments);
         }
 
-        public String[] GetCacheKeys(MethodInfo methodInfo, Object[] args, String prefix)
+        public String[] GetCacheKeys(MethodInfo methodInfo, object[] args, String prefix)
         {
             var cacheKeys = new List<String>();
             if (args?.Any() == true && args[0].GetType().IsArray)

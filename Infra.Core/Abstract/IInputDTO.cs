@@ -1,6 +1,6 @@
 ﻿namespace Infra.Core.Abstract
 {
-    public interface IInputDTO:IObject
+    public interface IInputDTO:Iobject
     {
         /// <summary>
         /// 是否为添加，否则为修改

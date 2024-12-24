@@ -10,70 +10,70 @@ namespace Infra.Core.Json
 {
     public class FrameJson:IOutputFormatter,IInputFormatter
     {
-        private static Dictionary<string,Type?> objectTypeMap=null;
+        private static Dictionary<int,Type?> objectTypeMap=null;
 
 
         public FrameJson() {
             if (objectTypeMap == null)
             {
-                objectTypeMap = new Dictionary<string, Type?>();
+                objectTypeMap = new Dictionary<int, Type?>();
                 var assembly = Assembly.GetExecutingAssembly();
                 var types = assembly.GetExportedTypes();
                 foreach (var type in types)
                 {
                     var interfaces = type.GetInterfaces();
-                    if (interfaces.Contains(typeof(IObject)))
+                    if (interfaces.Contains(typeof(Iobject)))
                     {
-                        var instance = Activator.CreateInstance(type) as IObject;
+                        var instance = Activator.CreateInstance(type) as Iobject;
 
-                        if (!objectTypeMap.ContainsKey(instance.ObjectName))
+                        if (!objectTypeMap.ContainsKey(instance.objectType))
                         {
-                            objectTypeMap.Add(instance.ObjectName, type);
+                            objectTypeMap.Add(instance.objectType, type);
                         }
                         else
                         {
-                            throw new Exception($"{instance.ObjectName}该对象名已经存在");
+                            throw new Exception($"{instance.objectName}该对象名已经存在");
                         }
                     }
                 }
             }
             
         }
-        public static string Serialize<T>(T obj,JsonSerializerOptions serializerOptions=null) where T : IObject
+        public static string Serialize<T>(T object,JsonSerializerOptions serializerOptions=null) where T : Iobject
         {
-            return JsonSerializer.Serialize(obj, serializerOptions);
+            return JsonSerializer.Serialize(object, serializerOptions);
         }
 
         public static T Desialize<T>(string json,JsonSerializerOptions serializerOptions=null)
             where T :class
         {
-            var obj= JsonSerializer.Deserialize<dynamic>(json,serializerOptions);
-            if (obj.ObjectName == null)
+            var object= JsonSerializer.Deserialize<dynamic>(json,serializerOptions);
+            if (object.objectName == null)
             {
-                return obj as T;
+                return object as T;
             }
-            if(objectTypeMap.TryGetValue(obj.ObjectName as string,out var type))
+            if(objectTypeMap.TryGetValue((int)object.objectType,out var type))
             {
                 var convertType = typeof(DynamicConvert<>).MakeGenericType(type);
-                return convertType.InvokeMethod("GetValue", [obj]) as T;
+                return convertType.InvokeMethod("GetValue", [object]) as T;
             }
-            throw new Exception($"没有找到类型{obj.ObjectName}");
+            throw new Exception($"没有找到类型{object.objectName}");
         }
 
         public static object Desialize(string json, Type modelType, JsonSerializerOptions serializerOptions = null)
         {
-            var obj = JsonSerializer.Deserialize<dynamic>(json);
-            if (obj.ObjectName == null)
+            var object = JsonSerializer.Deserialize<dynamic>(json);
+            if (object.objectName == null)
             {
                 var convertType = typeof(DynamicConvert<>).MakeGenericType(modelType);
-                return convertType.InvokeMethod("GetValue", [obj]);
+                return convertType.InvokeMethod("GetValue", [object]);
             }
-            if (objectTypeMap.TryGetValue(obj.ObjectName as string, out var type))
+            if (objectTypeMap.TryGetValue((int)object.objectType, out var type))
             {
                 var convertType = typeof(DynamicConvert<>).MakeGenericType(type);
-                return convertType.InvokeMethod("GetValue", [obj]);
+                return convertType.InvokeMethod("GetValue", [object]);
             }
-            throw new Exception($"没有找到类型{obj.ObjectName}");
+            throw new Exception($"没有找到类型{object.objectName}");
         }
 
         public bool CanWriteResult(OutputFormatterCanWriteContext context)
@@ -88,7 +88,7 @@ namespace Infra.Core.Json
 
             var response = context.HttpContext.Response;
 
-            var value = context.Object;
+            var value = context.object;
             await response.WriteAsync(JsonSerializer.Serialize(value, jsonOptions));
         }
 

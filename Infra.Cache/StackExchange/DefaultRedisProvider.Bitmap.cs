@@ -25,7 +25,7 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var results = new Task<Boolean>[offsets.Count()];
+            var results = new Task<bool>[offsets.Count()];
 
             var batch = _redisDb.CreateBatch();
             int index = 0;

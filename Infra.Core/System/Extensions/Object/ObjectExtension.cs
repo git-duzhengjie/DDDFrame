@@ -3,10 +3,10 @@ using System.ComponentModel;
 
 namespace System
 {
-    public static class ObjectExtension
+    public static class objectExtension
     {
         /// <summary>
-        ///     A System.Object extension method that toes the given this.
+        ///     A System.object extension method that toes the given this.
         /// </summary>
         /// <param name="this">this.</param>
         /// <param name="type">The type.</param>
@@ -40,7 +40,7 @@ namespace System
         }
 
         /// <summary>
-        ///     A System.Object extension method that converts this object to an or default.
+        ///     A System.object extension method that converts this object to an or default.
         /// </summary>
         /// <typeparam name="T">Generic type parameter.</typeparam>
         /// <param name="this">this.</param>
@@ -59,7 +59,7 @@ namespace System
         }
 
         /// <summary>
-        ///     A System.Object extension method that converts this object to an or default.
+        ///     A System.object extension method that converts this object to an or default.
         /// </summary>
         /// <typeparam name="T">Generic type parameter.</typeparam>
         /// <param name="this">this.</param>

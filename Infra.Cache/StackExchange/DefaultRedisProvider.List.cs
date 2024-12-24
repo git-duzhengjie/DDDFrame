@@ -104,18 +104,18 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var pivotBytes = _serializer.Serialize(pivot);
-            var cacheValueBytes = _serializer.Serialize(cacheValue);
-            return _redisDb.ListInsertBefore(cacheKey, pivotBytes, cacheValueBytes);
+            var pivotbytes = _serializer.Serialize(pivot);
+            var cacheValuebytes = _serializer.Serialize(cacheValue);
+            return _redisDb.ListInsertBefore(cacheKey, pivotbytes, cacheValuebytes);
         }
 
         public long LInsertAfter<T>(String cacheKey, T pivot, T cacheValue)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var pivotBytes = _serializer.Serialize(pivot);
-            var cacheValueBytes = _serializer.Serialize(cacheValue);
-            return _redisDb.ListInsertAfter(cacheKey, pivotBytes, cacheValueBytes);
+            var pivotbytes = _serializer.Serialize(pivot);
+            var cacheValuebytes = _serializer.Serialize(cacheValue);
+            return _redisDb.ListInsertAfter(cacheKey, pivotbytes, cacheValuebytes);
         }
 
         public long RPushX<T>(String cacheKey, T cacheValue)
@@ -243,18 +243,18 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var pivotBytes = _serializer.Serialize(pivot);
-            var cacheValueBytes = _serializer.Serialize(cacheValue);
-            return await _redisDb.ListInsertBeforeAsync(cacheKey, pivotBytes, cacheValueBytes);
+            var pivotbytes = _serializer.Serialize(pivot);
+            var cacheValuebytes = _serializer.Serialize(cacheValue);
+            return await _redisDb.ListInsertBeforeAsync(cacheKey, pivotbytes, cacheValuebytes);
         }
 
         public async Task<long> LInsertAfterAsync<T>(String cacheKey, T pivot, T cacheValue)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var pivotBytes = _serializer.Serialize(pivot);
-            var cacheValueBytes = _serializer.Serialize(cacheValue);
-            return await _redisDb.ListInsertAfterAsync(cacheKey, pivotBytes, cacheValueBytes);
+            var pivotbytes = _serializer.Serialize(pivot);
+            var cacheValuebytes = _serializer.Serialize(cacheValue);
+            return await _redisDb.ListInsertAfterAsync(cacheKey, pivotbytes, cacheValuebytes);
         }
 
         public Task<long> RPushXAsync<T>(String cacheKey, T cacheValue)

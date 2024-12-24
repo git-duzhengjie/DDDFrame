@@ -16,7 +16,7 @@ namespace Louge.Infra.Core.Interceptor
         /// <param name="methodInfo">Method info.</param>
         /// <param name="args">Arguments.</param>
         /// <param name="prefix">Prefix.</param>
-        String GetCacheKey(MethodInfo methodInfo, Object[] args, String prefix);
+        String GetCacheKey(MethodInfo methodInfo, object[] args, String prefix);
 
         /// <summary>
         /// Gets the cache key.
@@ -25,7 +25,7 @@ namespace Louge.Infra.Core.Interceptor
         /// <param name="methodInfo">Method info.</param>
         /// <param name="args">Arguments.</param>
         /// <param name="prefix">Prefix.</param>
-        String[] GetCacheKeys(MethodInfo methodInfo, Object[] args, String prefix);
+        String[] GetCacheKeys(MethodInfo methodInfo, object[] args, String prefix);
 
         /// <summary>
         /// Gets the cache key prefix.

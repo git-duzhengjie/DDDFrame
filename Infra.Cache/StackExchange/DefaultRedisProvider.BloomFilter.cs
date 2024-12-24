@@ -12,23 +12,23 @@ namespace Infra.Cache.StackExchange
     /// </summary>
     public partial class DefaultRedisProvider : Infra.Cache.IRedisProvider
     {
-        public async Task<Boolean> BloomAddAsync(String key, String value)
+        public async Task<bool> BloomAddAsync(String key, String value)
         {
             return await _redisDb.BloomAddAsync(key, value);
         }
 
-        public async Task<Boolean[]> BloomAddAsync(String key, IEnumerable<String> values)
+        public async Task<bool[]> BloomAddAsync(String key, IEnumerable<String> values)
         {
             var redisValues = values.Select(x => (RedisValue)x);
             return await _redisDb.BloomAddAsync(key, redisValues);
         }
 
-        public async Task<Boolean> BloomExistsAsync(String key, String value)
+        public async Task<bool> BloomExistsAsync(String key, String value)
         {
             return await _redisDb.BloomExistsAsync(key, value);
         }
 
-        public async Task<Boolean[]> BloomExistsAsync(String key, IEnumerable<String> values)
+        public async Task<bool[]> BloomExistsAsync(String key, IEnumerable<String> values)
         {
             var redisValues = values.Select(x => (RedisValue)x);
             return await _redisDb.BloomExistsAsync(key, redisValues);

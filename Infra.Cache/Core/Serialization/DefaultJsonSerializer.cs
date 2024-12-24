@@ -40,29 +40,29 @@ namespace Infra.Cache.Core.Serialization
     {
         public String Name => CachingConstValue.DefaultJsonSerializerName;
 
-        public T Deserialize<T>(Byte[] bytes)
+        public T Deserialize<T>(byte[] bytes)
         {
             return JsonSerializer.Deserialize<T>(bytes);
         }
 
-        public Object Deserialize(Byte[] bytes, Type type)
+        public object Deserialize(byte[] bytes, Type type)
         {
             return JsonSerializer.Deserialize<Type>(bytes);
         }
 
-        public Object DeserializeObject(ArraySegment<Byte> value)
+        public object Deserializeobject(ArraySegment<byte> value)
         {
-            return JsonSerializer.Deserialize<Object>(value);
+            return JsonSerializer.Deserialize<object>(value);
         }
 
-        public Byte[] Serialize<T>(T value)
+        public byte[] Serialize<T>(T value)
         {
-            return JsonSerializer.SerializeToUtf8Bytes(value);
+            return JsonSerializer.SerializeToUtf8bytes(value);
         }
 
-        public ArraySegment<Byte> SerializeObject(Object obj)
+        public ArraySegment<byte> Serializeobject(object object)
         {
-            return JsonSerializer.SerializeToUtf8Bytes(obj);
+            return JsonSerializer.SerializeToUtf8bytes(object);
         }
     }
 }

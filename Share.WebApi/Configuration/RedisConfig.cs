@@ -15,7 +15,7 @@ namespace Infra.WebApi.Configuration
         /// <summary>
         /// 启用日志
         /// </summary>
-        public Boolean EnableLogging { get; set; }
+        public bool EnableLogging { get; set; }
 
         /// <summary>
         /// 防止cache击穿配置，LockMs是获取到分布式锁的锁定时间，SleepMs没有获取到分布式锁的休眠时间，具体实现请参考源码。
@@ -40,6 +40,6 @@ namespace Infra.WebApi.Configuration
         /// <summary>
         /// 仅可读
         /// </summary>
-        public Boolean ReadOnly { get; set; }
+        public bool ReadOnly { get; set; }
     }
 }

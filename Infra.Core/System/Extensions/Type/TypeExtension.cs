@@ -322,7 +322,7 @@ namespace System
         ///     An object extension method that executes the method on a different thread, and waits for the result.
         /// </summary>
         /// <typeparam name="T">Generic type parameter.</typeparam>
-        /// <param name="obj">The obj to act on.</param>
+        /// <param name="object">The object to act on.</param>
         /// <param name="methodName">Name of the method.</param>
         /// <param name="parameters">Options for controlling the operation.</param>
         /// <returns>An object.</returns>
@@ -338,7 +338,7 @@ namespace System
         ///     An object extension method that executes the method on a different thread, and waits for the result.
         /// </summary>
         /// <typeparam name="T">Generic type parameter.</typeparam>
-        /// <param name="obj">The obj to act on.</param>
+        /// <param name="object">The object to act on.</param>
         /// <param name="methodName">Name of the method.</param>
         /// <param name="parameters">Options for controlling the operation.</param>
         /// <returns>A T.</returns>
@@ -421,12 +421,12 @@ namespace System
 
                 Debug.Assert(@this.DeclaringType != null);
 
-                var instance = Expression.Parameter(typeof(object), "obj");
+                var instance = Expression.Parameter(typeof(object), "object");
                 var getterCall = Expression.Call(@this.DeclaringType.IsValueType
                     ? Expression.Unbox(instance, @this.DeclaringType)
                     : Expression.Convert(instance, @this.DeclaringType), prop.GetGetMethod());
-                var castToObject = Expression.Convert(getterCall, typeof(object));
-                return (Func<object, object>)Expression.Lambda(castToObject, instance).Compile();
+                var castToobject = Expression.Convert(getterCall, typeof(object));
+                return (Func<object, object>)Expression.Lambda(castToobject, instance).Compile();
             });
         }
 

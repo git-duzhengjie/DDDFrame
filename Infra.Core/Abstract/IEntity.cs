@@ -1,6 +1,6 @@
 ﻿namespace Infra.Core.Abstract
 {
-    public interface IEntity:IObject
+    public interface IEntity:Iobject
     {
         /// <summary>
         /// 唯一id

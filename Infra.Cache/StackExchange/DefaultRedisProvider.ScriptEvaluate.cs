@@ -12,7 +12,7 @@ namespace Infra.Cache.StackExchange
             return await _redisDb.ScriptEvaluateAsync(script, keys, values, flags);
         }
 
-        public async Task<dynamic> ScriptEvaluateAsync(String script, Object parameters = null, CommandFlags flags = CommandFlags.None)
+        public async Task<dynamic> ScriptEvaluateAsync(String script, object parameters = null, CommandFlags flags = CommandFlags.None)
         {
             var prepared = LuaScript.Prepare(script);
             var result = await _redisDb.ScriptEvaluateAsync(prepared, parameters, flags);

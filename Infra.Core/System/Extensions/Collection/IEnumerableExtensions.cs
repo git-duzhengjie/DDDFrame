@@ -12,7 +12,7 @@ namespace System.Collections.Generic
         /// <summary>
         /// 遍历IEnumerable
         /// </summary>
-        /// <param name="objs"></param>
+        /// <param name="objects"></param>
         /// <param name="action">回调方法</param>
         /// <typeparam name="T"></typeparam>
         public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
@@ -26,7 +26,7 @@ namespace System.Collections.Generic
         /// <summary>
         /// 遍历IEnumerable
         /// </summary>
-        /// <param name="objs"></param>
+        /// <param name="objects"></param>
         /// <param name="action">回调方法</param>
         /// <typeparam name="T"></typeparam>
         public static async Task ForEachAsync<T>(this IEnumerable<T> source, Action<T> action)
@@ -105,8 +105,8 @@ namespace System.Collections.Generic
 
         public static string ToString<T>(this IEnumerable<T> source, string separator) => (source != null && source.Any()) ? string.Join(separator, source) : string.Empty;
 
-        public static Boolean IsNullOrEmpty<T>(this IEnumerable<T> source) => source == null || !source.Any();
+        public static bool IsNullOrEmpty<T>(this IEnumerable<T> source) => source == null || !source.Any();
 
-        public static Boolean IsNotNullOrEmpty<T>(this IEnumerable<T> source) => source != null && source.Any();
+        public static bool IsNotNullOrEmpty<T>(this IEnumerable<T> source) => source != null && source.Any();
     }
 }

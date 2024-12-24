@@ -9,7 +9,7 @@ namespace System
     /// </summary>
     public static class ReflectionExtension
     {
-        public static Boolean IsNotAbstractClass(this Type type, Boolean publicOnly)
+        public static bool IsNotAbstractClass(this Type type, bool publicOnly)
         {
             if (type.IsSpecialName)
                 return false;
@@ -27,10 +27,10 @@ namespace System
             return false;
         }
 
-        public static Boolean HasAttribute(this Type type, Type attributeType) => type.IsDefined(attributeType, inherit: true);
+        public static bool HasAttribute(this Type type, Type attributeType) => type.IsDefined(attributeType, inherit: true);
 
-        public static Boolean HasAttribute<T>(this Type type) where T : Attribute => type.HasAttribute(typeof(T));
+        public static bool HasAttribute<T>(this Type type) where T : Attribute => type.HasAttribute(typeof(T));
 
-        public static Boolean HasAttribute<T>(this Type type, Func<T, Boolean> predicate) where T : Attribute => type.GetCustomAttributes<T>(inherit: true).Any(predicate);
+        public static bool HasAttribute<T>(this Type type, Func<T, bool> predicate) where T : Attribute => type.GetCustomAttributes<T>(inherit: true).Any(predicate);
     }
 }

@@ -10,7 +10,7 @@ namespace Infra.Cache.StackExchange
     /// </summary>
     public partial class DefaultRedisProvider : IRedisProvider
     {
-        public Boolean KeyDel(String cacheKey)
+        public bool KeyDel(String cacheKey)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
@@ -18,7 +18,7 @@ namespace Infra.Cache.StackExchange
             return flag;
         }
 
-        public async Task<Boolean> KeyDelAsync(String cacheKey)
+        public async Task<bool> KeyDelAsync(String cacheKey)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
@@ -26,7 +26,7 @@ namespace Infra.Cache.StackExchange
             return flag;
         }
 
-        public Boolean KeyExpire(String cacheKey, int second)
+        public bool KeyExpire(String cacheKey, int second)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
@@ -34,7 +34,7 @@ namespace Infra.Cache.StackExchange
             return flag;
         }
 
-        public async Task<Boolean> KeyExpireAsync(String cacheKey, int second)
+        public async Task<bool> KeyExpireAsync(String cacheKey, int second)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
@@ -42,7 +42,7 @@ namespace Infra.Cache.StackExchange
             return flag;
         }
 
-        public Boolean KeyExists(String cacheKey)
+        public bool KeyExists(String cacheKey)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
@@ -50,7 +50,7 @@ namespace Infra.Cache.StackExchange
             return flag;
         }
 
-        public async Task<Boolean> KeyExistsAsync(String cacheKey)
+        public async Task<bool> KeyExistsAsync(String cacheKey)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 

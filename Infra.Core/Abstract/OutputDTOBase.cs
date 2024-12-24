@@ -1,7 +1,7 @@
 ﻿
 namespace Infra.Core.Abstract
 {
-    public abstract class OutputDTOBase : FrameObjectBase, IOutputDTO
+    public abstract class OutputDTOBase : FrameobjectBase, IOutputDTO
     {
         /// <summary>
         /// 唯一id

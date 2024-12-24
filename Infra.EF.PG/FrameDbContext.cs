@@ -13,14 +13,7 @@ namespace Infra.EF.PG
         }
         private static void IgnoreTypes(ModelBuilder modelBuilder)
         {
-            var rhinoCommon = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x => x.FullName!=null&& x.FullName.Contains("Rhino3dm"));
-            if (rhinoCommon != null)
-            {
-                foreach (var item in rhinoCommon.DefinedTypes)
-                {
-                    modelBuilder.Ignore(item);
-                }
-            }
+            
 
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -71,7 +64,7 @@ namespace Infra.EF.PG
         public object GetValue(long id,Type type,bool isTracking=false)
         {
             var frameDbType = typeof(FrameDbContext<>).MakeGenericType(type);
-            return frameDbType.InvokeMethod("GetValue", [id,isTracking]);
+            return frameDbType.InvokeMethod("GetValue", [id,this,isTracking]);
         }
 
         /// <summary>
@@ -85,14 +78,14 @@ namespace Infra.EF.PG
             var frameDbType = typeof(FrameDbContext<>).MakeGenericType(type);
             return await Task.Run(() =>
             {
-                return frameDbType.InvokeMethod("GetValue", [id,isTracking]);
+                return frameDbType.InvokeMethod("GetValue", [id,this,isTracking]);
             });
         }
     }
 
     public class FrameDbContext<T> where T : EntityBase
     {
-        public T GetValue(int id,FrameDbContext frameDbContext,bool isTracking=false)
+        public static T GetValue(int id,FrameDbContext frameDbContext,bool isTracking=false)
         {
             if (isTracking)
             {

@@ -11,7 +11,7 @@ namespace Infra.Cache.StackExchange
     /// </summary>
     public partial class DefaultRedisProvider : IRedisProvider
     {
-        public long ZAdd<T>(string cacheKey, Dictionary<T, double> cacheValues)
+        public long ZAdd<T>(string cacheKey, Dictionary<T, double> cacheValues) where T:notnull
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
@@ -114,7 +114,7 @@ namespace Infra.Cache.StackExchange
             return score;
         }
 
-        public async Task<long> ZAddAsync<T>(string cacheKey, Dictionary<T, double> cacheValues)
+        public async Task<long> ZAddAsync<T>(string cacheKey, Dictionary<T, double> cacheValues)where T:notnull
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 

@@ -65,7 +65,7 @@ namespace Infra.WebApi.WebApi.Middleware
             var statusCode = (HttpStatusCode)context.Response.StatusCode;
 
             //判断Api是否需要认证
-            Boolean isNeedAuthentication = endpoint.Metadata.GetMetadata<IAllowAnonymous>() == null;
+            bool isNeedAuthentication = endpoint.Metadata.GetMetadata<IAllowAnonymous>() == null;
 
             //Api不需要认证
             if (!isNeedAuthentication)
@@ -188,11 +188,11 @@ namespace Infra.WebApi.WebApi.Middleware
 
             if (statusCode.Is2xx())
             {
-                //var tokenTxt = JObject.Parse(responseContent).GetValue("token")?.ToString();
+                //var tokenTxt = Jobject.Parse(responseContent).GetValue("token")?.ToString();
                 var tokenTxt = string.Empty;
                 if (tokenTxt.IsNullOrWhiteSpace())
                     return;
-                //refreshTokenTxt = JObject.Parse(responseContent).GetValue("refreshToken").ToString();
+                //refreshTokenTxt = Jobject.Parse(responseContent).GetValue("refreshToken").ToString();
 
                 var claimsInfo = GetClaimsInfo(tokenTxt);
                 if (claimsInfo.Account.IsNotNullOrWhiteSpace())
@@ -228,7 +228,7 @@ namespace Infra.WebApi.WebApi.Middleware
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        private async Task<Boolean> CheckToken(HttpContext context)
+        private async Task<bool> CheckToken(HttpContext context)
         {
             var tokenTxt = await context.GetTokenAsync("access_token");
             var claimsInfo = GetClaimsInfo(tokenTxt);
@@ -268,7 +268,7 @@ namespace Infra.WebApi.WebApi.Middleware
 
     public static class SsoAuthenticationMiddlewareExtensions
     {
-        public static IApplicationBuilder UseSSOAuthentication(this IApplicationBuilder builder, Boolean isOpenSSOAuthentication = true)
+        public static IApplicationBuilder UseSSOAuthentication(this IApplicationBuilder builder, bool isOpenSSOAuthentication = true)
         {
             if (isOpenSSOAuthentication)
                 return builder.UseMiddleware<SsoAuthenticationMiddleware>();

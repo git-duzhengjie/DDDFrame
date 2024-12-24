@@ -12,7 +12,7 @@ namespace Infra.WebApi
     public sealed class ServiceInfo : IServiceInfo
     {
         private static ServiceInfo? _instance = null;
-        private static readonly Object _lockObj = new();
+        private static readonly object _lockobject = new();
 
         /// <summary>
         ///  服务编号
@@ -63,7 +63,7 @@ namespace Infra.WebApi
         {
             if (_instance == null)
             {
-                lock (_lockObj)
+                lock (_lockobject)
                 {
                     if (_instance == null)
                     {

@@ -9,7 +9,7 @@ namespace Infra.WebApi.Extensions
     /// </summary>
     public static class ServiceInfoExtension
     {
-        private static Object lockObj = new();
+        private static object lockobject = new();
         private static Assembly webApiAssembly;
         private static Assembly appAssembly;
         private static Assembly domainAssembly;
@@ -22,7 +22,7 @@ namespace Infra.WebApi.Extensions
         {
             if (webApiAssembly is null)
             {
-                lock (lockObj)
+                lock (lockobject)
                 {
                     if (webApiAssembly is null)
                         webApiAssembly = Assembly.GetEntryAssembly();
@@ -39,7 +39,7 @@ namespace Infra.WebApi.Extensions
         {
             if (appAssembly is null)
             {
-                lock (lockObj)
+                lock (lockobject)
                 {
                     if (appAssembly is null)
                     {
@@ -61,7 +61,7 @@ namespace Infra.WebApi.Extensions
         {
             if (domainAssembly is null)
             {
-                lock (lockObj)
+                lock (lockobject)
                 {
                     if (domainAssembly is null)
                     {

@@ -17,21 +17,21 @@ namespace Infra.EF.PG.Service
                 {
                     if (type.IsAssignableTo(typeof(IEntity)))
                     {
-                        var obj=Activator.CreateInstance(type) as IEntity;
-                        if (entityTypeMap.ContainsKey(obj.ObjectType))
+                        var object=Activator.CreateInstance(type) as IEntity;
+                        if (entityTypeMap.ContainsKey(object.objectType))
                         {
-                            throw new Exception($"当前Entity类型{obj.ObjectName}已经存在");
+                            throw new Exception($"当前Entity类型{object.objectName}已经存在");
                         }
-                        entityTypeMap.Add(obj.ObjectType, type);
+                        entityTypeMap.Add(object.objectType, type);
                     }
                     if (type.IsAssignableTo(typeof(IOutputDTO)))
                     {
-                        var obj = Activator.CreateInstance(type) as IOutputDTO;
-                        if (outputTypeMap.ContainsKey(obj.ObjectType))
+                        var object = Activator.CreateInstance(type) as IOutputDTO;
+                        if (outputTypeMap.ContainsKey(object.objectType))
                         {
-                            throw new Exception($"当前类型{obj.ObjectName}已经存在");
+                            throw new Exception($"当前类型{object.objectName}已经存在");
                         }
-                        outputTypeMap.Add(obj.ObjectType, type);
+                        outputTypeMap.Add(object.objectType, type);
                     }
                 }
             }
@@ -44,12 +44,12 @@ namespace Infra.EF.PG.Service
         /// <returns></returns>
         public IEntity GetEntity(IInputDTO input)
         {
-            if(entityTypeMap.TryGetValue(input.ObjectType,out var type))
+            if(entityTypeMap.TryGetValue(input.objectType,out var type))
             {
                 var mapType = typeof(MapTo<>).MakeGenericType(type);
                 return mapType.InvokeMethod("GetValue", [input]) as IEntity;
             }
-            throw new Exception($"未找到类型{input.ObjectName}对应的Entity");
+            throw new Exception($"未找到类型{input.objectName}对应的Entity");
         }
         /// <summary>
         /// 
@@ -58,12 +58,12 @@ namespace Infra.EF.PG.Service
         /// <returns></returns>
         public IOutputDTO GetOutput(IEntity entity)
         {
-            if (outputTypeMap.TryGetValue(entity.ObjectType, out var type))
+            if (outputTypeMap.TryGetValue(entity.objectType, out var type))
             {
                 var mapType = typeof(MapTo<>).MakeGenericType(type);
                 return mapType.InvokeMethod("GetValue", [entity]) as IOutputDTO;
             }
-            throw new Exception($"未找到类型{entity.ObjectName}对应的Entity");
+            throw new Exception($"未找到类型{entity.objectName}对应的Entity");
         }
     }
 

@@ -31,7 +31,7 @@ namespace Infra.Cache.Configurations
         /// <value>
         ///   <c>true</c> if this instance is SSL; otherwise, <c>false</c>.
         /// </value>
-        public Boolean IsSsl { get; set; } = false;
+        public bool IsSsl { get; set; } = false;
 
         /// <summary>
         /// Gets or sets the SSL Host.
@@ -63,7 +63,7 @@ namespace Infra.Cache.Configurations
         /// allow admin.
         /// </summary>
         /// <value><c>true</c> if allow admin; otherwise, <c>false</c>.</value>
-        public Boolean AllowAdmin { get; set; } = false;
+        public bool AllowAdmin { get; set; } = false;
 
         /// <summary>
         /// Gets or sets the string configuration.
@@ -76,7 +76,7 @@ namespace Infra.Cache.Configurations
         /// abort on connect fail.
         /// </summary>
         /// <value><c>true</c> if abort on connect fail; otherwise, <c>false</c>.</value>
-        public Boolean AbortOnConnectFail { get; set; } = false;
+        public bool AbortOnConnectFail { get; set; } = false;
 
         /// <summary>
         /// Gets or sets the Redis database index the cache will use.

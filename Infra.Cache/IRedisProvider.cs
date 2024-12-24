@@ -1,9 +1,6 @@
 ﻿
 using Infra.Cache.Core.Serialization;
 using StackExchange.Redis;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Infra.Cache
 {
@@ -295,7 +292,7 @@ namespace Infra.Cache
         /// <param name="vals"></param>
         /// <param name="expiration"></param>
         /// <returns></returns>
-        Task<Boolean> HMSetAsync(string cacheKey, Dictionary<string, string> vals, TimeSpan? expiration = null);
+        Task<bool> HMSetAsync(string cacheKey, Dictionary<string, string> vals, TimeSpan? expiration = null);
 
         /// <summary>
         /// https://redis.io/commands/hset
@@ -768,7 +765,7 @@ namespace Infra.Cache
         /// <param name="cacheKey"></param>
         /// <param name="cacheValues"></param>
         /// <returns></returns>
-        long ZAdd<T>(string cacheKey, Dictionary<T, double> cacheValues);
+        long ZAdd<T>(string cacheKey, Dictionary<T, double> cacheValues) where T: notnull;
 
         /// <summary>
         /// https://redis.io/commands/zcard
@@ -848,7 +845,7 @@ namespace Infra.Cache
         /// <param name="cacheKey"></param>
         /// <param name="cacheValues"></param>
         /// <returns></returns>
-        Task<long> ZAddAsync<T>(string cacheKey, Dictionary<T, double> cacheValues);
+        Task<long> ZAddAsync<T>(string cacheKey, Dictionary<T, double> cacheValues) where T:notnull;
 
         /// <summary>
         /// https://redis.io/commands/zcard

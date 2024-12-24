@@ -23,7 +23,7 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="serviceInfo"></param>
         /// <param name="configuration"></param>
         /// <returns></returns>
-        public static Boolean IsSSOAuthentication(this IConfiguration configuration) => bool.Parse(configuration["SSOAuthentication"] ?? "false");
+        public static bool IsSSOAuthentication(this IConfiguration configuration) => bool.Parse(configuration["SSOAuthentication"] ?? "false");
 
         /// <summary>
         /// 获取跨域配置

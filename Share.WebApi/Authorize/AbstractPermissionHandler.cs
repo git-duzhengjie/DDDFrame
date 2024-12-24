@@ -33,6 +33,6 @@ namespace Microsoft.AspNetCore.Authorization
             context.Fail();
         }
 
-        protected abstract Task<Boolean> CheckUserPermissions(Int64 userId, IEnumerable<String> codes, String validationVersion);
+        protected abstract Task<bool> CheckUserPermissions(Int64 userId, IEnumerable<String> codes, String validationVersion);
     }
 }

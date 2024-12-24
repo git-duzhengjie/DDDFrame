@@ -12,7 +12,7 @@ namespace Infra.Cache.StackExchange
     /// </summary>
     public partial class DefaultRedisProvider : IRedisProvider
     {
-        public Boolean PfAdd<T>(String cacheKey, List<T> values)
+        public bool PfAdd<T>(String cacheKey, List<T> values)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
             ArgumentCheck.NotNullAndCountGTZero(values, nameof(values));
@@ -28,7 +28,7 @@ namespace Infra.Cache.StackExchange
             return res;
         }
 
-        public async Task<Boolean> PfAddAsync<T>(String cacheKey, List<T> values)
+        public async Task<bool> PfAddAsync<T>(String cacheKey, List<T> values)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
             ArgumentCheck.NotNullAndCountGTZero(values, nameof(values));
@@ -90,7 +90,7 @@ namespace Infra.Cache.StackExchange
             return true;
         }
 
-        public async Task<Boolean> PfMergeAsync(String destKey, List<String> sourceKeys)
+        public async Task<bool> PfMergeAsync(String destKey, List<String> sourceKeys)
         {
             ArgumentCheck.NotNullOrWhiteSpace(destKey, nameof(destKey));
             ArgumentCheck.NotNullAndCountGTZero(sourceKeys, nameof(sourceKeys));

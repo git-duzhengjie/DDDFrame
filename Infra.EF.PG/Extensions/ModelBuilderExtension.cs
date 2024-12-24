@@ -42,7 +42,7 @@ namespace Microsoft.EntityFrameworkCore
                     var modelType = clrProperty.PropertyType;
 
                     var converterType = typeof(JsonValueConverter<>).MakeGenericType(modelType);
-                    var converter = (ValueConverter)Activator.CreateInstance(converterType, new Object[] { null });
+                    var converter = (ValueConverter)Activator.CreateInstance(converterType, new object[] { null });
                     property.Metadata.SetValueConverter(converter);
 
                     var valueComparer = typeof(JsonValueComparer<>).MakeGenericType(modelType);

@@ -15,7 +15,7 @@ namespace Infra.Consul.Configuration
         private readonly ConsulClient _consulClient;
         private readonly string _path="test";
         private readonly Int32 _waitMillisecond;
-        private readonly Boolean _reloadOnChange;
+        private readonly bool _reloadOnChange;
         private ulong _currentIndex;
         private Task _pollTask;
 

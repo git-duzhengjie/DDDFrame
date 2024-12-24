@@ -10,13 +10,13 @@ namespace Infra.Core.Extensions
         //     获取字段或属性名称
         //
         // 参数:
-        //   obj:
+        //   object:
         //     欲获取对象
-        public static int ToInt(this object obj)
+        public static int ToInt(this object object)
         {
-            if (obj != null && obj.GetType().IsEnum)
+            if (object != null && object.GetType().IsEnum)
             {
-                return (int)obj;
+                return (int)object;
             }
 
             return -1;
@@ -26,13 +26,13 @@ namespace Infra.Core.Extensions
         //     获取字段或属性名称
         //
         // 参数:
-        //   obj:
+        //   object:
         //     欲获取对象
-        public static string ToName(this object obj)
+        public static string ToName(this object object)
         {
-            if (obj != null && obj.GetType().IsEnum)
+            if (object != null && object.GetType().IsEnum)
             {
-                FieldInfo field = obj.GetType().GetField(obj.ToString());
+                FieldInfo field = object.GetType().GetField(object.ToString());
                 if (field != null)
                 {
                     object[] customAttributes = field.GetCustomAttributes(typeof(NameAttribute), inherit: true);

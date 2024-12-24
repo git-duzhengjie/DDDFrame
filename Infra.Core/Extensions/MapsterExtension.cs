@@ -4,17 +4,17 @@ namespace Infra.Core.Extensions
 {
     public static class MapsterExtension
     {
-        public static T MapTo<T>(this object obj)
+        public static T MapTo<T>(this object object)
         {
-            return obj.Adapt<T>();
+            return object.Adapt<T>();
         }
     }
 
     public class MapTo<T>
     {
-        public static T GetValue(object obj)
+        public static T GetValue(object object)
         {
-            return obj.MapTo<T>();
+            return object.MapTo<T>();
         }
     }
 }

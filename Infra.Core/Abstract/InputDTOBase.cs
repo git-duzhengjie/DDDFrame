@@ -1,6 +1,6 @@
 ﻿namespace Infra.Core.Abstract
 {
-    public abstract class InputDTOBase : FrameObjectBase, IInputDTO
+    public abstract class InputDTOBase : FrameobjectBase, IInputDTO
     {
         public bool IsNew { get; set; }
 

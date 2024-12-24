@@ -16,7 +16,7 @@ namespace System.Collections.Generic
         /// <param name="predicate">The predicate.</param>
         /// <param name="value">The value.</param>
         /// <returns>true if it succeeds, false if it fails.</returns>
-        public static void AddIf<T>( this ICollection<T> @this, Func<T, Boolean> predicate, T value)
+        public static void AddIf<T>( this ICollection<T> @this, Func<T, bool> predicate, T value)
         {
             if (@this.IsReadOnly)
                 throw new InvalidOperationException($"{nameof(@this)} is readonly");
@@ -66,7 +66,7 @@ namespace System.Collections.Generic
         /// <param name="this">The @this to act on.</param>
         /// <param name="predicate">The predicate.</param>
         /// <param name="values">A variable-length parameters list containing values.</param>
-        public static void AddRangeIf<T>( this ICollection<T> @this, Func<T, Boolean> predicate, params T[] values)
+        public static void AddRangeIf<T>( this ICollection<T> @this, Func<T, bool> predicate, params T[] values)
         {
             if (@this.IsReadOnly)
                 throw new InvalidOperationException($"{nameof(@this)} is readonly");
@@ -104,7 +104,7 @@ namespace System.Collections.Generic
         /// <param name="this">The @this to act on.</param>
         /// <param name="values">A variable-length parameters list containing values.</param>
         /// <returns>true if it succeeds, false if it fails.</returns>
-        public static Boolean ContainsAll<T>( this ICollection<T> @this, params T[] values)
+        public static bool ContainsAll<T>( this ICollection<T> @this, params T[] values)
         {
             foreach (var value in values)
             {
@@ -124,7 +124,7 @@ namespace System.Collections.Generic
         /// <param name="this">The @this to act on.</param>
         /// <param name="values">A variable-length parameters list containing values.</param>
         /// <returns>true if it succeeds, false if it fails.</returns>
-        public static Boolean ContainsAny<T>( this ICollection<T> @this, params T[] values)
+        public static bool ContainsAny<T>( this ICollection<T> @this, params T[] values)
         {
             foreach (var value in values)
             {
@@ -143,7 +143,7 @@ namespace System.Collections.Generic
         /// <typeparam name="T">Generic type parameter.</typeparam>
         /// <param name="this">The @this to act on.</param>
         /// <returns>true if null or empty&lt; t&gt;, false if not.</returns>
-        public static Boolean IsNullOrEmpty<T>(this ICollection<T> @this) => @this == null || !@this.Any();
+        public static bool IsNullOrEmpty<T>(this ICollection<T> @this) => @this == null || !@this.Any();
 
         /// <summary>
         ///     An ICollection&lt;T&gt; extension method that queries if the collection is not (null or is empty).
@@ -151,7 +151,7 @@ namespace System.Collections.Generic
         /// <typeparam name="T">Generic type parameter.</typeparam>
         /// <param name="this">The @this to act on.</param>
         /// <returns>true if the collection is not (null or empty), false if not.</returns>
-        public static Boolean IsNotNullOrEmpty<T>(this ICollection<T> @this) => @this != null && @this.Any();
+        public static bool IsNotNullOrEmpty<T>(this ICollection<T> @this) => @this != null && @this.Any();
 
         /// <summary>
         ///     An ICollection&lt;T&gt; extension method that removes the range.
@@ -177,7 +177,7 @@ namespace System.Collections.Generic
         /// <param name="this">The @this to act on.</param>
         /// <param name="predicate">The predicate.</param>
         /// <param name="values">A variable-length parameters list containing values.</param>
-        public static void RemoveRangeIf<T>( this ICollection<T> @this, Func<T, Boolean> predicate, params T[] values)
+        public static void RemoveRangeIf<T>( this ICollection<T> @this, Func<T, bool> predicate, params T[] values)
         {
             if (@this.IsReadOnly)
                 throw new InvalidOperationException($"{nameof(@this)} is readonly");
@@ -194,7 +194,7 @@ namespace System.Collections.Generic
         /// <typeparam name="T">Generic type parameter.</typeparam>
         /// <param name="this">The @this to act on.</param>
         /// <param name="predicate">The predicate.</param>
-        public static void RemoveWhere<T>( this ICollection<T> @this, Func<T, Boolean> predicate)
+        public static void RemoveWhere<T>( this ICollection<T> @this, Func<T, bool> predicate)
         {
             if (@this.IsReadOnly)
                 throw new InvalidOperationException($"{nameof(@this)} is readonly");

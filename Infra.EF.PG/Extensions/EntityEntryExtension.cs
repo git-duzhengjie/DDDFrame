@@ -34,8 +34,8 @@ namespace Microsoft.EntityFrameworkCore.ChangeTracking
 
         public static string GetColumnName(this PropertyEntry @this)
         {
-            var storeObjectId = StoreObjectIdentifier.Create(@this.Metadata.DeclaringEntityType, StoreObjectType.Table);
-            return @this.Metadata.GetColumnName(storeObjectId.GetValueOrDefault());
+            var storeobjectId = StoreObjectIdentifier.Create(@this.Metadata.DeclaringEntityType, StoreObjectType.Table);
+            return @this.Metadata.GetColumnName(storeobjectId.GetValueOrDefault());
         }
     }
 }

@@ -46,36 +46,36 @@ namespace Infra.Cache.Core.Serialization
         /// <returns>The serialize.</returns>
         /// <param name="value">Value.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        Byte[] Serialize<T>(T value);
+        byte[] Serialize<T>(T value);
 
         /// <summary>
         /// Deserialize the specified bytes.
         /// </summary>
         /// <returns>The deserialize.</returns>
-        /// <param name="bytes">Bytes.</param>
+        /// <param name="bytes">bytes.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        T Deserialize<T>(Byte[] bytes);
+        T Deserialize<T>(byte[] bytes);
 
         /// <summary>
         /// Deserialize the specified bytes.
         /// </summary>
         /// <returns>The deserialize.</returns>
-        /// <param name="bytes">Bytes.</param>
+        /// <param name="bytes">bytes.</param>
         /// <param name="type">Type.</param>
-        Object Deserialize(Byte[] bytes, Type type);
+        object Deserialize(byte[] bytes, Type type);
 
         /// <summary>
         /// Serializes the object.
         /// </summary>
         /// <returns>The object.</returns>
-        /// <param name="obj">Object.</param>
-        ArraySegment<Byte> SerializeObject(Object obj);
+        /// <param name="object">object.</param>
+        ArraySegment<byte> Serializeobject(object object);
 
         /// <summary>
         /// Deserializes the object.
         /// </summary>
         /// <returns>The object.</returns>
         /// <param name="value">Value.</param>
-        Object DeserializeObject(ArraySegment<Byte> value);
+        object Deserializeobject(ArraySegment<byte> value);
     }
 }
