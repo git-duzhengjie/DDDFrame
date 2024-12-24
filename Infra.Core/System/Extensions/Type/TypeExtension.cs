@@ -31,13 +31,18 @@ namespace System
         public static bool IsNullableType( this Type @this)
             => @this.IsGenericType && @this.GetGenericTypeDefinition() == typeof(Nullable<>);
 
+        public static object CreateInstance(Type type)
+        {
+            return Activator.CreateInstance(type);
+        }
+
         /// <summary>
         /// 根据 Type 获取默认值，实现类似 default(T) 的功能
         /// </summary>
         /// <param name="this">type</param>
         /// <returns></returns>
         public static object GetDefaultValue( this Type @this)
-            => @this.IsValueType && @this != typeof(void) ? ReflectionDictionary.TypeObejctCache.GetOrAdd(@this, Activator.CreateInstance) : null;
+            => @this.IsValueType && @this != typeof(void) ? ReflectionDictionary.TypeObejctCache.GetOrAdd(@this, CreateInstance) : null;
 
         /// <summary>
         /// GetUnderlyingType if nullable else return self
