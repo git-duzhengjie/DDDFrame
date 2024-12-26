@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Infra.EF.PG.Entities
 {
+    [NotMapped]
     public abstract class EntityBase:FrameObjectBase,IEntity
     {
         [NotMapped]

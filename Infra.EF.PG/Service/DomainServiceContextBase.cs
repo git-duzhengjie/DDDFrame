@@ -1,7 +1,5 @@
 ﻿using Infra.EF.PG.Context;
 using Infra.EF.PG.Entities;
-using Infra.EF.PG.Service;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Infra.EF.PG.Service
 {

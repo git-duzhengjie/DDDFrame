@@ -33,6 +33,7 @@ using System.Reflection;
 using Microsoft.AspNetCore.Components;
 using Infra.Core.Attributes;
 using UniversalRPC.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infra.WebApi.DependInjection
 {
@@ -87,7 +88,7 @@ namespace Infra.WebApi.DependInjection
             //AddHealthChecks();
             AddMiniProfiler();
             AddConsul();
-            //AddIdGeneraterService();
+            AddIdGeneraterService();
         }
 
         private void LoadAllAssemblies()
@@ -107,7 +108,11 @@ namespace Infra.WebApi.DependInjection
 
         private void AddDbContext()
         {
-            Services.AddDbContext<FrameDbContext>();
+            var config= Configuration.GetPgsqlSection().Get<PgsqlConfig>();
+            Services.AddDbContext<FrameDbContext>(option =>
+            {
+                option.UseNpgsql(config.ConnectionString);
+            });
             Services.AddScoped<EntityFactory>();
             Services.AddScoped<IDbData, DbData>();
         }
@@ -149,19 +154,13 @@ namespace Infra.WebApi.DependInjection
                 var modelTypes = domainAssembly.GetTypes()
                     .Where(m => m.IsAssignableTo(typeof(IDomainService)) && m.IsNotAbstractClass(true))
                     .ToArray();
-                var injectTypes = new List<(Type, int)>();
                 foreach (var modelType in modelTypes)
                 {
                     if (modelType != null)
                     {
-                        var injectAttribute = modelType.GetCustomAttribute<InjectionAttribute>();
-                        injectTypes.Add((modelType, injectAttribute?.Priority ?? 0));
+                        Services.AddScoped(modelType);
                     }
                 }
-                injectTypes.OrderBy(x => x.Item2).ForEach(x =>
-                {
-                    Services.AddScoped(x.Item1);
-                });
             }
         }
         private void AddStrategies()
@@ -177,14 +176,9 @@ namespace Infra.WebApi.DependInjection
                 {
                     if (modelType != null)
                     {
-                        var injectAttribute = modelType.GetCustomAttribute<InjectionAttribute>();
-                        injectTypes.Add((modelType, injectAttribute?.Priority ?? 0));
+                        Services.AddScoped(modelType);
                     }
                 }
-                injectTypes.OrderBy(x => x.Item2).ForEach(x =>
-                {
-                    Services.AddScoped(x.Item1);
-                });
             }
             var domainAssembly = ServiceInfo.GetDomainAssembly();
             if (domainAssembly is not null)
@@ -197,14 +191,9 @@ namespace Infra.WebApi.DependInjection
                 {
                     if (modelType != null)
                     {
-                        var injectAttribute = modelType.GetCustomAttribute<InjectionAttribute>();
-                        injectTypes.Add((modelType, injectAttribute?.Priority ?? 0));
+                        Services.AddScoped(modelType);
                     }
                 }
-                injectTypes.OrderBy(x => x.Item2).ForEach(x =>
-                {
-                    Services.AddScoped(x.Item1);
-                });
             }
         }
         private void AddFactories()
@@ -215,19 +204,13 @@ namespace Infra.WebApi.DependInjection
                 var modelTypes = appAssembly.GetExportedTypes()
                     .Where(m => m.IsAssignableTo(typeof(IFactory)) && m.IsNotAbstractClass(true))
                     .ToArray();
-                var injectTypes = new List<(Type, int)>();
                 foreach (var modelType in modelTypes)
                 {
                     if (modelType != null)
                     {
-                        var injectAttribute = modelType.GetCustomAttribute<InjectionAttribute>();
-                        injectTypes.Add((modelType, injectAttribute?.Priority ?? 0));
+                        Services.AddScoped(modelType);
                     }
                 }
-                injectTypes.OrderBy(x => x.Item2).ForEach(x =>
-                {
-                    Services.AddScoped(x.Item1);
-                });
             }
             var domainAssembly = ServiceInfo.GetDomainAssembly();
             if (domainAssembly is not null)
@@ -235,19 +218,13 @@ namespace Infra.WebApi.DependInjection
                 var modelTypes = domainAssembly.GetExportedTypes()
                     .Where(m => m.IsAssignableTo(typeof(IFactory)) && m.IsNotAbstractClass(true)&&!m.IsAssignableTo(typeof(IDomainServiceFactory)))
                     .ToArray();
-                var injectTypes = new List<(Type, int)>();
                 foreach (var modelType in modelTypes)
                 {
                     if (modelType != null)
                     {
-                        var injectAttribute = modelType.GetCustomAttribute<InjectionAttribute>();
-                        injectTypes.Add((modelType, injectAttribute?.Priority ?? 0));
+                        Services.AddScoped(modelType);
                     }
                 }
-                injectTypes.OrderBy(x => x.Item2).ForEach(x =>
-                {
-                    Services.AddScoped(x.Item1);
-                });
                 var domainServiceFactoryType = domainAssembly.GetTypes()
                     .FirstOrDefault(m => m.IsAssignableTo(typeof(IDomainServiceFactory)) && m.IsNotAbstractClass(true));
                 if (domainServiceFactoryType != null)
@@ -496,21 +473,15 @@ namespace Infra.WebApi.DependInjection
                 var modelAbstractTypes = appAssembly.GetExportedTypes()
                     .Where(m => m.IsAssignableTo(typeof(IAppService)) && m.IsInterface)
                     .ToArray();
-                var injectTypes = new List<(Type, Type, int)>();
                 foreach(var modelAbstractType in modelAbstractTypes)
                 {
                     var modelType = appAssembly.GetExportedTypes()
                     .FirstOrDefault(m => m.IsAssignableTo(modelAbstractType) && m.IsNotAbstractClass(true));
                     if (modelType != null)
                     {
-                        var injectAttribute = modelAbstractType.GetCustomAttribute<InjectionAttribute>();
-                        injectTypes.Add((modelAbstractType, modelType, injectAttribute?.Priority??0));
+                        Services.AddScoped(modelAbstractType,modelType);
                     }
                 }
-                injectTypes.OrderBy(x => x.Item3).ForEach(x=>
-                {
-                    Services.AddScoped(x.Item1, x.Item2);
-                });
             }
         }
     }
