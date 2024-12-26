@@ -12,11 +12,11 @@ namespace Infra.Core.Extensions
         // 参数:
         //   object:
         //     欲获取对象
-        public static int ToInt(this object object)
+        public static int ToInt(this object obj)
         {
-            if (object != null && object.GetType().IsEnum)
+            if (obj != null && obj.GetType().IsEnum)
             {
-                return (int)object;
+                return (int)obj;
             }
 
             return -1;
@@ -28,11 +28,11 @@ namespace Infra.Core.Extensions
         // 参数:
         //   object:
         //     欲获取对象
-        public static string ToName(this object object)
+        public static string ToName(this object obj)
         {
-            if (object != null && object.GetType().IsEnum)
+            if (obj != null && obj.GetType().IsEnum)
             {
-                FieldInfo field = object.GetType().GetField(object.ToString());
+                FieldInfo field = obj.GetType().GetField(obj.ToString());
                 if (field != null)
                 {
                     object[] customAttributes = field.GetCustomAttributes(typeof(NameAttribute), inherit: true);
@@ -64,5 +64,25 @@ namespace Infra.Core.Extensions
             return [.. result];
         }
 
+        public static T? GetEnumValue<T>(this string name)
+        {
+            var type=typeof(T);
+            if (type.IsEnum)
+            {
+                var fields = type.GetFields();
+                foreach (var field in fields)
+                {
+                    var customAttribute = field.GetCustomAttribute(typeof(NameAttribute), inherit: true) as NameAttribute;
+                    if (customAttribute != null)
+                    {
+                        if (customAttribute.Name == name)
+                        {
+                            return (T)Enum.Parse(type,field.Name);
+                        }
+                    }
+                }
+            }
+            return default;
+        }
     }
 }

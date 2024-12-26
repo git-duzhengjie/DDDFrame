@@ -1,6 +1,6 @@
 ﻿namespace Infra.Core.Abstract
 {
-    public interface IEntity:Iobject
+    public interface IEntity:IObject
     {
         /// <summary>
         /// 唯一id
@@ -22,6 +22,19 @@
         /// </summary>
         public DateTime LastTime { get; set; }
 
-        
+        /// <summary>
+        /// 输出对象
+        /// </summary>
+        public IOutputDTO Output { get; }
+
+        /// <summary>
+        /// 输入对象
+        /// </summary>
+        public IInputDTO Input { get; }
+
+        /// <summary>
+        /// 构建
+        /// </summary>
+        public void Build();
     }
 }

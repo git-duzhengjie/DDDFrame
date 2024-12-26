@@ -1,6 +1,7 @@
 ﻿using Infra.Cache;
 using Microsoft.Extensions.Logging;
 using Infra.Core.Extensions;
+using Infra.Core.System.Extensions;
 
 namespace Infra.IdGenerater.Yitter
 {
@@ -89,6 +90,6 @@ namespace Infra.IdGenerater.Yitter
             _logger.LogDebug("Refresh WorkerNodes:{0}:{1}", workerId, score);
         }
 
-        internal static string GetWorkerIdCacheKey(string serviceName) => $"louge:{serviceName}:workids";
+        internal static string GetWorkerIdCacheKey(string serviceName) => $"frame:{serviceName}:workids";
     }
 }

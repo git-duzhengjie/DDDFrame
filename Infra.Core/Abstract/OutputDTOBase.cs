@@ -1,7 +1,7 @@
 ﻿
 namespace Infra.Core.Abstract
 {
-    public abstract class OutputDTOBase : FrameobjectBase, IOutputDTO
+    public abstract class OutputDTOBase : FrameObjectBase, IOutputDTO
     {
         /// <summary>
         /// 唯一id
@@ -22,5 +22,7 @@ namespace Infra.Core.Abstract
         /// 最后一次时间
         /// </summary>
         public DateTime LastTime { get; set; }
+
+        public abstract IInputDTO Input { get; }
     }
 }

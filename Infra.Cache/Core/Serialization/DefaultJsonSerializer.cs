@@ -50,19 +50,19 @@ namespace Infra.Cache.Core.Serialization
             return JsonSerializer.Deserialize<Type>(bytes);
         }
 
-        public object Deserializeobject(ArraySegment<byte> value)
+        public object DeserializeObject(ArraySegment<byte> value)
         {
             return JsonSerializer.Deserialize<object>(value);
         }
 
         public byte[] Serialize<T>(T value)
         {
-            return JsonSerializer.SerializeToUtf8bytes(value);
+            return JsonSerializer.SerializeToUtf8Bytes(value);
         }
 
-        public ArraySegment<byte> Serializeobject(object object)
+        public ArraySegment<byte> SerializeObject(object obj)
         {
-            return JsonSerializer.SerializeToUtf8bytes(object);
+            return JsonSerializer.SerializeToUtf8Bytes(obj);
         }
     }
 }

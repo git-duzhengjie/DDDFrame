@@ -11,6 +11,41 @@ namespace System
 {
     public static class TypeExtension
     {
+        public static string Table(this Type type)
+        {
+            Attribute attribute = Attribute.GetCustomAttribute(type, typeof(TableAttribute));
+            if (attribute != null)
+            {
+                var table = (TableAttribute)attribute;
+                return table?.Name;
+            }
+            return nameof(type).ToLower();
+        }
+
+        public static string Key(this Type type)
+        {
+            var properties = type.GetProperties();
+            foreach (var p in properties)
+            {
+                var attribute = Attribute.GetCustomAttribute(p, typeof(KeyAttribute));
+                if (attribute != null)
+                    return p.Name;
+            }
+            return "Id";
+
+        }
+
+        public static string Columns(this Type type)
+        {
+            string columns = "";
+            string table = Table(type);
+            var properties = type.GetProperties();
+            foreach (var p in properties)
+            {
+                columns += $"{table}.[{p.Name}],";
+            }
+            return columns.TrimEnd(',');
+        }
         /// <summary>
         ///     A Type extension method that creates an instance.
         /// </summary>

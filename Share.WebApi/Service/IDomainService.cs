@@ -20,6 +20,20 @@ namespace Infra.WebApi.Service
         public Task<FrameChangeOutputDTO> RemoveAsync(params IInputDTO[] removes);
 
         /// <summary>
+        /// 查询对象
+        /// </summary>
+        /// <param name="queryDTOs"></param>
+        /// <returns></returns>
+        public Task<IOutputDTO[]> QueryAsync(params IQueryDTO[] queryDTOs);
+
+        /// <summary>
+        /// 分页查询对象
+        /// </summary>
+        /// <param name="pageQueryDTOs"></param>
+        /// <returns></returns>
+        public Task<IPagedList<IOutputDTO>> PageQueryAsync(IPageQueryDTO pageQueryDTO);
+
+        /// <summary>
         /// 添加或者更新对象处理优先级
         /// </summary>
         public int InsertOrUpdatePriority { get; }
@@ -28,5 +42,10 @@ namespace Infra.WebApi.Service
         /// 删除对象处理优先级
         /// </summary>
         public int RemovePriority { get; }
+
+        /// <summary>
+        /// 服务的查询优先级
+        /// </summary>
+        public int QueryPriority { get; }
     }
 }

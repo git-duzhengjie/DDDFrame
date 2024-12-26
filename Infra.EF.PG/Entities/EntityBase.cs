@@ -1,9 +1,13 @@
 ﻿using Infra.Core.Abstract;
+using Infra.EF.PG.Service;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Infra.EF.PG.Entities
 {
-    public abstract class EntityBase:FrameobjectBase,IEntity
+    public abstract class EntityBase:FrameObjectBase,IEntity
     {
+        [NotMapped]
+        public bool IsNew { get; set; }
         /// <summary>
         /// 唯一id
         /// </summary>
@@ -24,9 +28,37 @@ namespace Infra.EF.PG.Entities
         /// </summary>
         public DateTime LastTime { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public abstract IInputDTO Input { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public abstract IOutputDTO Output { get; }
+
         public virtual void Build()
         {
+            if (Id <= 0)
+            {
+                Id= IdGenerater.Yitter.IdGenerater.GetNextId();
+            }
+            if (IsNew)
+            {
+                CreateTime = DateTime.Now;
+            }
+            else
+            {
+                UpdateTime = DateTime.Now;
+            }
+            LastTime = DateTime.Now;
             return;
+        }
+
+        public virtual void Build(IDomainServiceContext domainServiceContext)
+        {
+
         }
     }
 }

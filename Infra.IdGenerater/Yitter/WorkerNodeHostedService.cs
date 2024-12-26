@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Infra.Core.Extensions;
+using Infra.Core.System.Extensions;
 
 namespace Infra.IdGenerater.Yitter
 {

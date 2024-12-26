@@ -54,7 +54,7 @@ namespace Infra.WebApi.Extensions
             return appAssembly;
         }
         /// <summary>
-        /// 获取Application程序集
+        /// 获取Domain程序集
         /// </summary>
         /// <returns></returns>
         public static Assembly GetDomainAssembly(this IServiceInfo serviceInfo)
@@ -72,6 +72,13 @@ namespace Infra.WebApi.Extensions
                 }
             }
             return domainAssembly;
+        }
+
+        private static string GetDomainFileName(string domainName)
+        {
+            var currentDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            var files = Directory.GetFiles(currentDirectory);
+            return files.FirstOrDefault(x => Path.GetFileNameWithoutExtension(x)==domainName);
         }
     }
 }

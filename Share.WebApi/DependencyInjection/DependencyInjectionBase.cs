@@ -24,6 +24,15 @@ using Infra.Core.Abstract;
 using Infra.Core.Json;
 using System.Text.Json;
 using Infra.WebApi.Service;
+using Infra.IdGenerater.Extensions;
+using Grpc.Net.Client.Configuration;
+using ServiceConfig = Infra.WebApi.Configuration.ServiceConfig;
+using Infra.EF.PG.Service;
+using Infra.EF.PG.Context;
+using System.Reflection;
+using Microsoft.AspNetCore.Components;
+using Infra.Core.Attributes;
+using UniversalRPC.Services;
 
 namespace Infra.WebApi.DependInjection
 {
@@ -58,9 +67,18 @@ namespace Infra.WebApi.DependInjection
         /// <typeparam name="THandler"></typeparam>
         public virtual void AddWebApiDefault()
         {
+            LoadAllAssemblies();
             Services.AddHttpContextAccessor();
             Services.AddMemoryCache();
             Configure();
+            AddDbContext();
+            AddRPCClients();
+            AddDomainServiceContext();
+            AddStrategies();
+            AddFactories();
+            AddDomainServices();
+            AddRPCServices();
+            AddApplicationServices();
             AddControllers();
             AddAuthentication();
             AddAuthorization<PermissionHandlerRemote>();
@@ -68,12 +86,59 @@ namespace Infra.WebApi.DependInjection
             AddSwaggerGen();
             //AddHealthChecks();
             AddMiniProfiler();
-            AddApplicationServices();
-            AddDomainServices();
-            AddStrategies();
-            AddFactories();
             AddConsul();
-            AddRpc();
+            //AddIdGeneraterService();
+        }
+
+        private void LoadAllAssemblies()
+        {
+            var directory=AppDomain.CurrentDomain.BaseDirectory;
+            var assemblyFiles = Directory.GetFiles(directory).Where(x=>x.EndsWith(".dll")).ToArray();
+            var loadAssemblies=AppDomain.CurrentDomain.GetAssemblies();
+            foreach(var assemblyFile in assemblyFiles)
+            {
+                var name=Path.GetFileNameWithoutExtension(assemblyFile);
+                if (!loadAssemblies.Any(l => l.FullName.Contains(name)))
+                {
+                    Assembly.LoadFrom(assemblyFile);
+                }
+            }
+        }
+
+        private void AddDbContext()
+        {
+            Services.AddDbContext<FrameDbContext>();
+            Services.AddScoped<EntityFactory>();
+            Services.AddScoped<IDbData, DbData>();
+        }
+
+        private void AddRPCServices()
+        {
+            Services.AddURPCService();
+        }
+
+        private void AddDomainServiceContext()
+        {
+            var domainAssembly = ServiceInfo.GetDomainAssembly();
+            if (domainAssembly is not null)
+            {
+                var modelTypes = domainAssembly.GetExportedTypes()
+                    .Where(m => m.IsAssignableTo(typeof(IDomainServiceContext)) && m.IsNotAbstractClass(true))
+                    .ToArray();
+                if (modelTypes.Length > 1)
+                {
+                    throw new InvalidOperationException("一个服务只能有一个Context");
+                }
+                foreach (var modelType in modelTypes)
+                {
+                    Services.AddScoped(typeof(IDomainServiceContext),modelType);
+                }
+            }
+        }
+
+        private void AddIdGeneraterService()
+        {
+            Services.AddInfraYitterIdGenerater(Configuration.GetRedisSection());
         }
 
         private void AddDomainServices()
@@ -84,10 +149,19 @@ namespace Infra.WebApi.DependInjection
                 var modelTypes = domainAssembly.GetTypes()
                     .Where(m => m.IsAssignableTo(typeof(IDomainService)) && m.IsNotAbstractClass(true))
                     .ToArray();
+                var injectTypes = new List<(Type, int)>();
                 foreach (var modelType in modelTypes)
                 {
-                    Services.AddScoped(modelType);
+                    if (modelType != null)
+                    {
+                        var injectAttribute = modelType.GetCustomAttribute<InjectionAttribute>();
+                        injectTypes.Add((modelType, injectAttribute?.Priority ?? 0));
+                    }
                 }
+                injectTypes.OrderBy(x => x.Item2).ForEach(x =>
+                {
+                    Services.AddScoped(x.Item1);
+                });
             }
         }
         private void AddStrategies()
@@ -95,24 +169,42 @@ namespace Infra.WebApi.DependInjection
             var appAssembly = ServiceInfo.GetApplicationAssembly();
             if (appAssembly is not null)
             {
-                var modelTypes = appAssembly.GetTypes()
+                var modelTypes = appAssembly.GetExportedTypes()
                     .Where(m => m.IsAssignableTo(typeof(IStrategy)) && m.IsNotAbstractClass(true))
                     .ToArray();
+                var injectTypes = new List<(Type, int)>();
                 foreach (var modelType in modelTypes)
                 {
-                    Services.AddScoped(modelType);
+                    if (modelType != null)
+                    {
+                        var injectAttribute = modelType.GetCustomAttribute<InjectionAttribute>();
+                        injectTypes.Add((modelType, injectAttribute?.Priority ?? 0));
+                    }
                 }
+                injectTypes.OrderBy(x => x.Item2).ForEach(x =>
+                {
+                    Services.AddScoped(x.Item1);
+                });
             }
             var domainAssembly = ServiceInfo.GetDomainAssembly();
             if (domainAssembly is not null)
             {
-                var modelTypes = domainAssembly.GetTypes()
+                var modelTypes = domainAssembly.GetExportedTypes()
                     .Where(m => m.IsAssignableTo(typeof(IStrategy)) && m.IsNotAbstractClass(true))
                     .ToArray();
+                var injectTypes = new List<(Type, int)>();
                 foreach (var modelType in modelTypes)
                 {
-                    Services.AddScoped(modelType);
+                    if (modelType != null)
+                    {
+                        var injectAttribute = modelType.GetCustomAttribute<InjectionAttribute>();
+                        injectTypes.Add((modelType, injectAttribute?.Priority ?? 0));
+                    }
                 }
+                injectTypes.OrderBy(x => x.Item2).ForEach(x =>
+                {
+                    Services.AddScoped(x.Item1);
+                });
             }
         }
         private void AddFactories()
@@ -120,30 +212,56 @@ namespace Infra.WebApi.DependInjection
             var appAssembly = ServiceInfo.GetApplicationAssembly();
             if (appAssembly is not null)
             {
-                var modelTypes = appAssembly.GetTypes()
+                var modelTypes = appAssembly.GetExportedTypes()
                     .Where(m => m.IsAssignableTo(typeof(IFactory)) && m.IsNotAbstractClass(true))
                     .ToArray();
+                var injectTypes = new List<(Type, int)>();
                 foreach (var modelType in modelTypes)
                 {
-                    Services.AddScoped(modelType);
+                    if (modelType != null)
+                    {
+                        var injectAttribute = modelType.GetCustomAttribute<InjectionAttribute>();
+                        injectTypes.Add((modelType, injectAttribute?.Priority ?? 0));
+                    }
                 }
+                injectTypes.OrderBy(x => x.Item2).ForEach(x =>
+                {
+                    Services.AddScoped(x.Item1);
+                });
             }
             var domainAssembly = ServiceInfo.GetDomainAssembly();
             if (domainAssembly is not null)
             {
-                var modelTypes = domainAssembly.GetTypes()
-                    .Where(m => m.IsAssignableTo(typeof(IFactory)) && m.IsNotAbstractClass(true))
+                var modelTypes = domainAssembly.GetExportedTypes()
+                    .Where(m => m.IsAssignableTo(typeof(IFactory)) && m.IsNotAbstractClass(true)&&!m.IsAssignableTo(typeof(IDomainServiceFactory)))
                     .ToArray();
+                var injectTypes = new List<(Type, int)>();
                 foreach (var modelType in modelTypes)
                 {
-                    Services.AddScoped(modelType);
+                    if (modelType != null)
+                    {
+                        var injectAttribute = modelType.GetCustomAttribute<InjectionAttribute>();
+                        injectTypes.Add((modelType, injectAttribute?.Priority ?? 0));
+                    }
+                }
+                injectTypes.OrderBy(x => x.Item2).ForEach(x =>
+                {
+                    Services.AddScoped(x.Item1);
+                });
+                var domainServiceFactoryType = domainAssembly.GetTypes()
+                    .FirstOrDefault(m => m.IsAssignableTo(typeof(IDomainServiceFactory)) && m.IsNotAbstractClass(true));
+                if (domainServiceFactoryType != null)
+                {
+                    Services.AddScoped(typeof(IDomainServiceFactory), domainServiceFactoryType);
                 }
             }
         }
 
-        private void AddRpc()
+        private void AddRPCClients()
         {
-            Services.AddURPCService();
+            var serviceConfigSection = Configuration.GetServerConfigSection();
+            ServiceConfig config = serviceConfigSection.Get<ServiceConfig>();
+            Services.AddURPCClients(config.GatewayUrl,new FrameJson());
         }
 
         private void AddConsul()
@@ -371,21 +489,28 @@ namespace Infra.WebApi.DependInjection
         /// </summary>
         protected virtual void AddApplicationServices()
         {
+            
             var appAssembly = ServiceInfo.GetApplicationAssembly();
             if (appAssembly is not null)
             {
-                var modelAbstractTypes = appAssembly.GetTypes()
+                var modelAbstractTypes = appAssembly.GetExportedTypes()
                     .Where(m => m.IsAssignableTo(typeof(IAppService)) && m.IsInterface)
                     .ToArray();
+                var injectTypes = new List<(Type, Type, int)>();
                 foreach(var modelAbstractType in modelAbstractTypes)
                 {
-                    var modelType = appAssembly.GetTypes()
+                    var modelType = appAssembly.GetExportedTypes()
                     .FirstOrDefault(m => m.IsAssignableTo(modelAbstractType) && m.IsNotAbstractClass(true));
                     if (modelType != null)
                     {
-                        Services.AddScoped(modelAbstractType,modelType);
+                        var injectAttribute = modelAbstractType.GetCustomAttribute<InjectionAttribute>();
+                        injectTypes.Add((modelAbstractType, modelType, injectAttribute?.Priority??0));
                     }
                 }
+                injectTypes.OrderBy(x => x.Item3).ForEach(x=>
+                {
+                    Services.AddScoped(x.Item1, x.Item2);
+                });
             }
         }
     }

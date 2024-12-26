@@ -1,15 +1,15 @@
 ﻿namespace Infra.Core.Abstract
 {
-    public abstract class FrameobjectBase : Iobject
+    public abstract class FrameObjectBase : IObject
     {
         /// <summary>
         /// 对象名
         /// </summary>
-        public string objectName => GetType().Name;
+        public string ObjectName => GetType().Name;
 
         /// <summary>
         /// 对象类型
         /// </summary>
-        public abstract int objectType { get; }
+        public abstract int ObjectType { get; }
     }
 }

@@ -69,13 +69,13 @@ namespace Infra.Cache.Core.Serialization
         /// </summary>
         /// <returns>The object.</returns>
         /// <param name="object">object.</param>
-        ArraySegment<byte> Serializeobject(object object);
+        ArraySegment<byte> SerializeObject(object obj);
 
         /// <summary>
         /// Deserializes the object.
         /// </summary>
         /// <returns>The object.</returns>
         /// <param name="value">Value.</param>
-        object Deserializeobject(ArraySegment<byte> value);
+        object DeserializeObject(ArraySegment<byte> value);
     }
 }

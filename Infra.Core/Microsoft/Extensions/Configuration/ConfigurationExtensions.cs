@@ -40,6 +40,13 @@ namespace Microsoft.Extensions.Configuration
         public static IConfigurationSection GetConsulSection(this IConfiguration configuration) => configuration.GetSection("Consul");
 
         /// <summary>
+        /// 获取服务器配置
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <returns></returns>
+        public static IConfigurationSection GetServerConfigSection(this IConfiguration configuration) => configuration.GetSection("ServiceConfig");
+
+        /// <summary>
         /// 获取Rabitmq配置
         /// </summary>
         /// <param name="configuration"></param>

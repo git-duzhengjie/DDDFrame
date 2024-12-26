@@ -1,15 +1,15 @@
 ﻿namespace Infra.Core.Abstract
 {
-    public interface Iobject
+    public interface IObject
     {
         /// <summary>
         /// 对象名
         /// </summary>
-        string objectName { get; }
+        string ObjectName { get; }
 
         /// <summary>
         /// 对象类型
         /// </summary>
-        int objectType { get; }
+        int ObjectType { get; }
     }
 }

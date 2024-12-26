@@ -57,8 +57,6 @@ namespace Infra.Core.Network
         {
             var httpClient = new HttpClient();
             httpClient.BaseAddress = new Uri(GatewayHost);
-            ServicePointManager.Expect100Continue = false;
-            ServicePointManager.MaxServicePointIdleTime = 200000;
             httpClient.Timeout = TimeSpan.FromMinutes(60);
 
             if (_headers.Count > 0)
@@ -71,10 +69,10 @@ namespace Infra.Core.Network
             return httpClient;
         }
 
-        public string HttpPost(string api, object object, JsonSerializerSettings jsonSerializerSettings = null)
+        public string HttpPost(string api, object obj, JsonSerializerSettings jsonSerializerSettings = null)
         {
             var httpClient = GetHttpClient();
-            var body = object == null ? null : jsonSerializerSettings == null ? JsonConvert.Serializeobject(object) : JsonConvert.Serializeobject(object, jsonSerializerSettings);
+            var body = obj == null ? null : jsonSerializerSettings == null ? JsonConvert.SerializeObject(obj) : JsonConvert.SerializeObject(obj, jsonSerializerSettings);
             var responseMessage = body == null ? httpClient.PostAsync(Prefix + api, null).Result : httpClient.PostAsync(Prefix + api, new StringContent(body, Encoding.UTF8, "application/json")).Result;
             var responseResult = responseMessage.Content.ReadAsStringAsync().Result;
             if (responseMessage.StatusCode == HttpStatusCode.OK || responseMessage.StatusCode == HttpStatusCode.Created)
@@ -99,18 +97,18 @@ namespace Infra.Core.Network
             }
         }
 
-        public T HttpPost<T>(string api, object object, JsonSerializerSettings jsonSerializerSettings = null)
+        public T HttpPost<T>(string api, object obj, JsonSerializerSettings jsonSerializerSettings = null)
         {
-            var responseResult = HttpPost(api, object, jsonSerializerSettings);
-            return jsonSerializerSettings == null ? JsonConvert.Deserializeobject<T>(responseResult) : JsonConvert.Deserializeobject<T>(responseResult, jsonSerializerSettings);
+            var responseResult = HttpPost(api, obj, jsonSerializerSettings);
+            return jsonSerializerSettings == null ? JsonConvert.DeserializeObject<T>(responseResult) : JsonConvert.DeserializeObject<T>(responseResult, jsonSerializerSettings);
         }
 
-        public async Task<T> HttpPostAsync<T>(string api, object object, CancellationToken cancellationToken, JsonSerializerSettings jsonSerializerSettings = null, bool useResponseCompress = false)
+        public async Task<T> HttpPostAsync<T>(string api, object obj, CancellationToken cancellationToken, JsonSerializerSettings jsonSerializerSettings = null, bool useResponseCompress = false)
         {
             var httpClient = GetHttpClient();
 
 
-            var body = jsonSerializerSettings == null ? JsonConvert.Serializeobject(object) : JsonConvert.Serializeobject(object, jsonSerializerSettings);
+            var body = jsonSerializerSettings == null ? JsonConvert.SerializeObject(obj) : JsonConvert.SerializeObject(obj, jsonSerializerSettings);
             var responseMessage = await httpClient.PostAsync(Prefix + api, new StringContent(body, Encoding.UTF8, "application/json"), cancellationToken);
 
             if (responseMessage.StatusCode == HttpStatusCode.OK || responseMessage.StatusCode == HttpStatusCode.Created)
@@ -118,7 +116,7 @@ namespace Infra.Core.Network
                 string responseResult;
                 if (responseMessage.Content.Headers.ContentEncoding.Contains("gzip"))
                 {
-                    var cCon = await responseMessage.Content.ReadAsbyteArrayAsync();
+                    var cCon = await responseMessage.Content.ReadAsByteArrayAsync();
                     var compresser = new GzipCompresser();
                     responseResult = compresser.Decompress(cCon);
                 }
@@ -126,7 +124,7 @@ namespace Infra.Core.Network
                 {
                     responseResult = await responseMessage.Content.ReadAsStringAsync();
                 }
-                var responseResultobject = jsonSerializerSettings == null ? JsonConvert.Deserializeobject<T>(responseResult) : JsonConvert.Deserializeobject<T>(responseResult, jsonSerializerSettings);
+                var responseResultobject = jsonSerializerSettings == null ? JsonConvert.DeserializeObject<T>(responseResult) : JsonConvert.DeserializeObject<T>(responseResult, jsonSerializerSettings);
                 return responseResultobject;
             }
             else
@@ -138,7 +136,7 @@ namespace Infra.Core.Network
                 }
                 else if (responseMessage.StatusCode == HttpStatusCode.BadRequest)
                 {
-                    var err = JsonConvert.Deserializeobject<AppErr>(await responseMessage.Content.ReadAsStringAsync());
+                    var err = JsonConvert.DeserializeObject<AppErr>(await responseMessage.Content.ReadAsStringAsync());
                     throw new Exception(err?.detail);
                 }
                 else if (responseMessage.StatusCode == HttpStatusCode.Unauthorized)
@@ -168,7 +166,7 @@ namespace Infra.Core.Network
                 string responseResult;
                 if (responseMessage.Content.Headers.ContentEncoding.Contains("gzip"))
                 {
-                    var cCon = await responseMessage.Content.ReadAsbyteArrayAsync();
+                    var cCon = await responseMessage.Content.ReadAsByteArrayAsync();
                     var compresser = new GzipCompresser();
                     responseResult = compresser.Decompress(cCon);
                 }
@@ -176,7 +174,7 @@ namespace Infra.Core.Network
                 {
                     responseResult = await responseMessage.Content.ReadAsStringAsync();
                 }
-                var responseResultobject = jsonSerializerSettings == null ? JsonConvert.Deserializeobject<T>(responseResult) : JsonConvert.Deserializeobject<T>(responseResult, jsonSerializerSettings);
+                var responseResultobject = jsonSerializerSettings == null ? JsonConvert.DeserializeObject<T>(responseResult) : JsonConvert.DeserializeObject<T>(responseResult, jsonSerializerSettings);
                 return responseResultobject;
             }
             else if (ErrorHandler != null)
@@ -186,7 +184,7 @@ namespace Infra.Core.Network
             }
             else if (responseMessage.StatusCode == HttpStatusCode.BadRequest)
             {
-                var err = JsonConvert.Deserializeobject<AppErr>(await responseMessage.Content.ReadAsStringAsync());
+                var err = JsonConvert.DeserializeObject<AppErr>(await responseMessage.Content.ReadAsStringAsync());
                 throw new Exception(err?.detail);
             }
             else if (responseMessage.StatusCode == HttpStatusCode.Unauthorized)
@@ -203,15 +201,15 @@ namespace Infra.Core.Network
             }
         }
 
-        public async Task<T> HttpPostAsync<T>(string api, object object, JsonSerializerSettings jsonSerializerSettings = null, bool useResponseCompress = false)
+        public async Task<T> HttpPostAsync<T>(string api, object obj, JsonSerializerSettings jsonSerializerSettings = null, bool useResponseCompress = false)
         {
-            return await HttpPostAsync<T>(api, object, CancellationToken.None, jsonSerializerSettings, useResponseCompress);
+            return await HttpPostAsync<T>(api, obj, CancellationToken.None, jsonSerializerSettings, useResponseCompress);
         }
 
-        public async Task<string> HttpPostAsync(string api, object object, CancellationToken cancellationToken, JsonSerializerSettings jsonSerializerSettings = null)
+        public async Task<string> HttpPostAsync(string api, object obj, CancellationToken cancellationToken, JsonSerializerSettings jsonSerializerSettings = null)
         {
             var httpClient = GetHttpClient();
-            var body = object == null ? null : jsonSerializerSettings == null ? JsonConvert.Serializeobject(object) : JsonConvert.Serializeobject(object, jsonSerializerSettings);
+            var body = obj == null ? null : jsonSerializerSettings == null ? JsonConvert.SerializeObject(obj) : JsonConvert.SerializeObject(obj, jsonSerializerSettings);
             var responseMessage = body == null ? await httpClient.PostAsync(Prefix + api, null) : await httpClient.PostAsync(Prefix + api, new StringContent(body, Encoding.UTF8, "application/json"), cancellationToken);
             var responseResult = await responseMessage.Content.ReadAsStringAsync();
             if (responseMessage.StatusCode == HttpStatusCode.OK || responseMessage.StatusCode == HttpStatusCode.Created)
@@ -225,7 +223,7 @@ namespace Infra.Core.Network
             }
             else if (responseMessage.StatusCode == HttpStatusCode.BadRequest)
             {
-                var err = JsonConvert.Deserializeobject<AppErr>(await responseMessage.Content.ReadAsStringAsync());
+                var err = JsonConvert.DeserializeObject<AppErr>(await responseMessage.Content.ReadAsStringAsync());
                 throw new Exception(err?.detail);
             }
             else if (responseMessage.StatusCode == HttpStatusCode.Unauthorized)
@@ -246,15 +244,15 @@ namespace Infra.Core.Network
             }
         }
 
-        public async Task<string> HttpPostAsync(string api, object object, JsonSerializerSettings jsonSerializerSettings = null)
+        public async Task<string> HttpPostAsync(string api, object obj, JsonSerializerSettings jsonSerializerSettings = null)
         {
-            return await HttpPostAsync(api, object, CancellationToken.None, jsonSerializerSettings);
+            return await HttpPostAsync(api, obj, CancellationToken.None, jsonSerializerSettings);
         }
 
-        public async Task HttpPutAsync(string api, object object, CancellationToken? cancellationToken=null, JsonSerializerSettings jsonSerializerSettings = null)
+        public async Task HttpPutAsync(string api, object obj, CancellationToken? cancellationToken=null, JsonSerializerSettings jsonSerializerSettings = null)
         {
             var httpClient = GetHttpClient();
-            var body = object == null ? null : jsonSerializerSettings == null ? JsonConvert.Serializeobject(object) : JsonConvert.Serializeobject(object, jsonSerializerSettings);
+            var body = obj == null ? null : jsonSerializerSettings == null ? JsonConvert.SerializeObject(obj) : JsonConvert.SerializeObject(obj, jsonSerializerSettings);
             HttpResponseMessage responseMessage;
             if (cancellationToken != null)
             {
@@ -269,7 +267,7 @@ namespace Infra.Core.Network
             {
                 if (responseMessage.StatusCode == HttpStatusCode.BadRequest)
                 {
-                    var err = JsonConvert.Deserializeobject<AppErr>(await responseMessage.Content.ReadAsStringAsync());
+                    var err = JsonConvert.DeserializeObject<AppErr>(await responseMessage.Content.ReadAsStringAsync());
                     throw new Exception(err?.detail);
                 }
                 else if (ErrorHandler != null)
@@ -291,20 +289,20 @@ namespace Infra.Core.Network
             }
         }
 
-        public async Task HttpPutAsync(string api, object object, JsonSerializerSettings jsonSerializerSettings = null)
+        public async Task HttpPutAsync(string api, object obj, JsonSerializerSettings jsonSerializerSettings = null)
         {
-            await HttpPutAsync(api, object, CancellationToken.None, jsonSerializerSettings);
+            await HttpPutAsync(api, obj, CancellationToken.None, jsonSerializerSettings);
         }
 
         //public async Task<T> HttpPutAsync<T>(string api, object object, JsonSerializerSettings jsonSerializerSettings = null) where T : class
         //{
         //    var httpClient = GetHttpClient();
-        //    var body = object == null ? null : jsonSerializerSettings == null ? JsonConvert.Serializeobject(object) : JsonConvert.Serializeobject(object, jsonSerializerSettings);
+        //    var body = object == null ? null : jsonSerializerSettings == null ? JsonConvert.SerializeObject(object) : JsonConvert.SerializeObject(object, jsonSerializerSettings);
         //    var responseMessage = await httpClient.PutAsync(Prefix+api, new StringContent(body, Encoding.UTF8, "application/json"));
         //    if (responseMessage.StatusCode == HttpStatusCode.OK || responseMessage.StatusCode == HttpStatusCode.Created)
         //    {
         //        var responseResult = await responseMessage.Content.ReadAsStringAsync();
-        //        var responseResultobject = jsonSerializerSettings == null ? JsonConvert.Deserializeobject<T>(responseResult) : JsonConvert.Deserializeobject<T>(responseResult, jsonSerializerSettings);
+        //        var responseResultobject = jsonSerializerSettings == null ? JsonConvert.DeserializeObject<T>(responseResult) : JsonConvert.DeserializeObject<T>(responseResult, jsonSerializerSettings);
         //        return responseResultobject;
         //    }
         //    else if (responseMessage.StatusCode == HttpStatusCode.NoContent)
@@ -316,7 +314,7 @@ namespace Infra.Core.Network
 
         //        if (responseMessage.StatusCode == HttpStatusCode.BadRequest)
         //        {
-        //            var err = JsonConvert.Deserializeobject<AppErr>(await responseMessage.Content.ReadAsStringAsync());
+        //            var err = JsonConvert.DeserializeObject<AppErr>(await responseMessage.Content.ReadAsStringAsync());
         //            throw new Exception(err?.detail);
         //        }
         //        else if (responseMessage.StatusCode == HttpStatusCode.Unauthorized)
@@ -334,14 +332,14 @@ namespace Infra.Core.Network
         //    }
         //}
 
-        public async Task<T> HttpPutAsync<T>(string api, object object, CancellationToken cancellationToken, JsonSerializerSettings jsonSerializerSettings = null, bool useResponseCompress = true) where T : class
+        public async Task<T> HttpPutAsync<T>(string api, object obj, CancellationToken cancellationToken, JsonSerializerSettings jsonSerializerSettings = null, bool useResponseCompress = true) where T : class
         {
             var httpClient = GetHttpClient();
             if (useResponseCompress)
             {
                 httpClient.UseResponseGzipCompress();
             }
-            var body = object == null ? null : jsonSerializerSettings == null ? JsonConvert.Serializeobject(object) : JsonConvert.Serializeobject(object, jsonSerializerSettings);
+            var body = obj == null ? null : jsonSerializerSettings == null ? JsonConvert.SerializeObject(obj) : JsonConvert.SerializeObject(obj, jsonSerializerSettings);
 
             HttpResponseMessage responseMessage = await httpClient.PutAsync(Prefix + api, new StringContent(body, Encoding.UTF8, "application/json"), cancellationToken);
 
@@ -352,7 +350,7 @@ namespace Infra.Core.Network
                 string responseResult;
                 if (responseMessage.Content.Headers.ContentEncoding.Contains("gzip"))
                 {
-                    var cCon = await responseMessage.Content.ReadAsbyteArrayAsync();
+                    var cCon = await responseMessage.Content.ReadAsByteArrayAsync();
                     var compresser = new GzipCompresser();
                     responseResult = compresser.Decompress(cCon);
                 }
@@ -363,7 +361,7 @@ namespace Infra.Core.Network
                 var lenItem = responseMessage.Content.Headers.FirstOrDefault(h => h.Key.Equals("Content-Length", StringComparison.OrdinalIgnoreCase));
                 stringBuilder.AppendLine($"响应长度(字节)：{lenItem.Value?.FirstOrDefault()}");
                 Stopwatch stopwatch = Stopwatch.StartNew();
-                var responseResultobject = jsonSerializerSettings == null ? JsonConvert.Deserializeobject<T>(responseResult) : JsonConvert.Deserializeobject<T>(responseResult, jsonSerializerSettings);
+                var responseResultobject = jsonSerializerSettings == null ? JsonConvert.DeserializeObject<T>(responseResult) : JsonConvert.DeserializeObject<T>(responseResult, jsonSerializerSettings);
                 stopwatch.Stop();
                 stringBuilder.AppendLine($"反序列化耗时(毫秒)： {stopwatch.ElapsedMilliseconds.ToString()}");
                 using (var fs = File.Open(DateTime.Now.Ticks + ".txt", FileMode.OpenOrCreate))
@@ -387,7 +385,7 @@ namespace Infra.Core.Network
                 }
                 else if (responseMessage.StatusCode == HttpStatusCode.BadRequest)
                 {
-                    var err = JsonConvert.Deserializeobject<AppErr>(await responseMessage.Content.ReadAsStringAsync());
+                    var err = JsonConvert.DeserializeObject<AppErr>(await responseMessage.Content.ReadAsStringAsync());
                     throw new Exception(err?.detail);
                 }
                 else if (responseMessage.StatusCode == HttpStatusCode.Unauthorized)
@@ -405,9 +403,9 @@ namespace Infra.Core.Network
             }
         }
 
-        public async Task<T> HttpPutAsync<T>(string api, object object, JsonSerializerSettings jsonSerializerSettings = null, bool useResponseCompress = true) where T : class
+        public async Task<T> HttpPutAsync<T>(string api, object obj, JsonSerializerSettings jsonSerializerSettings = null, bool useResponseCompress = true) where T : class
         {
-            return await HttpPutAsync<T>(api, object, CancellationToken.None, jsonSerializerSettings, useResponseCompress);
+            return await HttpPutAsync<T>(api, obj, CancellationToken.None, jsonSerializerSettings, useResponseCompress);
         }
 
         public async Task HttpDeleteAsync(string api)
@@ -422,7 +420,7 @@ namespace Infra.Core.Network
                 }
                 else if (responseMessage.StatusCode == HttpStatusCode.BadRequest)
                 {
-                    var err = JsonConvert.Deserializeobject<AppErr>(await responseMessage.Content.ReadAsStringAsync());
+                    var err = JsonConvert.DeserializeObject<AppErr>(await responseMessage.Content.ReadAsStringAsync());
                     throw new Exception(err?.detail);
                 }
                 else if (responseMessage.StatusCode == HttpStatusCode.Unauthorized)
@@ -453,7 +451,7 @@ namespace Infra.Core.Network
                 }
                 else if (responseMessage.StatusCode == HttpStatusCode.BadRequest)
                 {
-                    var err = JsonConvert.Deserializeobject<AppErr>(await responseMessage.Content.ReadAsStringAsync());
+                    var err = JsonConvert.DeserializeObject<AppErr>(await responseMessage.Content.ReadAsStringAsync());
                     throw new Exception(err?.detail);
                 }
                 else if (responseMessage.StatusCode == HttpStatusCode.Unauthorized)
@@ -472,7 +470,7 @@ namespace Infra.Core.Network
             if (responseMessage.StatusCode == HttpStatusCode.OK && responseMessage.StatusCode != HttpStatusCode.NoContent)
             {
                 var responseResult = await responseMessage.Content.ReadAsStringAsync();
-                var responseResultobject = jsonSerializerSettings == null ? JsonConvert.Deserializeobject<T>(responseResult) : JsonConvert.Deserializeobject<T>(responseResult, jsonSerializerSettings);
+                var responseResultobject = jsonSerializerSettings == null ? JsonConvert.DeserializeObject<T>(responseResult) : JsonConvert.DeserializeObject<T>(responseResult, jsonSerializerSettings);
                 return responseResultobject;
             }
             return default(T);
@@ -505,7 +503,7 @@ namespace Infra.Core.Network
         //    }
         //    else if (responseMessage.StatusCode == HttpStatusCode.BadRequest)
         //    {
-        //        var err = JsonConvert.Deserializeobject<AppErr>(await responseMessage.Content.ReadAsStringAsync());
+        //        var err = JsonConvert.DeserializeObject<AppErr>(await responseMessage.Content.ReadAsStringAsync());
         //        throw new Exception(err?.detail);
         //    }
         //    else if (responseMessage.StatusCode == HttpStatusCode.Unauthorized)
@@ -548,7 +546,7 @@ namespace Infra.Core.Network
             }
             else if (responseMessage.StatusCode == HttpStatusCode.BadRequest)
             {
-                var err = JsonConvert.Deserializeobject<AppErr>(await responseMessage.Content.ReadAsStringAsync());
+                var err = JsonConvert.DeserializeObject<AppErr>(await responseMessage.Content.ReadAsStringAsync());
                 throw new Exception(err?.detail);
             }
             else if (responseMessage.StatusCode == HttpStatusCode.Unauthorized)
@@ -591,7 +589,7 @@ namespace Infra.Core.Network
                 string content;
                 if (responseMessage.Content.Headers.ContentEncoding.Contains("gzip"))
                 {
-                    var cCon = await responseMessage.Content.ReadAsbyteArrayAsync();
+                    var cCon = await responseMessage.Content.ReadAsByteArrayAsync();
                     var compresser = new GzipCompresser();
                     content = compresser.Decompress(cCon);
                 }
@@ -599,7 +597,7 @@ namespace Infra.Core.Network
                 {
                     content = await responseMessage.Content.ReadAsStringAsync();
                 }
-                var result = jsonSerializerSettings == null ? JsonConvert.Deserializeobject<T>(content) : JsonConvert.Deserializeobject<T>(content, jsonSerializerSettings);
+                var result = jsonSerializerSettings == null ? JsonConvert.DeserializeObject<T>(content) : JsonConvert.DeserializeObject<T>(content, jsonSerializerSettings);
                 return result;
 
             }
@@ -616,7 +614,7 @@ namespace Infra.Core.Network
                 }
                 else if (responseMessage.StatusCode == HttpStatusCode.BadRequest)
                 {
-                    var err = JsonConvert.Deserializeobject<AppErr>(await responseMessage.Content.ReadAsStringAsync());
+                    var err = JsonConvert.DeserializeObject<AppErr>(await responseMessage.Content.ReadAsStringAsync());
                     throw new Exception(err?.detail);
                 }
                 else if (responseMessage.StatusCode == HttpStatusCode.Unauthorized)
@@ -647,7 +645,7 @@ namespace Infra.Core.Network
             if (responseMessage.StatusCode == HttpStatusCode.OK || responseMessage.StatusCode == HttpStatusCode.Created)
             {
                 var content = responseMessage.Content.ReadAsStringAsync().Result;
-                var result = jsonSerializerSettings == null ? JsonConvert.Deserializeobject<T>(content) : JsonConvert.Deserializeobject<T>(content, jsonSerializerSettings);
+                var result = jsonSerializerSettings == null ? JsonConvert.DeserializeObject<T>(content) : JsonConvert.DeserializeObject<T>(content, jsonSerializerSettings);
                 return result;
 
             }
@@ -665,7 +663,7 @@ namespace Infra.Core.Network
                 else if (responseMessage.StatusCode == HttpStatusCode.BadRequest)
                 {
                     var content = responseMessage.Content.ReadAsStringAsync().Result;
-                    var err = JsonConvert.Deserializeobject<AppErr>(content);
+                    var err = JsonConvert.DeserializeObject<AppErr>(content);
                     throw new Exception(err?.detail);
                 }
                 else if (responseMessage.StatusCode == HttpStatusCode.Unauthorized)
@@ -691,7 +689,7 @@ namespace Infra.Core.Network
             if (httpResponse.StatusCode == HttpStatusCode.BadRequest)
             {
                 var content = await httpResponse.Content.ReadAsStringAsync();
-                err = JsonConvert.Deserializeobject<AppErr>(content)?.detail;
+                err = JsonConvert.DeserializeObject<AppErr>(content)?.detail;
             }
             else if (httpResponse.StatusCode == HttpStatusCode.Unauthorized)
             {
