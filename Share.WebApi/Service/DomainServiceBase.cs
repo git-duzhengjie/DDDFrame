@@ -4,6 +4,7 @@ using Infra.Core.Models;
 using Infra.EF.PG.Context;
 using Infra.EF.PG.Entities;
 using Infra.EF.PG.Service;
+using Infra.WebApi.Models;
 
 namespace Infra.WebApi.Service
 {
@@ -12,16 +13,21 @@ namespace Infra.WebApi.Service
         private readonly FrameDbContext frameDbContext;
         private readonly EntityFactory entityFactory;
         private readonly IDomainServiceContext domainServiceContext;
+        protected readonly LoginUser LoginUser;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="frameDbContext"></param>
-        public DomainServiceBase(FrameDbContext frameDbContext, EntityFactory entityFactory,IDomainServiceContext domainServiceContext)
+        public DomainServiceBase(FrameDbContext frameDbContext, 
+            EntityFactory entityFactory,
+            IDomainServiceContext domainServiceContext,
+            LoginUser loginUser)
         {
             this.frameDbContext = frameDbContext;
             this.entityFactory = entityFactory;
             this.domainServiceContext = domainServiceContext;
+            LoginUser = loginUser;
         }
         public int InsertOrUpdatePriority => 0;
 

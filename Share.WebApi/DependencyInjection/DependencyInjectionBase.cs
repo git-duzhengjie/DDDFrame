@@ -36,6 +36,7 @@ using UniversalRPC.Services;
 using Microsoft.EntityFrameworkCore;
 using Consul;
 using UniversalRPC;
+using Infra.WebApi.Models;
 
 namespace Infra.WebApi.DependInjection
 {
@@ -280,7 +281,10 @@ namespace Infra.WebApi.DependInjection
                 options.SetJsonSerializerOptions();
             });
             Services.AddControllers(options => options.Filters.Add(typeof(CustomExceptionFilterAttribute)))
-                .AddFrameJson((options) => { });
+                .AddFrameJson(options =>
+                {
+                    new FrameJsonMvcOptionsSetup().Configure(options);
+                });
 
             //参数验证返回信息格式调整
             Services.Configure<ApiBehaviorOptions>(options =>
@@ -312,6 +316,7 @@ namespace Infra.WebApi.DependInjection
         /// </summary>
         protected virtual void AddAuthentication()
         {
+            Services.AddScoped<LoginUser>();
             var jwtConfig = Configuration.GetJWTSection().Get<JwtConfig>();
 
             Services.AddAuthentication()
@@ -337,7 +342,9 @@ namespace Infra.WebApi.DependInjection
                     //在Token验证通过后调用
                     OnTokenValidated = context =>
                     {
-                        Console.WriteLine(context.Principal.);
+                        var userId = long.Parse(context.Principal.Claims.FirstOrDefault(x => x.Type.Contains(JwtRegisteredClaimNames.NameId)).Value);
+                        var loginUser= Services.BuildServiceProvider().GetService<LoginUser>();
+                        loginUser.Id=userId;
                         return Task.CompletedTask ;
                     }
                      ,

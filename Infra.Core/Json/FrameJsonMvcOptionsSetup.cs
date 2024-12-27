@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 
 namespace Infra.Core.Json
 {
-    internal sealed class FrameJsonMvcOptionsSetup : IConfigureOptions<MvcOptions>
+    public sealed class FrameJsonMvcOptionsSetup : IConfigureOptions<MvcOptions>
     {
         public FrameJsonMvcOptionsSetup() { 
         }

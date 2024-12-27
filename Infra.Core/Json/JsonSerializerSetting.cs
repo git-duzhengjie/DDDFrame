@@ -1,17 +1,18 @@
 ﻿using System.Text.Json;
-
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
 namespace Infra.Core.Json
 {
     public static class JsonSerializerSetting
     {
         public static JsonSerializerOptions JsonSerializerOptions => new JsonSerializerOptions
         {
-            WriteIndented = true,
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
         };
 
         public static void SetJsonSerializerOptions(this JsonSerializerOptions jsonSerializerSettings)
         {
-           jsonSerializerSettings.WriteIndented = true;
+            jsonSerializerSettings.Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
         }
     }
 }
