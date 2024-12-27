@@ -98,13 +98,16 @@ namespace System
         /// <param name="t2"></param>
         public static void SetValue<T>(this T t1,T t2)
         {
-            var properties=typeof(T).GetProperties();
-            foreach (var property in properties)
+            if (t1 != null&&t2!=null)
             {
-                if (property.CanWrite && property.CanRead)
+                var properties = typeof(T).GetProperties();
+                foreach (var property in properties)
                 {
-                    var value = property.GetValue(t2);
-                    property.SetValue(t1, value, null);
+                    if (property.CanWrite && property.CanRead)
+                    {
+                        var value = property.GetValue(t2);
+                        property.SetValue(t1, value);
+                    }
                 }
             }
         }

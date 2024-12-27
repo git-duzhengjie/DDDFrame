@@ -376,6 +376,21 @@ namespace System
         /// <param name="object">The object to act on.</param>
         /// <param name="methodName">Name of the method.</param>
         /// <param name="parameters">Options for controlling the operation.</param>
+        /// <returns>An object.</returns>
+        public static object InvokeMethod(this Type type, string methodName, params object[] parameters)
+        {
+            var method = type.GetMethod(methodName, parameters.Select(o => o.GetType()).ToArray());
+
+            return method?.Invoke(null, parameters);
+        }
+
+        /// <summary>
+        ///     An object extension method that executes the method on a different thread, and waits for the result.
+        /// </summary>
+        /// <typeparam name="T">Generic type parameter.</typeparam>
+        /// <param name="object">The object to act on.</param>
+        /// <param name="methodName">Name of the method.</param>
+        /// <param name="parameters">Options for controlling the operation.</param>
         /// <returns>A T.</returns>
         public static T InvokeMethod<T>( this object obj, string methodName, params object[] parameters)
         {

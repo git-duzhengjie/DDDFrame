@@ -64,6 +64,24 @@ namespace Infra.Core.Extensions
             return [.. result];
         }
 
+        public static (string,string)[] GetEnumTextValueList(this Type type)
+        {
+            var result = new List<(string,string)>();
+            if (type.IsEnum)
+            {
+                var fields = type.GetFields();
+                foreach (var field in fields)
+                {
+                    var customAttribute = field.GetCustomAttribute(typeof(NameAttribute), inherit: true) as NameAttribute;
+                    if (customAttribute != null)
+                    {
+                        result.Add((field.Name,customAttribute.Name));
+                    }
+                }
+            }
+            return [.. result];
+        }
+
         public static T? GetEnumValue<T>(this string name)
         {
             var type=typeof(T);

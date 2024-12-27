@@ -12,13 +12,10 @@ using Infra.WebApi.Configuration;
 using Infra.WebApi.DependencyInjection;
 using Infra.WebApi.Middleware;
 using Infra.Consul.Configuration;
-using Infra.WebApi.Extensions;
+using Infra.Core.Extensions;
 using Prometheus;
 using Prometheus.DotNetRuntime;
 using Infra.WebApi.Consts.RegistrationCenter;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using HealthChecks.UI.Client;
-using Microsoft.AspNetCore.Http;
 using Infra.Core.Abstract;
 
 namespace Microsoft.AspNetCore.Builder

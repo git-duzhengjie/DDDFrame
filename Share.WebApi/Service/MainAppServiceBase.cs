@@ -1,6 +1,9 @@
 ﻿using Infra.Core.Abstract;
 using Infra.Core.DTO;
+using Infra.Core.Extensions;
 using Infra.EF.PG.Service;
+using Infra.WebApi.DTOs;
+using System.Diagnostics;
 
 namespace Infra.WebApi.Service
 {
@@ -59,6 +62,20 @@ namespace Infra.WebApi.Service
                 result.AddRange(await domainService.Key.QueryAsync(queries));
             }
             return [.. result];
+        }
+
+        public EnumDTO[] GetEnums(string enumName)
+        {
+            var enumType = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(x=>x.GetExportedTypes())
+                .Where(x=>x.IsEnum)
+                .FirstOrDefault(x=>x.Name.EqualsIgnoreCase(enumName));
+            Debug.Assert(enumType!=null);
+            return enumType.GetEnumTextValueList().Select(x=>new EnumDTO
+            {
+                Value=x.Item1,
+                Text=x.Item2,
+            }).ToArray();
         }
     }
 }

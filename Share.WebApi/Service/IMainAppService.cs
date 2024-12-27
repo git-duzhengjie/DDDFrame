@@ -1,5 +1,6 @@
 ﻿using Infra.Core.Abstract;
 using Infra.Core.DTO;
+using Infra.WebApi.DTOs;
 
 namespace Infra.WebApi.Service
 {
@@ -28,5 +29,6 @@ namespace Infra.WebApi.Service
         /// <param name="pageQueryDTO"></param>
         /// <returns></returns>
         Task<IPagedList<IOutputDTO>> PageQueryAsync(IPageQueryDTO pageQueryDTO);
+        EnumDTO[] GetEnums(string enumName);
     }
 }

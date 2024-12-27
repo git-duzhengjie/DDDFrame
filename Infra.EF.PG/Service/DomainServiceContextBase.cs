@@ -7,10 +7,10 @@ namespace Infra.EF.PG.Service
     {
         private FrameDbContext frameDbContext;
         private IDbData dbData;
-        private List<(EntityBase,bool)> adds;
-        private List<EntityBase> removes;
-        private List<(EntityBase, bool)> updates;
-        private List<UpdateData> updateProperties;
+        private List<(EntityBase,bool)> adds=new List<(EntityBase, bool)>();
+        private List<EntityBase> removes=new List<EntityBase>();
+        private List<(EntityBase, bool)> updates=new List<(EntityBase, bool)>();
+        private List<UpdateData> updateProperties=new List<UpdateData>();
 
         public DomainServiceContextBase(FrameDbContext frameDbContext,IDbData dbData) { 
             this.frameDbContext=frameDbContext;

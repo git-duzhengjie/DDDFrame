@@ -1,5 +1,7 @@
 ﻿
 
+using Polly.Caching;
+
 namespace Microsoft.AspNetCore.Authorization
 {
     /// <summary>
@@ -10,7 +12,7 @@ namespace Microsoft.AspNetCore.Authorization
 
         protected override Task<bool> CheckUserPermissions(Int64 userId, IEnumerable<String> codes, String validationVersion)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(true);
         }
     }
 }

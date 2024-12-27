@@ -30,6 +30,7 @@ namespace Infra.Consul.Registrar
                     HTTP=$"http://{consulConfig.IP}:{consulConfig.Port}{consulConfig.HealthCheckUrl}",
                     Timeout=TimeSpan.FromSeconds(consulConfig.Timeout),
                 },
+                
             };
             await client.Agent.ServiceRegister(registration);
         }

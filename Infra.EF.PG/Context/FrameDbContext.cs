@@ -1,4 +1,5 @@
 ﻿using Infra.Core.Abstract;
+using Infra.Core.Extensions;
 using Infra.Core.Extensions.Entities;
 using Infra.Core.Models;
 using Infra.EF.PG.Entities;
@@ -11,15 +12,18 @@ namespace Infra.EF.PG.Context
 {
     public class FrameDbContext : DbContext
     {
-        public FrameDbContext(DbContextOptions dbContextOptions) : base(dbContextOptions)
+        private readonly IServiceInfo serviceInfo;
+        private readonly Assembly assembly;
+        public FrameDbContext(DbContextOptions dbContextOptions, IServiceInfo serviceInfo) : base(dbContextOptions)
         {
-            Console.WriteLine("sdfsdfsdf");
+            this.serviceInfo = serviceInfo;
+            this.assembly=serviceInfo.GetDomainAssembly();
         }
         private void IgnoreTypes(ModelBuilder modelBuilder)
         {
 
-            var ignoreTypes=GetType().Assembly.GetTypes()
-                .Where(x => x.IsAssignableFrom(typeof(EntityBase)))
+            var ignoreTypes=assembly.GetExportedTypes()
+                .Where(x => x.IsAssignableTo(typeof(EntityBase)))
                 .Where(x=>x.IsAbstract||x.GetCustomAttribute<NotMappedAttribute>()!=null)
                 .ToArray();
             ignoreTypes.ForEach(x=>modelBuilder.Ignore(x));
@@ -29,15 +33,15 @@ namespace Infra.EF.PG.Context
             base.OnModelCreating(modelBuilder);
             
             IgnoreTypes(modelBuilder);
-            var entities = GetType().Assembly.GetTypes().Where(x => x.IsAssignableFrom(typeof(EntityBase)));
+            var entities = this.assembly.GetExportedTypes()
+                .Where(x => x.IsAssignableTo(typeof(EntityBase)))
+                .Where(x=>x.IsNotAbstractClass(true))
+                .Where(x=>x.IsPublic)
+                .ToArray();
             foreach (var info in entities)
             {
                 modelBuilder.Entity(info);
             }
-            
-            //从程序集加载fuluentapi加载配置文件
-            var assembly = GetType().Assembly;
-            modelBuilder.ApplyConfigurationsFromAssembly(assembly);
 
             //这里做两件事情
             //1、统一把表名，列名转换成小写。

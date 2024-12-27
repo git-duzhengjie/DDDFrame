@@ -2,7 +2,7 @@
 {
     public abstract class InputDTOBase : FrameObjectBase, IInputDTO
     {
-        public bool IsNew { get; set; }
+        public bool IsNew { get; set; } = true;
 
         /// <summary>
         /// 

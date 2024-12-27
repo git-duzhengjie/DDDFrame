@@ -1,8 +1,7 @@
 ﻿using Infra.Core.Abstract;
-using Infra.WebApi;
 using System.Reflection;
 
-namespace Infra.WebApi.Extensions
+namespace Infra.Core.Extensions
 {
     /// <summary>
     /// 服务扩展
@@ -13,6 +12,7 @@ namespace Infra.WebApi.Extensions
         private static Assembly webApiAssembly;
         private static Assembly appAssembly;
         private static Assembly domainAssembly;
+        private static Assembly migrationAssembly;
 
         /// <summary>
         /// 获取WebApiAssembly程序集
@@ -74,11 +74,25 @@ namespace Infra.WebApi.Extensions
             return domainAssembly;
         }
 
-        private static string GetDomainFileName(string domainName)
+        /// <summary>
+        /// 获取Migration程序集
+        /// </summary>
+        /// <returns></returns>
+        public static Assembly GetMigrationAssembly(this IServiceInfo serviceInfo)
         {
-            var currentDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            var files = Directory.GetFiles(currentDirectory);
-            return files.FirstOrDefault(x => Path.GetFileNameWithoutExtension(x)==domainName);
+            if (migrationAssembly is null)
+            {
+                lock (lockobject)
+                {
+                    if (migrationAssembly is null)
+                    {
+                        var domainAssemblyName = serviceInfo.AssemblyName + ".Migration";
+                        var domainAssemblyFullName = serviceInfo.AssemblyFullName.Replace(serviceInfo.AssemblyName, domainAssemblyName);
+                        migrationAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x => x.FullName.EqualsIgnoreCase(domainAssemblyFullName));
+                    }
+                }
+            }
+            return migrationAssembly;
         }
     }
 }

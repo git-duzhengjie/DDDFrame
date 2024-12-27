@@ -46,10 +46,13 @@ namespace Infra.WebApi.Service
                     else
                     {
                         var exist = await frameDbContext.GetValueAsync(input.Id, entity.GetType(), true) as EntityBase;
-                        exist.SetValue(entity);
-                        domainServiceContext.Update(exist,false);
+                        if (exist != null)
+                        {
+                            exist.SetValue(entity);
+                            domainServiceContext.Update(exist, false);
+                        }
                     }
-                    result.Changes.Add(entityFactory.GetOutput(entity));
+                    result.Changes.Add(entity.Output);
                 }
             }
             return result;

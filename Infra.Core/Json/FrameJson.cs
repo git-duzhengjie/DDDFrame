@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using UniversalRPC.Serialization;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace Infra.Core.Json
 {
     public class FrameJson:IOutputFormatter,IInputFormatter,ISerialize
@@ -46,17 +47,16 @@ namespace Infra.Core.Json
         }
 
         public static T Desialize<T>(string json,JsonSerializerOptions serializerOptions=null)
-            where T :class
         {
             var obj= JsonSerializer.Deserialize<dynamic>(json,serializerOptions);
-            if (obj.ObjectName == null)
+            if (obj.GetType().GetProperty("ObjectType") == null)
             {
-                return obj as T;
+                return (T)obj;
             }
             if(objectTypeMap.TryGetValue((int)obj.ObjectType,out var type))
             {
                 var convertType = typeof(DynamicConvert<>).MakeGenericType(type);
-                return convertType.InvokeMethod("GetValue", [obj]) as T;
+                return (T)convertType.InvokeMethod("GetValue", [obj]);
             }
             throw new Exception($"没有找到类型{obj.ObjectName}");
         }
@@ -114,7 +114,7 @@ namespace Infra.Core.Json
 
         public T Deserialize<T>(string str)
         {
-            return JsonSerializer.Deserialize<T>(str, JsonSerializerSetting.JsonSerializerOptions);
+            return Desialize<T>(str, JsonSerializerSetting.JsonSerializerOptions);
         }
     }
 

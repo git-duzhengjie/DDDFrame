@@ -16,7 +16,7 @@ using System.Configuration;
 using ConfigurationSection = System.Configuration.ConfigurationSection;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using LiteX.HealthChecks.Redis;
-using Infra.WebApi.Extensions;
+using Infra.Core.Extensions;
 using Infra.Consul.Configuration;
 using Infra.WebApi.Extentions;
 using UniversalRPC.Extensions;
@@ -34,6 +34,8 @@ using Microsoft.AspNetCore.Components;
 using Infra.Core.Attributes;
 using UniversalRPC.Services;
 using Microsoft.EntityFrameworkCore;
+using Consul;
+using UniversalRPC;
 
 namespace Infra.WebApi.DependInjection
 {
@@ -111,10 +113,18 @@ namespace Infra.WebApi.DependInjection
             var config= Configuration.GetPgsqlSection().Get<PgsqlConfig>();
             Services.AddDbContext<FrameDbContext>(option =>
             {
-                option.UseNpgsql(config.ConnectionString);
+                option.UseNpgsql(config.ConnectionString, b =>
+                {
+                    b.MigrationsAssembly(GetMigrationAssembName());
+                });
             });
             Services.AddScoped<EntityFactory>();
             Services.AddScoped<IDbData, DbData>();
+        }
+
+        private string? GetMigrationAssembName()
+        {
+            return ServiceInfo.AssemblyName + ".Migrations";
         }
 
         private void AddRPCServices()
@@ -327,6 +337,7 @@ namespace Infra.WebApi.DependInjection
                     //在Token验证通过后调用
                     OnTokenValidated = context =>
                     {
+                        Console.WriteLine(context.Principal.);
                         return Task.CompletedTask ;
                     }
                      ,
