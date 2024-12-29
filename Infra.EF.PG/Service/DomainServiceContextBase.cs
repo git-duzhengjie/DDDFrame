@@ -75,9 +75,11 @@ namespace Infra.EF.PG.Service
                 }
                 await transaction.CommitAsync();
             }
-            catch
+            catch(Exception ex)
             {
+                Console.WriteLine(ex);
                 await transaction.RollbackAsync();
+                throw;
             }
             
         }

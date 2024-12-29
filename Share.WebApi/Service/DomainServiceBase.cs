@@ -5,6 +5,7 @@ using Infra.EF.PG.Context;
 using Infra.EF.PG.Entities;
 using Infra.EF.PG.Service;
 using Infra.WebApi.Models;
+using System.Diagnostics;
 
 namespace Infra.WebApi.Service
 {
@@ -43,20 +44,20 @@ namespace Infra.WebApi.Service
                 var iEntity = entityFactory.GetEntity(input);
                 if (iEntity is EntityBase entity)
                 {
-                    entity.Build();
-                    entity.Build(domainServiceContext);
                     if (input.IsNew)
                     {
+                        entity.Build();
+                        entity.Build(domainServiceContext);
                         domainServiceContext.Add(entity,false);
                     }
                     else
                     {
-                        var exist = await frameDbContext.GetValueAsync(input.Id, entity.GetType(), true) as EntityBase;
-                        if (exist != null)
-                        {
-                            exist.SetValue(entity);
-                            domainServiceContext.Update(exist, false);
-                        }
+                        var exist = await frameDbContext.GetValueAsync(input.Id, entity.GetType(), false) as EntityBase;
+                        Debug.Assert(exist!=null);
+                        exist.SetValue(entity);
+                        exist.Build();
+                        exist.Build(domainServiceContext);
+                        domainServiceContext.Update(exist, false);
                     }
                     result.Changes.Add(entity.Output);
                 }

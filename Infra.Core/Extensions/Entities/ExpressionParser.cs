@@ -40,9 +40,9 @@ namespace Infra.Core.Extensions.Entities
 
         private Expression ParseCondition(Condition condition)
         {
-            Expression key = Expression.Property(Parameter, condition.Key);
+            Expression key = ToKey(condition.Key,out var originType);
             //通过Tuple元组，实现Sql参数化。
-            Expression value = ToTuple(condition.Value, key.Type);
+            Expression value = ToValue(condition.Value, originType);
 
             switch (condition.QuerySymbol)
             {
@@ -51,10 +51,10 @@ namespace Infra.Core.Extensions.Entities
                     Expression result=null;
                     foreach(var v in values)
                     {
-                        var ve = ToTuple(v,key.Type);
+                        var ve = ToValue(v,key.Type);
                         if (result == null)
                         {
-                            result = Expression.Call(key, typeof(string).GetMethod("Contains", new Type[] { typeof(string) }), ve);
+                            result = Expression.Call(key, typeof(string).GetMethod("Contains", [typeof(string)]), ve);
                         }
                         else
                         {
@@ -83,9 +83,20 @@ namespace Infra.Core.Extensions.Entities
             }
         }
 
+        private Expression ToKey(string key,out Type originType)
+        {
+            var keyExpression= Expression.Property(Parameter, key);
+            originType = keyExpression.Type;
+            if (keyExpression.Type.IsEnum)
+            {
+                return Expression.Convert(keyExpression, typeof(int));
+            }
+            return keyExpression;
+        }
+
         private Expression ParserBetween(Condition conditions)
         {
-            Expression key = Expression.Property(Parameter, conditions.Key);
+            Expression key = ToKey(conditions.Key,out var originType);
             var valueArr = conditions.Value.ToString().Split(',');
             if (valueArr.Length != 2)
             {
@@ -96,19 +107,19 @@ namespace Infra.Core.Extensions.Entities
             if (double.TryParse(valueArr[0], out double v1)
                 && double.TryParse(valueArr[1], out double v2))
             {
-                Expression startValue = ToTuple(v1, typeof(double));
-                Expression start = Expression.GreaterThanOrEqual(key, Expression.Convert(startValue, key.Type));
-                Expression endValue = ToTuple(v2, typeof(double));
-                Expression end = Expression.LessThanOrEqual(key, Expression.Convert(endValue, key.Type));
+                Expression startValue = ToValue(v1, typeof(double));
+                Expression start = Expression.GreaterThanOrEqual(key, startValue);
+                Expression endValue = ToValue(v2, typeof(double));
+                Expression end = Expression.LessThanOrEqual(key, endValue);
                 return Expression.AndAlso(start, end);
             }
             else if (DateTime.TryParse(valueArr[0], out DateTime v3)
                 && DateTime.TryParse(valueArr[1], out DateTime v4))
             {
-                Expression startValue = ToTuple(v3, typeof(DateTime));
-                Expression start = Expression.GreaterThanOrEqual(key, Expression.Convert(startValue, key.Type));
-                Expression endValue = ToTuple(v4, typeof(DateTime));
-                Expression end = Expression.LessThanOrEqual(key, Expression.Convert(endValue, key.Type));
+                Expression startValue = ToValue(v3, typeof(DateTime));
+                Expression start = Expression.GreaterThanOrEqual(key, startValue);
+                Expression endValue = ToValue(v4, typeof(DateTime));
+                Expression end = Expression.LessThanOrEqual(key, endValue);
                 return Expression.AndAlso(start, end);
             }
             else
@@ -119,24 +130,39 @@ namespace Infra.Core.Extensions.Entities
 
         private Expression ParserIn(Condition conditions)
         {
-            Expression key = Expression.Property(Parameter, conditions.Key);
+            Expression key = ToKey(conditions.Key,out var originType);
             var valueArr = conditions.Value.ToString().Split(',');
             Expression expression = Expression.Constant(false, typeof(bool));
             foreach (var itemVal in valueArr)
             {
-                Expression value = ToTuple(itemVal, typeof(string));
-                Expression right = Expression.Equal(key, Expression.Convert(value, key.Type));
+                Expression value = ToValue(itemVal, typeof(string));
+                Expression right = Expression.Equal(key, value);
                 expression = Expression.Or(expression, right);
             }
             return expression;
         }
 
-        private Expression ToTuple(object value, Type type)
+        private Expression ToValue(object value, Type type)
         {
-            var tuple = Tuple.Create(value);
-            return Expression.Convert(
-                 Expression.Property(Expression.Constant(tuple), nameof(tuple.Item1))
-                 , type);
+            if (type.IsEnum)
+            {
+                return Expression.Constant((int)value, typeof(int));
+            }
+            return Expression.Constant(value, type);
+            //var tuple = Tuple.Create(value);
+            //if (type.IsEnum)
+            //{
+            //    return Expression.Constant(Enum.Parse(type,value))
+            //}
+            //if (type.IsEnum)
+            //{
+            //    return Expression.Convert(
+            //     Expression.Property(Expression.Constant(tuple), nameof(tuple.Item1))
+            //     , type);
+            //}
+            //return Expression.Convert(
+            //     Expression.Property(Expression.Constant(tuple), nameof(tuple.Item1))
+            //     , type);
         }
 
     }

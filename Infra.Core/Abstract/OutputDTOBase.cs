@@ -23,6 +23,6 @@ namespace Infra.Core.Abstract
         /// </summary>
         public DateTime LastTime { get; set; }
 
-        public abstract IInputDTO Input { get; }
+        public abstract IInputDTO GetInput();
     }
 }

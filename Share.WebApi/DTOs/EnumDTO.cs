@@ -11,8 +11,13 @@
         public string Text { get; set; }
 
         /// <summary>
+        /// 枚举变量名
+        /// </summary>
+        public string Label { get; set; }
+
+        /// <summary>
         /// 枚举值
         /// </summary>
-        public string Value { get; set; }
+        public int Value { get; set; }
     }
 }

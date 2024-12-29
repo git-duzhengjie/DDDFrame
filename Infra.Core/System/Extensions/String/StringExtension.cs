@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace System
 {
@@ -405,6 +406,12 @@ namespace System
                 return result;
             else
                 return null;
+        }
+
+        public static string ToUTF8(this string @this)
+        {
+            byte[] bytes = Encoding.Default.GetBytes(@this);
+            return Encoding.UTF8.GetString(bytes);
         }
     }
 }

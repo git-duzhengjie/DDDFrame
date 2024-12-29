@@ -73,8 +73,9 @@ namespace Infra.WebApi.Service
             Debug.Assert(enumType!=null);
             return enumType.GetEnumTextValueList().Select(x=>new EnumDTO
             {
-                Value=x.Item1,
-                Text=x.Item2,
+                Value=(int)x.Item1,
+                Label=x.Item2,
+                Text=x.Item3,
             }).ToArray();
         }
     }

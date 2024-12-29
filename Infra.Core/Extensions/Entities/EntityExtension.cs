@@ -54,6 +54,10 @@ namespace Infra.Core.Extensions.Entities
                 if (property.GetValue(t) != null && property.GetValue(t).ToString().IsNotNullOrEmpty())
                 {
                     var attribute = Attribute.GetCustomAttribute(property, typeof(ConditionAttribute)) as ConditionAttribute;
+                    if (attribute == null)
+                    {
+                        continue;
+                    }
                     ConditionSymbol symbol=attribute.Name;
                     if (symbol.Equals(ConditionSymbol.NotMapped))
                         continue;

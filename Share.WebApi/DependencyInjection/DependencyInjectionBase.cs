@@ -111,6 +111,8 @@ namespace Infra.WebApi.DependInjection
 
         private void AddDbContext()
         {
+            //pgsql默认只支持utc时间
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             var config= Configuration.GetPgsqlSection().Get<PgsqlConfig>();
             Services.AddDbContext<FrameDbContext>(option =>
             {
@@ -342,8 +344,10 @@ namespace Infra.WebApi.DependInjection
                     //在Token验证通过后调用
                     OnTokenValidated = context =>
                     {
-                        var userId = long.Parse(context.Principal.Claims.FirstOrDefault(x => x.Type.Contains(JwtRegisteredClaimNames.NameId)).Value);
-                        var loginUser= Services.BuildServiceProvider().GetService<LoginUser>();
+                        var userId = long.Parse(context.Principal.Claims
+                            .FirstOrDefault(x => x.Type== "UserId")
+                            .Value);
+                        var loginUser= context.HttpContext.RequestServices.GetService<LoginUser>();
                         loginUser.Id=userId;
                         return Task.CompletedTask ;
                     }

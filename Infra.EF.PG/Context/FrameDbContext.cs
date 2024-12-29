@@ -86,15 +86,21 @@ namespace Infra.EF.PG.Context
         public async Task<object[]> QueryAsync(IQueryDTO queryDTO,Type queryType)
         {
             var frameDbType = typeof(FrameDbContextType<>).MakeGenericType(queryType);
-            var task = frameDbType.InvokeMethod("QueryAsync", [queryDTO, this]) as Task<object[]>;
-            return await task;
+            return await Task.Run<object[]>(() =>
+            {
+                var result= frameDbType.InvokeMethod("Query", [queryDTO, this]);
+                return result as object[];
+            });
         }
 
         public async Task<IPagedList<object>> PageQueryAsync(IPageQueryDTO queryDTO, Type queryType)
         {
             var frameDbType = typeof(FrameDbContextType<>).MakeGenericType(queryType);
-            var task = frameDbType.InvokeMethod("PageQueryAsync", [queryDTO, this]) as Task<IPagedList<object>>;
-            return await task;
+            return await Task.Run<IPagedList<object>>(() =>
+            {
+                var result= frameDbType.InvokeMethod("PageQuery", [queryDTO, this]);
+                return result as IPagedList<object>;
+            });
         }
     }
 

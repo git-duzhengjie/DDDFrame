@@ -50,15 +50,8 @@ namespace Infra.EF.PG.Service
         /// <returns></returns>
         public static string GetJson(object obj)
         {
-            if(obj is IObject ib)
-            {
-                return FrameJson.Serialize(ib, JsonSerializerSetting.JsonSerializerOptions);
-            }
-            else
-            {
-                return System.Text.Json.JsonSerializer.Serialize(obj);
-            }
-            
+            return System.Text.Json.JsonSerializer.Serialize(obj);
+
         }
         /// <summary>
         /// 从数据库删除
@@ -67,7 +60,7 @@ namespace Infra.EF.PG.Service
         public async Task DeleteAsync(EntityBase entity)
         {
             var tableName = GetTableName(entity);
-            await _lougeDbContext.Database.ExecuteSqlRawAsync($"delete from {tableName} where id={entity.Id}");
+            await _lougeDbContext.Database.ExecuteSqlRawAsync($"delete from {0} where id={1}",tableName,entity.Id);
         }
 
         /// <summary>
@@ -222,7 +215,8 @@ namespace Infra.EF.PG.Service
                     });
                     var insertValue = ",".Join(insertArray);
                     var sql = $"insert into {navigationTable.TableName}({navigationTable.Key}) values{insertValue} ON CONFLICT({navigationTable.Key}) DO NOTHING";
-                    await _lougeDbContext.Database.ExecuteSqlRawAsync($@"delete from {navigationTable.TableName} where {entity.GetType().Name.ToLower()}sid={entity.Id};");
+                    var sqlRaw = $@"delete from {navigationTable.TableName} where {entity.GetType().Name.ToLower()}sid={entity.Id};";
+                    await _lougeDbContext.Database.ExecuteSqlRawAsync(sqlRaw);
                     await _lougeDbContext.Database.ExecuteSqlRawAsync(sql, navigationTable.Values.SelectMany(x => x).ToArray());
 
                 }
@@ -472,6 +466,8 @@ namespace Infra.EF.PG.Service
                     return "\"window\"";
                 case "column":
                     return "\"column\"";
+                case "user":
+                    return "\"user\"";
                 default:
                     return tableName;
             }

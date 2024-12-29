@@ -55,14 +55,8 @@ namespace Infra.Core.Json
                                 result.Add(ParseObjectWithType(geType,element));
                             }
                         }
-                        if (modelType.IsArray)
-                        {
-                            return result.ToArray();
-                        }
-                        else
-                        {
-                            return result;
-                        }
+                        var r = ConvertToType(result, geType, modelType.IsArray);
+                        return r;
                     default:
                         return JsonElementToValue(jValue, modelType);
                 }
@@ -76,30 +70,40 @@ namespace Infra.Core.Json
                     case JsonValueKind.Array:
                         var result = new List<object>();
                         var count = jValue.GetArrayLength();
-                        var geType = modelType.GetGenericArguments()[0];
+                        var geType = modelType.GetGenericArguments().FirstOrDefault()??modelType.GetElementType();
                         foreach (var element in jValue.EnumerateArray())
                         {
-                            if (geType.IsAbstract)
+                            if (geType.IsValueType)
                             {
-                                result.Add(ParseObjectWithoutType(element, geType));
+                                result.Add(JsonElementToValue(element,geType));
+                            }else if (geType == typeof(string))
+                            {
+                                result.Add(element.GetString());
                             }
                             else
                             {
-                                result.Add(ParseObjectWithType(geType, element));
+                                if (geType.IsAbstract)
+                                {
+                                    result.Add(ParseObjectWithoutType(element, geType));
+                                }
+                                else
+                                {
+                                    result.Add(ParseObjectWithType(geType, element));
+                                }
                             }
                         }
-                        if (modelType.IsArray)
-                        {
-                            return result.ToArray();
-                        }
-                        else
-                        {
-                            return result;
-                        }
+                        var r = ConvertToType(result,geType,modelType.IsArray);
+                        return r;
                     default:
                         return JsonElementToValue(jValue,modelType);
                 }
             }
+        }
+
+        private object ConvertToType(List<object> result, Type geType, bool isArray)
+        {
+            var convertType = typeof(ListTypeConverter<>).MakeGenericType(geType);
+            return convertType.InvokeMethod("Convert",result,isArray);
         }
 
         private object ParseObjectWithType(Type type, JsonElement jValue)
@@ -157,10 +161,27 @@ namespace Infra.Core.Json
 
         private object? JsonElementToValue(JsonElement value, Type propertyType)
         {
-            bool needEnumParse = (propertyType.IsEnum && !int.TryParse(value.ToString(), out _));
-            return  needEnumParse?
-                Enum.Parse(propertyType, value.ToString()):
-                value.Deserialize(propertyType);
+            if (value.ValueKind == JsonValueKind.String && propertyType != typeof(string))
+            {
+                if (propertyType.IsEnum)
+                {
+                    return Enum.Parse(propertyType, value.GetString());
+                }else if (propertyType==typeof(int))
+                {
+                    return int.Parse(value.GetString());
+                }else if (propertyType == typeof(float))
+                {
+                    return float.Parse(value.GetString());
+                }else if (propertyType == typeof(double))
+                {
+                    return double.Parse(value.GetString());
+                }
+            }
+            if (propertyType == typeof(string))
+            {
+                return value.GetString();
+            }
+            return value.Deserialize(propertyType);
         }
 
         private static bool TryGetValue(string name, JsonElement je, out JsonElement value)

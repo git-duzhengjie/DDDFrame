@@ -64,9 +64,27 @@ namespace Infra.Core.Extensions
             return [.. result];
         }
 
-        public static (string,string)[] GetEnumTextValueList(this Type type)
+        public static string[] GetEnumAttributeNameList(this Type type)
         {
-            var result = new List<(string,string)>();
+            var result = new List<string>();
+            if (type.IsEnum)
+            {
+                var fields = type.GetFields();
+                foreach (var field in fields)
+                {
+                    var customAttribute = field.GetCustomAttribute<NameAttribute>(inherit: true);
+                    if (customAttribute != null)
+                    {
+                        result.Add(customAttribute.Name);
+                    }
+                }
+            }
+            return [.. result];
+        }
+
+        public static (object,string,string)[] GetEnumTextValueList(this Type type)
+        {
+            var result = new List<(object,string,string)>();
             if (type.IsEnum)
             {
                 var fields = type.GetFields();
@@ -75,7 +93,7 @@ namespace Infra.Core.Extensions
                     var customAttribute = field.GetCustomAttribute(typeof(NameAttribute), inherit: true) as NameAttribute;
                     if (customAttribute != null)
                     {
-                        result.Add((field.Name,customAttribute.Name));
+                        result.Add((Enum.Parse(type,field.Name),field.Name, customAttribute.Name));
                     }
                 }
             }

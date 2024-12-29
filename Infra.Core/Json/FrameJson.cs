@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Net.Http;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
@@ -8,7 +9,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json.Serialization;
 using UniversalRPC.Serialization;
+using static System.Text.Encoding;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace Infra.Core.Json
 {
@@ -19,6 +22,7 @@ namespace Infra.Core.Json
 
         public FrameJson()
         {
+            RegisterProvider(CodePagesEncodingProvider.Instance);
             if (objectTypeMap == null)
             {
                 objectTypeMap = new Dictionary<string, Type?>();
@@ -70,7 +74,10 @@ namespace Infra.Core.Json
 
         public static object Desialize(string json, Type modelType, JsonSerializerOptions serializerOptions = null)
         {
-
+            if (json.IsNullOrEmpty())
+            {
+                return json;
+            }
             if (!json.Contains("ObjectName") && !json.Contains("$type"))
             {
                 return JsonSerializer.Deserialize(json,modelType, serializerOptions);
@@ -90,11 +97,12 @@ namespace Infra.Core.Json
         {
             ArgumentNullException.ThrowIfNull(context);
             var jsonOptions = context.HttpContext.RequestServices.GetRequiredService<IOptions<JsonSerializerOptions>>().Value;
-
             var response = context.HttpContext.Response;
-
             var value = context.Object;
-            var content = JsonSerializer.Serialize(value, jsonOptions);
+            var content = Newtonsoft.Json.JsonConvert.SerializeObject(value,new Newtonsoft.Json.JsonSerializerSettings
+            {
+                ContractResolver=new CamelCasePropertyNamesContractResolver(),
+            });
             await response.WriteAsync(content);
         }
 

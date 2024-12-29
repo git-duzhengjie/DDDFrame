@@ -100,7 +100,7 @@ namespace System
         {
             if (t1 != null&&t2!=null)
             {
-                var properties = typeof(T).GetProperties();
+                var properties = t1.GetType().GetProperties();
                 foreach (var property in properties)
                 {
                     if (property.CanWrite && property.CanRead)

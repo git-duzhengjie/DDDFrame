@@ -5,7 +5,7 @@
         /// <summary>
         /// 输入对象
         /// </summary>
-        public IInputDTO Input { get; }
+        public IInputDTO GetInput();
 
         /// <summary>
         /// 唯一id
