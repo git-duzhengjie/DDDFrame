@@ -22,6 +22,11 @@ namespace Infra.Core.Models
         public object Value { get; set; }
 
         /// <summary>
+        /// 是否参加或运算
+        /// </summary>
+        public bool Or { get; set; }
+
+        /// <summary>
         /// 
         /// </summary>
         public ConditionSymbol QuerySymbol { get; set; }

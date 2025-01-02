@@ -3,6 +3,7 @@ using Infra.Core.Extensions.Entities;
 using Infra.Core.Models;
 using Infra.EF.PG.Entities;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Infra.EF.PG.Context
 {
@@ -20,9 +21,25 @@ namespace Infra.EF.PG.Context
             }
         }
 
-        public static object[] Query(IQueryDTO queryDTO, FrameDbContext frameDbContext)
+        public static object[] Query(IQueryDTO query, FrameDbContext frameDbContext)
         {
-            return frameDbContext.Set<T>().AsNoTracking().Where(queryDTO.GetExpressionFilter<T>()).ToArray();
+            var querable = frameDbContext.Set<T>().AsNoTracking().Where(query.GetExpressionFilter<T>());
+            if (query.Order.IsNotNullOrEmpty())
+            {
+                if (query.OrderDesc)
+                {
+                    querable = querable.OrderByDescending(query.Order);
+                }
+                else
+                {
+                    querable = querable.OrderBy(query.Order);
+                }
+            }
+            else
+            {
+                querable = querable.OrderByDescending(typeof(T).Key());
+            }
+            return querable.ToArray();
         }
 
         public static IPagedList<object> PageQuery(IPageQueryDTO query, FrameDbContext frameDbContext)

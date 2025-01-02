@@ -1,4 +1,5 @@
 ﻿using Infra.Core.Abstract;
+using Infra.Core.Attributes;
 using Infra.EF.PG.Service;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -17,6 +18,7 @@ namespace Infra.EF.PG.Entities
         /// <summary>
         /// 创建时间
         /// </summary>
+        [NotSet]
         public DateTime CreateTime { get; set; }
 
         /// <summary>

@@ -11,9 +11,9 @@ namespace Infra.WebApi.Service
 {
     public abstract class DomainServiceBase:IDomainService
     {
-        private readonly FrameDbContext frameDbContext;
-        private readonly EntityFactory entityFactory;
-        private readonly IDomainServiceContext domainServiceContext;
+        protected readonly FrameDbContext FrameDbContext;
+        protected readonly EntityFactory EntityFactory;
+        protected readonly IDomainServiceContext DomainServiceContext;
         protected readonly LoginUser LoginUser;
 
         /// <summary>
@@ -25,9 +25,9 @@ namespace Infra.WebApi.Service
             IDomainServiceContext domainServiceContext,
             LoginUser loginUser)
         {
-            this.frameDbContext = frameDbContext;
-            this.entityFactory = entityFactory;
-            this.domainServiceContext = domainServiceContext;
+            FrameDbContext = frameDbContext;
+            EntityFactory = entityFactory;
+            DomainServiceContext = domainServiceContext;
             LoginUser = loginUser;
         }
         public int InsertOrUpdatePriority => 0;
@@ -41,23 +41,23 @@ namespace Infra.WebApi.Service
             var result = new FrameChangeOutputDTO();
             foreach (var input in inputs)
             {
-                var iEntity = entityFactory.GetEntity(input);
+                var iEntity = EntityFactory.GetEntity(input);
                 if (iEntity is EntityBase entity)
                 {
                     if (input.IsNew)
                     {
                         entity.Build();
-                        entity.Build(domainServiceContext);
-                        domainServiceContext.Add(entity,false);
+                        entity.Build(DomainServiceContext);
+                        DomainServiceContext.Add(entity,false);
                     }
                     else
                     {
-                        var exist = await frameDbContext.GetValueAsync(input.Id, entity.GetType(), false) as EntityBase;
+                        var exist = await FrameDbContext.GetValueAsync(input.Id, entity.GetType(), false) as EntityBase;
                         Debug.Assert(exist!=null);
                         exist.SetValue(entity);
                         exist.Build();
-                        exist.Build(domainServiceContext);
-                        domainServiceContext.Update(exist, false);
+                        exist.Build(DomainServiceContext);
+                        DomainServiceContext.Update(exist, false);
                     }
                     result.Changes.Add(entity.Output);
                 }
@@ -67,8 +67,8 @@ namespace Infra.WebApi.Service
 
         public virtual async Task<IPagedList<IOutputDTO>> PageQueryAsync(IPageQueryDTO pageQueryDTO)
         {
-            var entityType = entityFactory.GetEntityType(pageQueryDTO.ObjectType);
-            var data = await frameDbContext.PageQueryAsync(pageQueryDTO, entityType);
+            var entityType = EntityFactory.GetEntityType(pageQueryDTO.ObjectType);
+            var data = await FrameDbContext.PageQueryAsync(pageQueryDTO, entityType);
             return new PagedList<IOutputDTO>
             {
                 DataList = data.DataList.OfType<IEntity>().Select(x => x.Output).ToList(),
@@ -84,8 +84,8 @@ namespace Infra.WebApi.Service
             var result=new List<IOutputDTO>();
             foreach(var queryDTO in queryDTOs)
             {
-                var entityType = entityFactory.GetEntityType(queryDTO.ObjectType);
-                var data = (await frameDbContext.QueryAsync(queryDTO, entityType)).OfType<IEntity>();
+                var entityType = EntityFactory.GetEntityType(queryDTO.ObjectType);
+                var data = (await FrameDbContext.QueryAsync(queryDTO, entityType)).OfType<IEntity>();
                 result.AddRange(data.Select(x=>x.Output));
             }
             return [.. result];
@@ -96,10 +96,10 @@ namespace Infra.WebApi.Service
             var result = new FrameChangeOutputDTO();
             foreach (var remove in removes)
             {
-                var entity = entityFactory.GetEntity(remove);
-                var exist = await frameDbContext.GetValueAsync(remove.Id, entity.GetType(), true) as EntityBase;
-                domainServiceContext.Remove(exist);
-                result.Deletes.Add(entity.Output);
+                var entity = EntityFactory.GetEntity(remove);
+                var exist = await FrameDbContext.GetValueAsync(remove.Id, entity.GetType(), true) as EntityBase;
+                DomainServiceContext.Remove(exist);
+                //result.Deletes.Add(exist.Output);
             }
             return result;
         }

@@ -29,7 +29,7 @@ namespace Infra.Core.Extensions.Entities
             {
                 Key = typeof(TEntity).Key(),
                 Value = value,
-                QuerySymbol = ConditionSymbol.Equal
+                QuerySymbol = ConditionSymbol.Equal,
             };
             IExpressionParser<TEntity> parser = new ExpressionParser<TEntity>();
             return parser.ParserConditions(new List<Condition> { condition });
@@ -65,7 +65,8 @@ namespace Infra.Core.Extensions.Entities
                     {
                         Key = attribute.Key,
                         Value = property.GetValue(t),
-                        QuerySymbol = symbol
+                        QuerySymbol = symbol,
+                        Or=attribute.Or
                     });
                 }
             }

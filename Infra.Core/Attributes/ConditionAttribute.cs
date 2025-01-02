@@ -10,5 +10,10 @@ namespace Infra.Core.Attributes
         /// 
         /// </summary>
         public string Key { get; set; }
+
+        /// <summary>
+        /// 是否加入或运算
+        /// </summary>
+        public bool Or { get; set; }
     }
 }

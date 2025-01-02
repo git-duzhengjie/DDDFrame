@@ -43,7 +43,7 @@ namespace Infra.WebApi.Middleware
         {
             var eventId = new EventId(exception.HResult);
             _logger.LogError(eventId, exception, exception.Message);
-
+            Console.WriteLine(exception.ToSafeString());
             var status = 500;
             var type = string.Concat("https://httpstatuses.com/", status);
             var title = _env.IsDevelopment() ? exception.Message : $"系统异常";

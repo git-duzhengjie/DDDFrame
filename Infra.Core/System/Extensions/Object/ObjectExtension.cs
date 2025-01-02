@@ -1,5 +1,7 @@
 ﻿
+using Infra.Core.Attributes;
 using System.ComponentModel;
+using System.Reflection;
 
 namespace System
 {
@@ -96,15 +98,19 @@ namespace System
         /// <typeparam name="T"></typeparam>
         /// <param name="t1"></param>
         /// <param name="t2"></param>
-        public static void SetValue<T>(this T t1,T t2)
+        public static void SetValue<T>(this T t1, T t2)
         {
-            if (t1 != null&&t2!=null)
+            if (t1 != null && t2 != null)
             {
                 var properties = t1.GetType().GetProperties();
                 foreach (var property in properties)
                 {
                     if (property.CanWrite && property.CanRead)
                     {
+                        if (property.GetCustomAttribute<NotSetAttribute>(true) != null)
+                        {
+                            continue;
+                        }
                         var value = property.GetValue(t2);
                         property.SetValue(t1, value);
                     }

@@ -35,6 +35,7 @@ namespace Microsoft.AspNetCore.Mvc.Filters
 
             string title;
             string detial;
+            Console.WriteLine(exception.ToSafeString());
             title = _env.IsDevelopment() ? exception.Message : $"系统异常";
             detial = _env.IsDevelopment() ? exception.GetExceptionDetail() : $"系统异常,请联系管理员({eventId})";
 

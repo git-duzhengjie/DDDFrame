@@ -22,18 +22,45 @@ namespace Infra.Core.Extensions.Entities
 
         private Expression ParseExpressionBody(IEnumerable<Condition> conditions)
         {
-            if (conditions == null || !conditions.Any())
+            var ors=conditions.Where(x=>x.Or).ToArray();
+            var ands=conditions.Except(ors).ToArray();
+            Expression andExpression= ParseAnds(ands);
+            Expression orExpression = ParseOrs(ors);
+            return Expression.AndAlso(andExpression, orExpression);
+        }
+
+        private Expression ParseOrs(Condition[] ors)
+        {
+            if (ors == null || ors.Length == 0)
             {
                 return Expression.Constant(true, typeof(bool));
             }
-            else if (conditions.Count() == 1)
+            else if (ors.Length == 1)
             {
-                return ParseCondition(conditions.First());
+                return ParseCondition(ors.First());
             }
             else
             {
-                Expression left = ParseCondition(conditions.First());
-                Expression right = ParseExpressionBody(conditions.Skip(1));
+                Expression left = ParseCondition(ors.First());
+                Expression right = ParseExpressionBody(ors.Skip(1));
+                return Expression.OrElse(left, right);
+            }
+        }
+
+        private Expression ParseAnds(Condition[] ands)
+        {
+            if (ands == null || ands.Length == 0)
+            {
+                return Expression.Constant(true, typeof(bool));
+            }
+            else if (ands.Length == 1)
+            {
+                return ParseCondition(ands.First());
+            }
+            else
+            {
+                Expression left = ParseCondition(ands.First());
+                Expression right = ParseExpressionBody(ands.Skip(1));
                 return Expression.AndAlso(left, right);
             }
         }
