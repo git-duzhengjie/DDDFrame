@@ -14,24 +14,24 @@ namespace Infra.WebApi.Middleware
     /// </summary>
     public class CustomExceptionHandlerMiddleware
     {
-        private readonly ILogger<CustomExceptionHandlerMiddleware> _logger;
-        private readonly IWebHostEnvironment _env;
-        private readonly RequestDelegate _next;
+        private readonly ILogger<CustomExceptionHandlerMiddleware> logger;
+        private readonly IWebHostEnvironment env;
+        private readonly RequestDelegate next;
 
         public CustomExceptionHandlerMiddleware(RequestDelegate next
             , IWebHostEnvironment env
             , ILogger<CustomExceptionHandlerMiddleware> logger)
         {
-            _next = next;
-            _env = env;
-            _logger = logger;
+            this.next = next;
+            this.env = env;
+            this.logger = logger;
         }
 
         public async Task Invoke(HttpContext context)
         {
             try
             {
-                await _next(context);
+                await next(context);
             }
             catch (Exception ex)
             {
@@ -42,12 +42,11 @@ namespace Infra.WebApi.Middleware
         private async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             var eventId = new EventId(exception.HResult);
-            _logger.LogError(eventId, exception, exception.Message);
-            Console.WriteLine(exception.ToSafeString());
+            logger.LogError(exception.ToString());
             var status = 500;
             var type = string.Concat("https://httpstatuses.com/", status);
-            var title = _env.IsDevelopment() ? exception.Message : $"系统异常";
-            var detial = _env.IsDevelopment() ? exception.GetExceptionDetail() : $"系统异常,请联系管理员({eventId})";
+            var title = env.IsDevelopment() ? exception.Message : $"系统异常";
+            var detial = env.IsDevelopment() ? exception.GetExceptionDetail() : $"系统异常,请联系管理员({eventId})";
 
             var problemDetails = new ProblemDetails
             {

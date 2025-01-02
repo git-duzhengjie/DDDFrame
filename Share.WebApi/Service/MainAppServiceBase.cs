@@ -1,5 +1,5 @@
 ﻿using Infra.Core.Abstract;
-using Infra.Core.DTO;
+using Infra.Core.DTOs;
 using Infra.Core.Extensions;
 using Infra.EF.PG.Service;
 using Infra.WebApi.DTOs;

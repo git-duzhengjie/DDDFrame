@@ -1,6 +1,6 @@
 ﻿using Infra.Core.Abstract;
 
-namespace Infra.Core.DTO
+namespace Infra.Core.DTOs
 {
     public class FrameChangeOutputDTO
     {

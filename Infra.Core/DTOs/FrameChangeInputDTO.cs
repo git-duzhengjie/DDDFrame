@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infra.Core.DTO
+namespace Infra.Core.DTOs
 {
     public class FrameChangeInputDTO
     {

@@ -1,5 +1,6 @@
 ﻿using Infra.EF.PG.Context;
 using Infra.EF.PG.Entities;
+using Microsoft.Extensions.Logging;
 
 namespace Infra.EF.PG.Service
 {
@@ -7,14 +8,16 @@ namespace Infra.EF.PG.Service
     {
         private FrameDbContext frameDbContext;
         private IDbData dbData;
+        private ILogger logger;
         private List<(EntityBase,bool)> adds=new List<(EntityBase, bool)>();
         private List<EntityBase> removes=new List<EntityBase>();
         private List<(EntityBase, bool)> updates=new List<(EntityBase, bool)>();
         private List<UpdateData> updateProperties=new List<UpdateData>();
 
-        public DomainServiceContextBase(FrameDbContext frameDbContext,IDbData dbData) { 
+        public DomainServiceContextBase(FrameDbContext frameDbContext,IDbData dbData, ILoggerFactory loggerFactory) { 
             this.frameDbContext=frameDbContext;
             this.dbData=dbData;
+            logger = loggerFactory.CreateLogger("DomainServiceContextBase");
         }
         public virtual void Add(EntityBase entity,bool withNavigation)
         {
@@ -77,7 +80,7 @@ namespace Infra.EF.PG.Service
             }
             catch(Exception ex)
             {
-                Console.WriteLine(ex);
+                logger.LogError(ex.ToString());
                 await transaction.RollbackAsync();
                 throw;
             }

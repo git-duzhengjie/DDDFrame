@@ -1,5 +1,5 @@
 ﻿using Infra.Core.Abstract;
-using Infra.Core.DTO;
+using Infra.Core.DTOs;
 using Infra.Core.Models;
 using Infra.EF.PG.Context;
 using Infra.EF.PG.Entities;

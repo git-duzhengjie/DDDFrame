@@ -1,5 +1,5 @@
 ﻿using Infra.Core.Abstract;
-using Infra.Core.DTO;
+using Infra.Core.DTOs;
 using Infra.WebApi.DTOs;
 
 namespace Infra.WebApi.Service
