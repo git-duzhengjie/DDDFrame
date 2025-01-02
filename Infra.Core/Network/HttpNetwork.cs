@@ -683,6 +683,50 @@ namespace Infra.Core.Network
 
         }
 
+        public string HttpGet(string api, JsonSerializerSettings jsonSerializerSettings = null)
+        {
+            var httpClient = GetHttpClient();
+            var responseMessage = httpClient.GetAsync(Prefix + api).Result;
+            if (responseMessage.StatusCode == HttpStatusCode.OK || responseMessage.StatusCode == HttpStatusCode.Created)
+            {
+                var content = responseMessage.Content.ReadAsStringAsync().Result;
+                return content;
+
+            }
+            else
+            {
+                if (responseMessage.StatusCode == HttpStatusCode.NoContent)
+                {
+                    return "";
+                }
+                else if (ErrorHandler != null)
+                {
+                    ErrorHandler.Invoke(this, GetErrorEventArgsAsync(responseMessage, api).Result);
+                    return "";
+                }
+                else if (responseMessage.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    var content = responseMessage.Content.ReadAsStringAsync().Result;
+                    var err = JsonConvert.DeserializeObject<AppErr>(content);
+                    throw new Exception(err?.detail);
+                }
+                else if (responseMessage.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    throw new Exception("登录已失效，请求重新登录");
+                }
+                else if (responseMessage.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    throw new Exception("无权操作");
+                }
+                else
+                {
+                    throw new Exception($"{api}请求出错：{responseMessage.StatusCode}");
+                }
+            }
+
+
+        }
+
         private async Task<HttpErrorEventArgs> GetErrorEventArgsAsync(HttpResponseMessage httpResponse, string api)
         {
             string err;
