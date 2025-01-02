@@ -4,14 +4,13 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Infra.Cache" Version="1.0.0" />
+    <PackageReference Include="Infra.Core" Version="1.0.1" />
     <PackageReference Include="Yitter.IdGenerator" Version="1.0.14" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Infra.Cache\Infra.Cache.csproj" />
   </ItemGroup>
 
 </Project>

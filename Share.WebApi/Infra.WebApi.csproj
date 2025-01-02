@@ -10,6 +10,9 @@
   <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+    <PackageReference Include="Infra.Consul" Version="1.0.0" />
+    <PackageReference Include="Infra.Core" Version="1.0.1" />
+    <PackageReference Include="Infra.EF.PG" Version="1.0.0" />
     <PackageReference Include="LiteX.HealthChecks.Redis" Version="3.0.0" />
     <PackageReference Include="MicroElements.Swashbuckle.FluentValidation" Version="6.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.0" />
@@ -21,13 +24,6 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="7.2.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Infra.Cache\Infra.Cache.csproj" />
-    <ProjectReference Include="..\Infra.Consul\Infra.Consul.csproj" />
-    <ProjectReference Include="..\Infra.EF.PG\Infra.EF.PG.csproj" />
-    <ProjectReference Include="..\Infra.IdGenerater\Infra.IdGenerater.csproj" />
   </ItemGroup>
 
 </Project>

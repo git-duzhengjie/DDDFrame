@@ -5,6 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	<Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,11 +15,7 @@
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.0" />
     <PackageReference Include="System.IO.Compression" Version="4.3.0" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
-    <PackageReference Include="UniversalRPC" Version="1.3.4" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\UniversalRpc\UniversalRpc\UniversalRpc.csproj" />
+    <PackageReference Include="UniversalRPC" Version="1.3.5" />
   </ItemGroup>
 
 </Project>
