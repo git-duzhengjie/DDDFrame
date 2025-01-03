@@ -26,4 +26,10 @@
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Infra.Consul\Infra.Consul.csproj" />
+    <ProjectReference Include="..\Infra.Core\Infra.Core.csproj" />
+    <ProjectReference Include="..\Infra.EF.PG\Infra.EF.PG.csproj" />
+  </ItemGroup>
+
 </Project>

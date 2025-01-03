@@ -61,7 +61,7 @@ namespace Infra.WebApi.Middleware
 
             context.Response.StatusCode = status;
             context.Response.ContentType = "application/problem+json";
-            var errorText = JsonSerializer.Serialize(problemDetails);
+            var errorText = Newtonsoft.Json.JsonConvert.SerializeObject(problemDetails);
             await context.Response.WriteAsync(errorText);
         }
     }

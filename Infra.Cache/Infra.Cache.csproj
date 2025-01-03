@@ -17,4 +17,8 @@
 		<PackageReference Include="StackExchange.Redis" Version="2.8.24" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\Infra.Core\Infra.Core.csproj" />
+	</ItemGroup>
+
 </Project>

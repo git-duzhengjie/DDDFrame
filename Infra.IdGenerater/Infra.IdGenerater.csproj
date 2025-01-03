@@ -13,4 +13,8 @@
     <PackageReference Include="Yitter.IdGenerator" Version="1.0.14" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Infra.Cache\Infra.Cache.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -21,7 +21,12 @@
       "ServiceName": "LetUsMarry",
       "LoadBalancerOptions": {
         "Type": "RoundRobin"
-      }
+      },
+      //"QoSOptions": {
+      //  "ExceptionsAllowedBeforeBreaking": 3,
+      //  "DurationOfBreak": 1000,
+      //  "TimeoutValue": 5000
+      //}
     },
     {
       "UpstreamPathTemplate": "/Cloud{everything}",
@@ -36,7 +41,12 @@
       "ServiceName": "Cloud",
       "LoadBalancerOptions": {
         "Type": "RoundRobin"
-      }
+      },
+      //"QoSOptions": {
+      //  "ExceptionsAllowedBeforeBreaking": 3,
+      //  "DurationOfBreak": 1000,
+      //  "TimeoutValue": 5000
+      //}
     },
     {
       "UpstreamPathTemplate": "/File{everything}",
