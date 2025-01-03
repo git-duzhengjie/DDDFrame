@@ -27,8 +27,6 @@ namespace Microsoft.AspNetCore.Mvc.Filters
             var exception = context.Exception;
             var eventId = new EventId(exception.HResult);
             var descriptor = context.ActionDescriptor as ControllerActionDescriptor;
-            //string className = descriptor.ControllerName;
-            //string method = descriptor.ActionName;
             var hostAndPort = context.HttpContext.Request.Host.HasValue ? context.HttpContext.Request.Host.Value : string.Empty;
             var requestUrl = string.Concat(hostAndPort, context.HttpContext.Request.Path);
             var type = string.Concat("https://httpstatuses.com/", status);
