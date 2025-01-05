@@ -41,7 +41,7 @@ using Infra.WebApi.Models;
 namespace Infra.WebApi.DependInjection
 {
     /// <summary>
-    /// WebApi依赖注入抽象类
+    /// WebApi依赖注入抽象类，可以重写AddWebApiDefault()方法，增加依赖注入
     /// </summary>
     public abstract class DependencyInjectionBase :IDependencyInjection
     {
