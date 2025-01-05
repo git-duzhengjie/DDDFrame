@@ -33,8 +33,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDDFrameSample.Migrations",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDDFrameSample.Application.Contract", "DDDFrameSample.Application.Contract\DDDFrameSample.Application.Contract.csproj", "{60B4396F-F328-4003-B6E7-6E4D47E2E23B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniversalRPC", "..\..\UniversalRpc\UniversalRpc\UniversalRPC.csproj", "{1AFDDD62-B775-4579-9F19-BA27CEFC7E39}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -89,10 +87,6 @@ Global
 		{60B4396F-F328-4003-B6E7-6E4D47E2E23B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60B4396F-F328-4003-B6E7-6E4D47E2E23B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60B4396F-F328-4003-B6E7-6E4D47E2E23B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1AFDDD62-B775-4579-9F19-BA27CEFC7E39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1AFDDD62-B775-4579-9F19-BA27CEFC7E39}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1AFDDD62-B775-4579-9F19-BA27CEFC7E39}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1AFDDD62-B775-4579-9F19-BA27CEFC7E39}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -110,7 +104,6 @@ Global
 		{4D96C532-AE69-45CB-8621-23B4AD8F9394} = {F4F4B1F2-3FE6-469F-97A7-2593025496C8}
 		{2DC1002C-E6C6-4118-8653-0D89B2D841B2} = {F4F4B1F2-3FE6-469F-97A7-2593025496C8}
 		{60B4396F-F328-4003-B6E7-6E4D47E2E23B} = {F4F4B1F2-3FE6-469F-97A7-2593025496C8}
-		{1AFDDD62-B775-4579-9F19-BA27CEFC7E39} = {4AC7F044-DAE7-465D-B29C-A7422AB600B1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D5456616-63EA-43DE-92B6-257462BEF983}
