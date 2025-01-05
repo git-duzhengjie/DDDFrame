@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDDFrameSample.Migrations",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDDFrameSample.Application.Contract", "DDDFrameSample.Application.Contract\DDDFrameSample.Application.Contract.csproj", "{60B4396F-F328-4003-B6E7-6E4D47E2E23B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{91FE5032-7DC2-4929-98D7-C4AD96B60E48}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
