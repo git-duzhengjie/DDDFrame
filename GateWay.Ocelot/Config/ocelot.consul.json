@@ -22,11 +22,11 @@
       "LoadBalancerOptions": {
         "Type": "RoundRobin"
       },
-      //"QoSOptions": {
-      //  "ExceptionsAllowedBeforeBreaking": 3,
-      //  "DurationOfBreak": 1000,
-      //  "TimeoutValue": 5000
-      //}
+      "QoSOptions": {
+        "ExceptionsAllowedBeforeBreaking": 3,
+        "DurationOfBreak": 1000,
+        "TimeoutValue": 5000
+      }
     },
     {
       "UpstreamPathTemplate": "/Cloud{everything}",
@@ -42,11 +42,11 @@
       "LoadBalancerOptions": {
         "Type": "RoundRobin"
       },
-      //"QoSOptions": {
-      //  "ExceptionsAllowedBeforeBreaking": 3,
-      //  "DurationOfBreak": 1000,
-      //  "TimeoutValue": 5000
-      //}
+      "QoSOptions": {
+        "ExceptionsAllowedBeforeBreaking": 3,
+        "DurationOfBreak": 1000,
+        "TimeoutValue": 5000
+      }
     },
     {
       "UpstreamPathTemplate": "/File{everything}",
@@ -61,6 +61,11 @@
       "ServiceName": "file",
       "LoadBalancerOptions": {
         "Type": "RoundRobin"
+      },
+      "QoSOptions": {
+        "ExceptionsAllowedBeforeBreaking": 3,
+        "DurationOfBreak": 1000,
+        "TimeoutValue": 5000
       }
     }
   ]

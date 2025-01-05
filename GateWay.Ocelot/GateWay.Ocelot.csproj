@@ -8,8 +8,12 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0" />
-    <PackageReference Include="Ocelot.Provider.Consul" Version="16.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\杜政颉\source\repos\Ocelot\Ocelot-develop\Ocelot-develop\src\Ocelot.Provider.Consul\Ocelot.Provider.Consul.csproj" />
+    <ProjectReference Include="C:\Users\杜政颉\source\repos\Ocelot\Ocelot-develop\Ocelot-develop\src\Ocelot.Provider.Polly\Ocelot.Provider.Polly.csproj" />
   </ItemGroup>
 
 </Project>
