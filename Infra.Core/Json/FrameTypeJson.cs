@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using System.Globalization;
@@ -14,12 +15,14 @@ namespace Infra.Core.Json
         private string json;
         private JsonSerializerOptions serializerOptions;
         private Dictionary<string, Type?> objectTypeMap;
+        private ILogger<FrameJson>? logger;
 
-        public FrameTypeJson(string json, JsonSerializerOptions serializerOptions, Dictionary<string, Type?> objectTypeMap)
+        public FrameTypeJson(string json, JsonSerializerOptions serializerOptions, Dictionary<string, Type?> objectTypeMap, Microsoft.Extensions.Logging.ILogger<FrameJson>? logger)
         {
             this.json = json;
             this.serializerOptions = serializerOptions;
             this.objectTypeMap=objectTypeMap;
+            this.logger=logger;
         }
 
         internal T Deserialize<T>()
@@ -29,8 +32,23 @@ namespace Infra.Core.Json
 
         internal object Deserialize(Type modelType)
         {
-            JsonElement jValue = JsonSerializer.Deserialize<dynamic>(json);
-            return Deserialize(modelType, jValue);
+            try
+            {
+                JsonElement jValue = JsonSerializer.Deserialize<dynamic>(json);
+                return Deserialize(modelType, jValue);
+            }
+            catch (Exception ex) {
+                if (logger != null&&ex!=null)
+                {
+                    logger.LogError(ex.ToString());
+                }
+                else
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+                
+                throw;
+            }
         }
 
         internal object Deserialize(Type modelType, JsonElement jValue)

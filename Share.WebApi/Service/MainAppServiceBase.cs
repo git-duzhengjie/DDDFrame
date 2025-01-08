@@ -3,6 +3,7 @@ using Infra.Core.DTOs;
 using Infra.Core.Extensions;
 using Infra.EF.PG.Service;
 using Infra.WebApi.DTOs;
+using System.Configuration;
 using System.Diagnostics;
 
 namespace Infra.WebApi.Service
@@ -51,17 +52,73 @@ namespace Infra.WebApi.Service
             return await domainService.PageQueryAsync(pageQueryDTO);
         }
 
-        public async Task<IOutputDTO[]> QueryAsync(params IQueryDTO[] queryDTOs)
+        public async Task<IEnumerable<IOutputDTO[]>> QueryAsync(params IQueryDTO[] queryDTOs)
         {
+            queryDTOs.Where(x => x.Id <= 0).ForEach(x => x.Id = IdGenerater.Yitter.IdGenerater.GetNextId());
             var groups=queryDTOs.GroupBy(x=>domainServiceFactory.GetDomainService(x.ObjectType))
                 .OrderBy(x=>x.Key.QueryPriority)
                 .ToArray();
-            var result=new List<IOutputDTO>();
+            var result=new List<IOutputDTO[]>();
+            var dic = new Dictionary<long, IOutputDTO[]>();
             foreach (var domainService in groups) {
                 var queries = domainService.ToArray();
-                result.AddRange(await domainService.Key.QueryAsync(queries));
+                var queryResult = await domainService.Key.QueryAsync(queries);
+                SetDic(queries, dic,queryResult);
             }
+            SetResult(dic,queryDTOs,result);
             return [.. result];
+        }
+
+        private void SetResult(Dictionary<long, IOutputDTO[]> dic, IQueryDTO[] queryDTOs, List<IOutputDTO[]> result)
+        {
+            for(var i = 0; i < queryDTOs.Length; i++)
+            {
+                var queryResult = dic[queryDTOs[i].Id];
+                result.Add(queryResult);
+            }
+        }
+
+        private void SetDic(IQueryDTO[] queries, Dictionary<long, IOutputDTO[]> dic, IEnumerable<IOutputDTO[]> queryResult)
+        {
+            for(var i = 0; i < queries.Length; i++)
+            {
+                var id=queries[i].Id;
+                dic.Add(id, queryResult.ElementAt(i));
+            }
+        }
+
+        public async Task<int[]> CountAsync(params IQueryDTO[] queryDTOs)
+        {
+            queryDTOs.Where(x => x.Id <= 0).ForEach(x => x.Id = IdGenerater.Yitter.IdGenerater.GetNextId());
+            var groups = queryDTOs.GroupBy(x => domainServiceFactory.GetDomainService(x.ObjectType))
+                .OrderBy(x => x.Key.QueryPriority)
+                .ToArray();
+            var dic=new Dictionary<long,int>();
+            var result = new List<int>();
+            foreach (var domainService in groups)
+            {
+                var queries = domainService.ToArray();
+                var counts = await domainService.Key.CountAsync(queries);
+                SetDic(queries,counts,dic);
+            }
+            SetResult(dic,queryDTOs,result);
+            return [.. result];
+        }
+
+        private static void SetResult(Dictionary<long, int> dic, IQueryDTO[] queryDTOs, List<int> result)
+        {
+            for(var i = 0; i < queryDTOs.Length; i++)
+            {
+                result.Add(dic[queryDTOs[i].Id]);
+            }
+        }
+
+        private static void SetDic(IQueryDTO[] queries, int[] counts, Dictionary<long, int> dic)
+        {
+            for(var i = 0; i < queries.Length; i++)
+            {
+                dic[queries[i].Id]=counts[i];
+            }
         }
 
         public EnumDTO[] GetEnums(string enumName)

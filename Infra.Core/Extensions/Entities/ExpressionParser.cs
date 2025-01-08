@@ -103,6 +103,8 @@ namespace Infra.Core.Extensions.Entities
                     return Expression.NotEqual(key, value);
                 case ConditionSymbol.In:
                     return ParserIn(condition);
+                case ConditionSymbol.NotIn:
+                    return Expression.Not(ParserIn(condition));
                 case ConditionSymbol.Between:
                     return ParserBetween(condition);
                 default:

@@ -12,7 +12,7 @@ namespace Infra.EF.PG.Service
                 .Where(x=>x.FullName.Contains(".Domain")||x.FullName.Contains(".Contract"));
             foreach(var assembly in assemblies)
             {
-                var types=assembly.GetExportedTypes();
+                var types=assembly.GetExportedTypes().Where(x=>x.IsNotAbstractClass(true)).ToArray();
                 foreach(var type in types)
                 {
                     if (type.IsAssignableTo(typeof(IEntity)))

@@ -25,18 +25,11 @@ using Infra.Core.Json;
 using System.Text.Json;
 using Infra.WebApi.Service;
 using Infra.IdGenerater.Extensions;
-using Grpc.Net.Client.Configuration;
 using ServiceConfig = Infra.WebApi.Configuration.ServiceConfig;
 using Infra.EF.PG.Service;
 using Infra.EF.PG.Context;
 using System.Reflection;
-using Microsoft.AspNetCore.Components;
-using Infra.Core.Attributes;
-using UniversalRPC.Services;
 using Microsoft.EntityFrameworkCore;
-using Consul;
-using UniversalRPC;
-using Infra.WebApi.Models;
 
 namespace Infra.WebApi.DependInjection
 {
@@ -318,7 +311,6 @@ namespace Infra.WebApi.DependInjection
         /// </summary>
         protected virtual void AddAuthentication()
         {
-            Services.AddScoped<LoginUser>();
             var jwtConfig = Configuration.GetJWTSection().Get<JwtConfig>();
 
             Services.AddAuthentication()
@@ -344,11 +336,7 @@ namespace Infra.WebApi.DependInjection
                     //在Token验证通过后调用
                     OnTokenValidated = context =>
                     {
-                        var userId = long.Parse(context.Principal.Claims
-                            .FirstOrDefault(x => x.Type== "UserId")
-                            .Value);
-                        var loginUser= context.HttpContext.RequestServices.GetService<LoginUser>();
-                        loginUser.Id=userId;
+                        AfterValidated(context);
                         return Task.CompletedTask ;
                     }
                      ,
@@ -369,6 +357,11 @@ namespace Infra.WebApi.DependInjection
             //因为获取声明的方式默认是走微软定义的一套映射方式
             //如果我们想要走JWT映射声明，那么我们需要将默认映射方式给移除掉
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+        }
+
+        protected virtual void AfterValidated(TokenValidatedContext context)
+        {
+            
         }
 
         /// <summary>

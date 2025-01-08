@@ -21,7 +21,14 @@ namespace Infra.WebApi.Service
         /// </summary>
         /// <param name="queryDTO"></param>
         /// <returns></returns>
-        Task<IOutputDTO[]> QueryAsync(params IQueryDTO[] queryDTOs);
+        Task<IEnumerable<IOutputDTO[]>> QueryAsync(params IQueryDTO[] queryDTOs);
+
+        /// <summary>
+        /// 服务的统计查询
+        /// </summary>
+        /// <param name="queryDTO"></param>
+        /// <returns></returns>
+        Task<int[]> CountAsync(params IQueryDTO[] queryDTOs);
 
         /// <summary>
         /// 服务的分页查询
@@ -29,6 +36,12 @@ namespace Infra.WebApi.Service
         /// <param name="pageQueryDTO"></param>
         /// <returns></returns>
         Task<IPagedList<IOutputDTO>> PageQueryAsync(IPageQueryDTO pageQueryDTO);
+        
+        /// <summary>
+        /// 根据枚举名查询枚举值
+        /// </summary>
+        /// <param name="enumName"></param>
+        /// <returns></returns>
         EnumDTO[] GetEnums(string enumName);
     }
 }

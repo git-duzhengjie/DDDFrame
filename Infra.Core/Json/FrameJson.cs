@@ -13,6 +13,11 @@ using Newtonsoft.Json.Serialization;
 using UniversalRPC.Serialization;
 using static System.Text.Encoding;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Microsoft.Extensions.Logging;
+using System.IO.Pipelines;
+using Newtonsoft.Json.Linq;
+using System.Buffers;
+using System.IO;
 namespace Infra.Core.Json
 {
     public class FrameJson : IOutputFormatter, IInputFormatter, ISerialize
@@ -67,12 +72,12 @@ namespace Infra.Core.Json
             }
             else
             {
-                return new FrameTypeJson(json,serializerOptions, objectTypeMap).Deserialize<T>();
+                return new FrameTypeJson(json,serializerOptions, objectTypeMap,null).Deserialize<T>();
             }
             
         }
 
-        public static object Desialize(string json, Type modelType, JsonSerializerOptions serializerOptions = null)
+        public static object Desialize(string json, Type modelType, ILogger<FrameJson>? logger, JsonSerializerOptions serializerOptions = null)
         {
             if (json.IsNullOrEmpty())
             {
@@ -84,7 +89,7 @@ namespace Infra.Core.Json
             }
             else
             {
-                return new FrameTypeJson(json, serializerOptions, objectTypeMap).Deserialize(modelType);
+                return new FrameTypeJson(json, serializerOptions, objectTypeMap,logger).Deserialize(modelType);
             }
         }
 
@@ -114,10 +119,17 @@ namespace Infra.Core.Json
         public async Task<InputFormatterResult> ReadAsync(InputFormatterContext context)
         {
             var input = context.HttpContext.Request.BodyReader;
-            var readResult = await input.ReadAsync();
+            var str = await GetResultAsync(context);
             var jsonOptions = context.HttpContext.RequestServices.GetRequiredService<IOptions<JsonSerializerOptions>>().Value;
-            var str = Encoding.UTF8.GetString(readResult.Buffer);
-            return await InputFormatterResult.SuccessAsync(Desialize(str, context.ModelType, jsonOptions));
+            var logger = context.HttpContext.RequestServices.GetService<ILogger<FrameJson>>();
+            return await InputFormatterResult.SuccessAsync(Desialize(str, context.ModelType, logger,jsonOptions));
+
+        }
+
+        private static async Task<string> GetResultAsync(InputFormatterContext context)
+        {
+            using StreamReader sr = new(context.HttpContext.Request.Body);
+            return await sr.ReadToEndAsync();
         }
 
         public string Serialize(object obj)

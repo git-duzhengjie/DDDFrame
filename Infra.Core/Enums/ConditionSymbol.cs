@@ -10,6 +10,7 @@
         Less,
         LessEqual,
         In,
+        NotIn,
         Between,
         NotMapped,
         None

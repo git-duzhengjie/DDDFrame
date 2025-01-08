@@ -1,14 +1,9 @@
-﻿
-using Infra.WebApi.WebApi;
-using Infra.WebApi.WebApi.Middleware;
+﻿using Infra.WebApi.WebApi.Middleware;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Logging;
-using Microsoft.OpenApi.Models;
-using Infra.WebApi;
-using Infra.WebApi.Configuration;
 using Infra.WebApi.DependencyInjection;
 using Infra.WebApi.Middleware;
 using Infra.Consul.Configuration;
@@ -27,7 +22,7 @@ namespace Microsoft.AspNetCore.Builder
     {
 
         /// <summary>
-        /// 统一注册Louge.WebApi通用中间件
+        /// 统一注册通用中间件
         /// </summary>
         /// <param name="app"></param>
         /// <param name="configuration"></param>
@@ -76,19 +71,13 @@ namespace Microsoft.AspNetCore.Builder
                 c.RoutePrefix = $"{serviceInfo.ShortName}";
             }
             );
-            //app.UseHealthChecks($"/{healthUrl}", new HealthCheckOptions()
-            //{
-            //    Predicate = _ => true,
-            //    // 该响应输出是一个json，包含所有检查项的详细检查结果
-            //    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-            //});
             app.UseRouting();
             app.UseHttpMetrics();
             DotNetRuntimeStatsBuilder.Customize()
-                                                .WithContentionStats()
-                                                .WithGcStats()
-                                                .WithThreadPoolStats()
-                                                .StartCollecting()
+                        .WithContentionStats()
+                        .WithGcStats()
+                        .WithThreadPoolStats()
+                        .StartCollecting()
                                                 ;
             beforeAuthentication?.Invoke(app);
             app.UseAuthentication();
@@ -122,8 +111,6 @@ namespace Microsoft.AspNetCore.Builder
                     app.RegisterToConsul();
                     break;
                 case RegisteredTypeConsts.Nacos:
-                    // TODO
-                    //app.RegisterToNacos();
                     break;
                 default:
                     break;

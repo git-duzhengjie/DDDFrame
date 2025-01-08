@@ -32,4 +32,8 @@
     <ProjectReference Include="..\Infra.EF.PG\Infra.EF.PG.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
 </Project>

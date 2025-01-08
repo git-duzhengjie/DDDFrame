@@ -4,7 +4,6 @@ using Infra.Core.Models;
 using Infra.EF.PG.Context;
 using Infra.EF.PG.Entities;
 using Infra.EF.PG.Service;
-using Infra.WebApi.Models;
 using System.Diagnostics;
 
 namespace Infra.WebApi.Service
@@ -14,7 +13,6 @@ namespace Infra.WebApi.Service
         protected readonly FrameDbContext FrameDbContext;
         protected readonly EntityFactory EntityFactory;
         protected readonly IDomainServiceContext DomainServiceContext;
-        protected readonly LoginUser LoginUser;
 
         /// <summary>
         /// 
@@ -22,13 +20,11 @@ namespace Infra.WebApi.Service
         /// <param name="frameDbContext"></param>
         public DomainServiceBase(FrameDbContext frameDbContext, 
             EntityFactory entityFactory,
-            IDomainServiceContext domainServiceContext,
-            LoginUser loginUser)
+            IDomainServiceContext domainServiceContext)
         {
             FrameDbContext = frameDbContext;
             EntityFactory = entityFactory;
             DomainServiceContext = domainServiceContext;
-            LoginUser = loginUser;
         }
         public int InsertOrUpdatePriority => 0;
 
@@ -79,14 +75,26 @@ namespace Infra.WebApi.Service
             };
         }
 
-        public virtual async Task<IOutputDTO[]> QueryAsync(params IQueryDTO[] queryDTOs)
+        public virtual async Task<IEnumerable<IOutputDTO[]>> QueryAsync(params IQueryDTO[] queryDTOs)
         {
-            var result=new List<IOutputDTO>();
+            var result=new List<IOutputDTO[]>();
             foreach(var queryDTO in queryDTOs)
             {
                 var entityType = EntityFactory.GetEntityType(queryDTO.ObjectType);
                 var data = (await FrameDbContext.QueryAsync(queryDTO, entityType)).OfType<IEntity>();
-                result.AddRange(data.Select(x=>x.Output));
+                result.Add(data.Select(x=>x.Output).ToArray());
+            }
+            return [.. result];
+        }
+
+        public virtual async Task<int[]> CountAsync(params IQueryDTO[] queryDTOs)
+        {
+            var result = new List<int>();
+            foreach (var queryDTO in queryDTOs)
+            {
+                var entityType = EntityFactory.GetEntityType(queryDTO.ObjectType);
+                var data = (await FrameDbContext.CountAsync(queryDTO, entityType));
+                result.Add(data);
             }
             return [.. result];
         }

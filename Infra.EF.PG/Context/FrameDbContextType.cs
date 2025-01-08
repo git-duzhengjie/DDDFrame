@@ -42,6 +42,12 @@ namespace Infra.EF.PG.Context
             return querable.ToArray();
         }
 
+        public static int Count(IQueryDTO query, FrameDbContext frameDbContext)
+        {
+            var querable = frameDbContext.Set<T>().AsNoTracking().Where(query.GetExpressionFilter<T>());
+            return querable.Select(x=>x.Id).Count();
+        }
+
         public static IPagedList<object> PageQuery(IPageQueryDTO query, FrameDbContext frameDbContext)
         {
             int offset = (query.Page - 1) * query.Count;

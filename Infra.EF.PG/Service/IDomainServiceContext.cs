@@ -23,6 +23,13 @@ namespace Infra.EF.PG.Service
         public void Update(EntityBase entity,bool withNavigation);
 
         /// <summary>
+        /// 更新实体指定熟悉
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="propertyNames"></param>
+        void Update(EntityBase entity, string[] propertyNames);
+
+        /// <summary>
         /// 存储
         /// </summary>
         /// <returns></returns>

@@ -24,8 +24,8 @@
       },
       "QoSOptions": {
         "ExceptionsAllowedBeforeBreaking": 3,
-        "DurationOfBreak": 1000,
-        "TimeoutValue": 5000
+        "DurationOfBreak": 5000,
+        "TimeoutValue": 50000
       }
     },
     {
@@ -44,8 +44,8 @@
       },
       "QoSOptions": {
         "ExceptionsAllowedBeforeBreaking": 3,
-        "DurationOfBreak": 1000,
-        "TimeoutValue": 5000
+        "DurationOfBreak": 5000,
+        "TimeoutValue": 50000
       }
     },
     {
@@ -64,8 +64,8 @@
       },
       "QoSOptions": {
         "ExceptionsAllowedBeforeBreaking": 3,
-        "DurationOfBreak": 1000,
-        "TimeoutValue": 5000
+        "DurationOfBreak": 5000,
+        "TimeoutValue": 50000
       }
     }
   ]

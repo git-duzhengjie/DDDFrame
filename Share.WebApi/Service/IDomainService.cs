@@ -24,7 +24,14 @@ namespace Infra.WebApi.Service
         /// </summary>
         /// <param name="queryDTOs"></param>
         /// <returns></returns>
-        public Task<IOutputDTO[]> QueryAsync(params IQueryDTO[] queryDTOs);
+        public Task<IEnumerable<IOutputDTO[]>> QueryAsync(params IQueryDTO[] queryDTOs);
+
+        /// <summary>
+        /// 统计对象
+        /// </summary>
+        /// <param name="queryDTOs"></param>
+        /// <returns></returns>
+        public Task<int[]> CountAsync(params IQueryDTO[] queryDTOs);
 
         /// <summary>
         /// 分页查询对象

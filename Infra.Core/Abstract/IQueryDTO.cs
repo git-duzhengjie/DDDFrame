@@ -11,5 +11,10 @@
         /// 是否降序
         /// </summary>
         public bool OrderDesc { get; set; }
+
+        /// <summary>
+        /// 查询ID
+        /// </summary>
+        public long Id { get; set; }
     }
 }

@@ -93,6 +93,16 @@ namespace Infra.EF.PG.Context
             });
         }
 
+        public async Task<int> CountAsync(IQueryDTO queryDTO, Type queryType)
+        {
+            var frameDbType = typeof(FrameDbContextType<>).MakeGenericType(queryType);
+            return await Task.Run(() =>
+            {
+                var result = frameDbType.InvokeMethod("Count", [queryDTO, this]);
+                return (int)result;
+            });
+        }
+
         public async Task<IPagedList<object>> PageQueryAsync(IPageQueryDTO queryDTO, Type queryType)
         {
             var frameDbType = typeof(FrameDbContextType<>).MakeGenericType(queryType);

@@ -15,7 +15,11 @@
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.0" />
     <PackageReference Include="System.IO.Compression" Version="4.3.0" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
-    <PackageReference Include="UniversalRPC" Version="1.3.5" />
+    <PackageReference Include="UniversalRPC" Version="1.3.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\UniversalRpc\UniversalRpc\UniversalRPC.csproj" />
   </ItemGroup>
 
 </Project>
