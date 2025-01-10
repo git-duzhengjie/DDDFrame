@@ -388,13 +388,13 @@ namespace Infra.WebApi.DependInjection
         {
             Services.AddCors(options =>
             {
-                var _corsHosts = Configuration.GetAllowCorsHosts().Split(",", StringSplitOptions.RemoveEmptyEntries);
+                var corsHosts = Configuration.GetAllowCorsHosts().Split(",", StringSplitOptions.RemoveEmptyEntries);
                 options.AddPolicy(ServiceInfo.CorsPolicy, policy =>
                 {
-                    policy.WithOrigins(_corsHosts)
-                    .AllowAnyHeader()
+                    policy.WithOrigins(corsHosts)
                     .AllowAnyMethod()
-                    .AllowCredentials();
+                    .AllowCredentials()
+                    .AllowAnyHeader();
                 });
             });
         }

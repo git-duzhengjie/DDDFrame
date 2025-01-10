@@ -120,5 +120,28 @@ namespace Infra.Core.Extensions
             }
             return default;
         }
+
+        public static bool TryGetEnumValue<T>(this string name,out T value)
+        {
+            var type = typeof(T);
+            if (type.IsEnum)
+            {
+                var fields = type.GetFields();
+                foreach (var field in fields)
+                {
+                    var customAttribute = field.GetCustomAttribute(typeof(NameAttribute), inherit: true) as NameAttribute;
+                    if (customAttribute != null)
+                    {
+                        if (customAttribute.Name == name)
+                        {
+                            value= (T)Enum.Parse(type, field.Name);
+                            return true;
+                        }
+                    }
+                }
+            }
+            value = default;
+            return false;
+        }
     }
 }
