@@ -12,6 +12,8 @@ using Prometheus;
 using Prometheus.DotNetRuntime;
 using Infra.WebApi.Consts.RegistrationCenter;
 using Infra.Core.Abstract;
+using UniversalRPC.Extensions;
+using UniversalRPC.Services;
 
 namespace Microsoft.AspNetCore.Builder
 {
@@ -32,7 +34,8 @@ namespace Microsoft.AspNetCore.Builder
         public static IApplicationBuilder UseDefault(this IApplicationBuilder app
             , Action<IApplicationBuilder> beforeAuthentication = null
             , Action<IApplicationBuilder> afterAuthorization = null
-            , Action<IEndpointRouteBuilder> endpointRoute = null)
+            , Action<IEndpointRouteBuilder> endpointRoute = null,
+            bool useURPCServiceName=true)
         {
             ServiceLocator.Provider = app.ApplicationServices;
             var configuration = app.ApplicationServices.GetService<IConfiguration>();
@@ -91,11 +94,31 @@ namespace Microsoft.AspNetCore.Builder
                 endpoints.MapControllers()
                 .RequireAuthorization()
                 ;
+                UseURPCSerivice(endpoints,app.ApplicationServices,useURPCServiceName);
             });
             app.UseRegistrationCenter();
             app.UseHttpsRedirection();
             app.UseHealthCheck(healthUrl);
             return app;
+        }
+
+        private static void UseURPCSerivice(IEndpointRouteBuilder endpoints, IServiceProvider applicationServices, bool useURPCServiceName)
+        {
+            var serviceFactory = applicationServices.GetService<URPCServiceFactory>();
+            var types = serviceFactory?.GetURPCServiceITypes();
+            if (types != null && types.Length > 0)
+            {
+                if (useURPCServiceName)
+                {
+                    var type = types[0];
+                    var serviceName = type.GetServiceName();
+                    endpoints.UseURPCService(serviceName);
+                }
+                else
+                {
+                    endpoints.UseURPCService();
+                }
+            }
         }
 
         /// <summary>
