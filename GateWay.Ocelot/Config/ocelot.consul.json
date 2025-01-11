@@ -9,6 +9,26 @@
   },
   "Routes": [
     {
+      "UpstreamPathTemplate": "/api/LetUsMarry{everything}",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Put",
+        "Post",
+        "Delete"
+      ],
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/LetUsMarry{everything}",
+      "ServiceName": "LetUsMarry",
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      },
+      "QoSOptions": {
+        "ExceptionsAllowedBeforeBreaking": 3,
+        "DurationOfBreak": 5000,
+        "TimeoutValue": 50000
+      }
+    },
+    {
       "UpstreamPathTemplate": "/LetUsMarry{everything}",
       "UpstreamHttpMethod": [
         "Get",
@@ -29,6 +49,26 @@
       }
     },
     {
+      "UpstreamPathTemplate": "/api/Cloud{everything}",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Put",
+        "Post",
+        "Delete"
+      ],
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/Cloud{everything}",
+      "ServiceName": "Cloud",
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      },
+      "QoSOptions": {
+        "ExceptionsAllowedBeforeBreaking": 3,
+        "DurationOfBreak": 5000,
+        "TimeoutValue": 50000
+      }
+    },
+    {
       "UpstreamPathTemplate": "/Cloud{everything}",
       "UpstreamHttpMethod": [
         "Get",
@@ -39,6 +79,26 @@
       "DownstreamScheme": "http",
       "DownstreamPathTemplate": "/Cloud{everything}",
       "ServiceName": "Cloud",
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      },
+      "QoSOptions": {
+        "ExceptionsAllowedBeforeBreaking": 3,
+        "DurationOfBreak": 5000,
+        "TimeoutValue": 50000
+      }
+    },
+    {
+      "UpstreamPathTemplate": "/api/File{everything}",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Put",
+        "Post",
+        "Delete"
+      ],
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/File{everything}",
+      "ServiceName": "file",
       "LoadBalancerOptions": {
         "Type": "RoundRobin"
       },

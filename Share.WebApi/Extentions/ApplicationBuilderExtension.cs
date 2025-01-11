@@ -14,6 +14,7 @@ using Infra.WebApi.Consts.RegistrationCenter;
 using Infra.Core.Abstract;
 using UniversalRPC.Extensions;
 using UniversalRPC.Services;
+using Microsoft.Extensions.FileProviders;
 
 namespace Microsoft.AspNetCore.Builder
 {
@@ -51,6 +52,7 @@ namespace Microsoft.AspNetCore.Builder
             defaultFilesOptions.DefaultFileNames.Add("index.html");
             app.UseDefaultFiles(defaultFilesOptions);
             app.UseStaticFiles();
+            
             app.UseCustomExceptionHandler();
             app.UseRealIp(x => x.HeaderKeys = ["X-Forwarded-For", "X-Real-IP"]);
             app.UseCors(serviceInfo.CorsPolicy);
