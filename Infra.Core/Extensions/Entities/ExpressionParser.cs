@@ -69,8 +69,6 @@ namespace Infra.Core.Extensions.Entities
         {
             Expression key = ToKey(condition.Key,out var originType);
             //通过Tuple元组，实现Sql参数化。
-            Expression value = ToValue(condition.Value, originType);
-
             switch (condition.QuerySymbol)
             {
                 case ConditionSymbol.Contains:
@@ -90,16 +88,22 @@ namespace Infra.Core.Extensions.Entities
                     }
                     return result;
                 case ConditionSymbol.Equal:
+                    Expression value = ToValue(condition.Value, originType);
                     return Expression.Equal(key, value);
                 case ConditionSymbol.Greater:
+                    value = ToValue(condition.Value, originType);
                     return Expression.GreaterThan(key, value);
                 case ConditionSymbol.GreaterEqual:
+                    value = ToValue(condition.Value, originType);
                     return Expression.GreaterThanOrEqual(key, value);
                 case ConditionSymbol.Less:
+                    value = ToValue(condition.Value, originType);
                     return Expression.LessThan(key, value);
                 case ConditionSymbol.LessEqual:
+                    value = ToValue(condition.Value, originType);
                     return Expression.LessThanOrEqual(key, value);
                 case ConditionSymbol.NotEqual:
+                    value = ToValue(condition.Value, originType);
                     return Expression.NotEqual(key, value);
                 case ConditionSymbol.In:
                     return ParserIn(condition);
@@ -164,7 +168,7 @@ namespace Infra.Core.Extensions.Entities
             Expression expression = Expression.Constant(false, typeof(bool));
             foreach (var itemVal in valueArr)
             {
-                Expression value = ToValue(itemVal, typeof(string));
+                Expression value = ToValue(Convert.ChangeType(itemVal,originType), originType);
                 Expression right = Expression.Equal(key, value);
                 expression = Expression.Or(expression, right);
             }

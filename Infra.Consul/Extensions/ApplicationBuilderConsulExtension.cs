@@ -73,7 +73,7 @@ namespace Microsoft.AspNetCore.Builder
             registration.Register(instance);
         }
 
-        public static void UseHealthCheck(this IApplicationBuilder app,string checkPath="/healthcheck")
+        public static void UseHealthCheck(this IApplicationBuilder app, string checkPath = "/healthcheck")
         {
             app.Map(checkPath, applicationBuilder => applicationBuilder.Run(async context =>
             {
@@ -81,5 +81,6 @@ namespace Microsoft.AspNetCore.Builder
                 await context.Response.WriteAsync("OK");
             }));
         }
+
     }
 }

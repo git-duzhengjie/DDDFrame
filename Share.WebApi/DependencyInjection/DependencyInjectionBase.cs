@@ -30,6 +30,8 @@ using Infra.EF.PG.Service;
 using Infra.EF.PG.Context;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+using Infra.Core.Models;
+using System.Diagnostics;
 
 namespace Infra.WebApi.DependInjection
 {
@@ -312,7 +314,6 @@ namespace Infra.WebApi.DependInjection
         protected virtual void AddAuthentication()
         {
             var jwtConfig = Configuration.GetJWTSection().Get<JwtConfig>();
-
             Services.AddAuthentication()
             .AddJwtBearer(options =>
             {
@@ -331,7 +332,7 @@ namespace Infra.WebApi.DependInjection
                 options.Events = new JwtBearerEvents
                 {
                     //接受到消息时调用
-                    OnMessageReceived = context => Task.CompletedTask
+                    OnMessageReceived = context => OnMessageReceived(context)
                     ,
                     //在Token验证通过后调用
                     OnTokenValidated = context =>
@@ -359,9 +360,14 @@ namespace Infra.WebApi.DependInjection
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
         }
 
+        protected async virtual Task OnMessageReceived(MessageReceivedContext context)
+        {
+            await Task.CompletedTask;
+        }
+
         protected virtual void AfterValidated(TokenValidatedContext context)
         {
-            
+            context.HttpContext.User = context.Principal;
         }
 
         /// <summary>

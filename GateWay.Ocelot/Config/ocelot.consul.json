@@ -9,6 +9,68 @@
   },
   "Routes": [
     {
+      "UpstreamPathTemplate": "/notifyHub",
+      "DownstreamPathTemplate": "/notifyHub",
+      "DownstreamScheme": "ws",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 9996
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/notifyHub/negotiate",
+      "DownstreamPathTemplate": "/notifyHub/negotiate",
+      "DownstreamScheme": "ws",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 9996
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/NotifyCenter{everything}",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Put",
+        "Post",
+        "Delete"
+      ],
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/NotifyCenter{everything}",
+      "ServiceName": "NotifyCenter",
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      },
+      "QoSOptions": {
+        "ExceptionsAllowedBeforeBreaking": 3,
+        "DurationOfBreak": 5000,
+        "TimeoutValue": 50000
+      }
+    },
+    {
+      "UpstreamPathTemplate": "/{everything}",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Put",
+        "Post",
+        "Delete"
+      ],
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/h5/{everything}",
+      "ServiceName": "LetUsMarry",
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      },
+      "QoSOptions": {
+        "ExceptionsAllowedBeforeBreaking": 3,
+        "DurationOfBreak": 5000,
+        "TimeoutValue": 50000
+      }
+    },
+    {
       "UpstreamPathTemplate": "/api/LetUsMarry{everything}",
       "UpstreamHttpMethod": [
         "Get",

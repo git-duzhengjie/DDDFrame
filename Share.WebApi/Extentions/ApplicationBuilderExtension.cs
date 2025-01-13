@@ -15,6 +15,8 @@ using Infra.Core.Abstract;
 using UniversalRPC.Extensions;
 using UniversalRPC.Services;
 using Microsoft.Extensions.FileProviders;
+using Infra.EF.PG.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace Microsoft.AspNetCore.Builder
 {
@@ -55,7 +57,6 @@ namespace Microsoft.AspNetCore.Builder
             
             app.UseCustomExceptionHandler();
             app.UseRealIp(x => x.HeaderKeys = ["X-Forwarded-For", "X-Real-IP"]);
-            app.UseCors(serviceInfo.CorsPolicy);
             app.UseMiniProfiler();
             app.UseSwagger(
                 c =>
@@ -77,6 +78,7 @@ namespace Microsoft.AspNetCore.Builder
             }
             );
             app.UseRouting();
+            app.UseCors(serviceInfo.CorsPolicy);
             app.UseHttpMetrics();
             DotNetRuntimeStatsBuilder.Customize()
                         .WithContentionStats()
@@ -101,9 +103,22 @@ namespace Microsoft.AspNetCore.Builder
             app.UseRegistrationCenter();
             app.UseHttpsRedirection();
             app.UseHealthCheck(healthUrl);
+            app.UseMigration();
             return app;
         }
 
+        public static void UseMigration(this IApplicationBuilder app)
+        {
+            
+            using var scope=app.ApplicationServices.CreateScope();
+            var serviceInfo= scope.ServiceProvider.GetService<IServiceInfo>();
+            var migrationAssembly = serviceInfo.GetMigrationAssembly();
+            if (migrationAssembly != null)
+            {
+                var dbContext = scope.ServiceProvider.GetService<FrameDbContext>();
+                dbContext.Database.Migrate();
+            }
+        }
         private static void UseURPCSerivice(IEndpointRouteBuilder endpoints, IServiceProvider applicationServices, bool useURPCServiceName)
         {
             var serviceFactory = applicationServices.GetService<URPCServiceFactory>();

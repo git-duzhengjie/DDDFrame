@@ -1,7 +1,9 @@
 ﻿using Infra.Core.Abstract;
 using Infra.Core.DTOs;
+using Infra.Core.Models;
 using Infra.WebApi.DTOs;
 using Infra.WebApi.Service;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Infra.WebApi.Controllers

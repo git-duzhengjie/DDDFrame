@@ -5,8 +5,19 @@ using System.Reflection;
 
 namespace System
 {
-    public static class objectExtension
+    public static class ObjectExtension
     {
+        // Convert an object to a byte array
+        public static byte[] ObjectToByteArray(this object obj)
+        {
+            var str= Text.Json.JsonSerializer.Serialize(obj);
+            return Text.Encoding.UTF8.GetBytes(str);
+        }
+        // Convert an object to a byte array
+        public static T ObjectToByteArray<T>(this byte[] bytes)
+        {
+            return Text.Json.JsonSerializer.Deserialize<T>(bytes);
+        }
         /// <summary>
         ///     A System.object extension method that toes the given this.
         /// </summary>
