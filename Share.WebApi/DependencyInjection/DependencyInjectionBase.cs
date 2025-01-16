@@ -277,7 +277,8 @@ namespace Infra.WebApi.DependInjection
             {
                 options.SetJsonSerializerOptions();
             });
-            Services.AddControllers(options => options.Filters.Add(typeof(CustomExceptionFilterAttribute)))
+            //Services.AddControllers(options => options.Filters.Add(typeof(CustomExceptionFilterAttribute)))
+                Services.AddControllers()
                 .AddFrameJson(options =>
                 {
                     new FrameJsonMvcOptionsSetup().Configure(options);
@@ -415,7 +416,7 @@ namespace Infra.WebApi.DependInjection
             Services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc(openApiInfo.Version, openApiInfo);
-
+                c.DocumentFilter<SwaggerDocumentFilter>(ServiceInfo);
                 // 采用bearer token认证
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
@@ -448,7 +449,7 @@ namespace Infra.WebApi.DependInjection
                 {
                     c.IncludeXmlComments(contractXml);
                 }
-                
+
             });
 
             Services.AddFluentValidationRulesToSwagger();

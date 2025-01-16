@@ -36,11 +36,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseRouting();
 
-app.MapGet("/", async context =>
-{
-    await context.Response.WriteAsync($"Hello Ocelot,{app.Environment.EnvironmentName}!");
-})
-.WithOpenApi();
+//app.MapGet("/", async context =>
+//{
+//    await context.Response.WriteAsync($"Hello Ocelot,{app.Environment.EnvironmentName}!");
+//})
+//.WithOpenApi();
 app.UseCors("CorsPolicy");
 app.UseOcelot().Wait();
 app.Run();

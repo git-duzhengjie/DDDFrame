@@ -11,6 +11,7 @@ namespace Infra.Core.Extensions
         private static object lockobject = new();
         private static Assembly webApiAssembly;
         private static Assembly appAssembly;
+        private static Assembly appContractAssembly;
         private static Assembly domainAssembly;
         private static Assembly migrationAssembly;
 
@@ -47,11 +48,34 @@ namespace Infra.Core.Extensions
                         var appAssemblyFullName = serviceInfo.AssemblyFullName.Replace(serviceInfo.AssemblyName,appAssemblyName);
                         appAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x => x.FullName.EqualsIgnoreCase(appAssemblyFullName));
                         if (appAssembly is null)
-                            appAssembly = Assembly.Load(appAssemblyName);
+                            appAssembly = Assembly.Load(appAssemblyFullName);
                     }
                 }
             }
             return appAssembly;
+        }
+
+        /// <summary>
+        /// 获取Application Contract程序集
+        /// </summary>
+        /// <returns></returns>
+        public static Assembly GetApplicationContractAssembly(this IServiceInfo serviceInfo)
+        {
+            if (appContractAssembly is null)
+            {
+                lock (lockobject)
+                {
+                    if (appContractAssembly is null)
+                    {
+                        var appContractAssemblyName = serviceInfo.AssemblyName + ".Application.Contract";
+                        var appContractAssemblyFullName = serviceInfo.AssemblyFullName.Replace(serviceInfo.AssemblyName, appContractAssemblyName);
+                        appContractAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x => x.FullName.EqualsIgnoreCase(appContractAssemblyFullName));
+                        if (appContractAssembly is null)
+                            appContractAssembly = Assembly.Load(appContractAssemblyFullName);
+                    }
+                }
+            }
+            return appContractAssembly;
         }
         /// <summary>
         /// 获取Domain程序集

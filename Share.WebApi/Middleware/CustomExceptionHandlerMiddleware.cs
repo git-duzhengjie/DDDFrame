@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Serialization;
 using System.Text.Json;
 
 namespace Infra.WebApi.Middleware
@@ -44,24 +45,17 @@ namespace Infra.WebApi.Middleware
             var eventId = new EventId(exception.HResult);
             logger.LogError(exception.ToString());
             var status = 500;
-            var type = string.Concat("https://httpstatuses.com/", status);
-            var title = env.IsDevelopment() ? exception.Message : $"系统异常";
-            var detial = env.IsDevelopment() ? exception.GetExceptionDetail() : $"系统异常,请联系管理员({eventId})";
-
-            var problemDetails = new ProblemDetails
-            {
-                Title = title
-                ,
-                Detail = detial
-                ,
-                Type = type
-                ,
-                Status = status
-            };
-
+            var title = exception.Message;
+            var detail = env.IsDevelopment() ? exception.GetExceptionDetail() : $"系统异常,请联系管理员({eventId})";
             context.Response.StatusCode = status;
             context.Response.ContentType = "application/problem+json";
-            var errorText = Newtonsoft.Json.JsonConvert.SerializeObject(problemDetails);
+            var errorText = Newtonsoft.Json.JsonConvert.SerializeObject(new {
+                Title = title,
+                Detail = detail
+            }, new Newtonsoft.Json.JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            });
             await context.Response.WriteAsync(errorText);
         }
     }

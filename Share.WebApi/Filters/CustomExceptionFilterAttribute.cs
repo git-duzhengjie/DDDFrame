@@ -49,7 +49,8 @@ namespace Microsoft.AspNetCore.Mvc.Filters
                 Instance = requestUrl
             };
 
-            context.Result = new ObjectResult(problemDetails) { StatusCode = status };
+            //context.Result = new ObjectResult(problemDetails) { StatusCode = status };
+            context.Result = new ObjectResult(Newtonsoft.Json.JsonConvert.SerializeObject(problemDetails));
             context.ExceptionHandled = true;
         }
 
