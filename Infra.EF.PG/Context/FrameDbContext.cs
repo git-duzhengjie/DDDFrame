@@ -1,4 +1,5 @@
 ﻿using Infra.Core.Abstract;
+using Infra.Core.Attributes;
 using Infra.Core.Extensions;
 using Infra.Core.Extensions.Entities;
 using Infra.Core.Models;

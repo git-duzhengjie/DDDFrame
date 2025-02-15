@@ -51,6 +51,26 @@
       }
     },
     {
+      "UpstreamPathTemplate": "/",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Put",
+        "Post",
+        "Delete"
+      ],
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/h5/index.html",
+      "ServiceName": "LetUsMarry",
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      },
+      "QoSOptions": {
+        "ExceptionsAllowedBeforeBreaking": 3,
+        "DurationOfBreak": 5000,
+        "TimeoutValue": 50000
+      }
+    },
+    {
       "UpstreamPathTemplate": "/{everything}",
       "UpstreamHttpMethod": [
         "Get",

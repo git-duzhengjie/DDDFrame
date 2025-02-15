@@ -7,12 +7,14 @@ namespace Infra.Core.Json
     {
         public static JsonSerializerOptions JsonSerializerOptions => new JsonSerializerOptions
         {
-            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+            PropertyNamingPolicy= JsonNamingPolicy.CamelCase
         };
 
         public static void SetJsonSerializerOptions(this JsonSerializerOptions jsonSerializerSettings)
         {
             jsonSerializerSettings.Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
+            jsonSerializerSettings.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         }
     }
 }

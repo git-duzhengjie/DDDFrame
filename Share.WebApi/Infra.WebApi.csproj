@@ -5,14 +5,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
-    <PackageReference Include="Infra.Consul" Version="1.0.0" />
-    <PackageReference Include="Infra.Core" Version="1.0.1" />
-    <PackageReference Include="Infra.EF.PG" Version="1.0.0" />
     <PackageReference Include="LiteX.HealthChecks.Redis" Version="3.0.0" />
     <PackageReference Include="MicroElements.Swashbuckle.FluentValidation" Version="6.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.0" />

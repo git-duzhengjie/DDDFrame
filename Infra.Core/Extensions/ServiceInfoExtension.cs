@@ -110,7 +110,7 @@ namespace Infra.Core.Extensions
                 {
                     if (migrationAssembly is null)
                     {
-                        var domainAssemblyName = serviceInfo.AssemblyName + ".Migration";
+                        var domainAssemblyName = serviceInfo.AssemblyName + ".Migrations";
                         var domainAssemblyFullName = serviceInfo.AssemblyFullName.Replace(serviceInfo.AssemblyName, domainAssemblyName);
                         migrationAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x => x.FullName.EqualsIgnoreCase(domainAssemblyFullName));
                     }

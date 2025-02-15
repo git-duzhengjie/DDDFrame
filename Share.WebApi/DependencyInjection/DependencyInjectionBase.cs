@@ -99,7 +99,14 @@ namespace Infra.WebApi.DependInjection
                 var name=Path.GetFileNameWithoutExtension(assemblyFile);
                 if (!loadAssemblies.Any(l => l.FullName.Contains(name)))
                 {
-                    Assembly.LoadFrom(assemblyFile);
+                    try
+                    {
+                        Assembly.LoadFrom(assemblyFile);
+                    }
+                    catch
+                    {
+                        Debug.WriteLine($"加载{assemblyFile}失败");
+                    }
                 }
             }
         }

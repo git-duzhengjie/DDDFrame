@@ -11,15 +11,19 @@ namespace Infra.WebApi.Extentions
             try
             {
                 var claims = httpContextAccessor.HttpContext.User.Claims;
-                Debug.Assert(claims != null);
                 var userClaim = claims.FirstOrDefault(x => x?.Type == "UserId");
-                Debug.Assert(userClaim != null);
+                if (userClaim == null)
+                {
+                    return null;
+                }
                 var value = userClaim.Value;
-                Debug.Assert(value != null);
                 var userId = long.Parse(value);
                 var systemInfoClaim = claims.FirstOrDefault(x => x.Type == "SystemInfo");
-                Debug.Assert(systemInfoClaim != null);
-                var systemInfo = systemInfoClaim.Value;
+                string systemInfo = null;
+                if (systemInfoClaim != null)
+                {
+                    systemInfo = systemInfoClaim.Value;
+                }
                 var loginUser = new LoginInfo() { SystemInfo = systemInfo, UserId = userId };
                 return loginUser;
             }catch(Exception ex)

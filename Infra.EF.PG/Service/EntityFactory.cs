@@ -1,5 +1,7 @@
 ﻿using Infra.Core.Abstract;
+using Infra.Core.Attributes;
 using Infra.Core.Extensions;
+using System.Reflection;
 
 namespace Infra.EF.PG.Service
 {
@@ -7,9 +9,11 @@ namespace Infra.EF.PG.Service
     {
         private readonly Dictionary<int,Type> entityTypeMap = [];
         private readonly Dictionary<int, Type> outputTypeMap = [];
-        public EntityFactory() {
+        public EntityFactory(IServiceInfo serviceInfo) {
+            var contractAssemblyName = serviceInfo.AssemblyName + ".Application.Contract";
+            var contractAssemblyFullName = serviceInfo.AssemblyFullName.Replace(serviceInfo.AssemblyName, contractAssemblyName);
             var assemblies=AppDomain.CurrentDomain.GetAssemblies()
-                .Where(x=>x.FullName.Contains(".Domain")||x.FullName.Contains(".Contract"));
+                .Where(x=>x.FullName.Contains(".Domain")||x.FullName== contractAssemblyFullName);
             foreach(var assembly in assemblies)
             {
                 var types=assembly.GetExportedTypes().Where(x=>x.IsNotAbstractClass(true)).ToArray();
@@ -17,7 +21,7 @@ namespace Infra.EF.PG.Service
                 {
                     if (type.IsAssignableTo(typeof(IEntity)))
                     {
-                        var obj = Activator.CreateInstance(type) as IEntity;
+                        var obj = Activator.CreateInstance(type) as FrameObjectBase;
                         if (entityTypeMap.ContainsKey(obj.ObjectType))
                         {
                             throw new Exception($"当前Entity类型{obj.ObjectName}已经存在");

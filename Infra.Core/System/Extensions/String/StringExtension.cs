@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Infra.Core.Extensions;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
@@ -412,6 +413,42 @@ namespace System
         {
             byte[] bytes = Encoding.Default.GetBytes(@this);
             return Encoding.UTF8.GetString(bytes);
+        }
+
+        public static string GetLast(this string @this, int length,char empty='0')
+        {
+            if (length >= @this.Length)
+            {
+                return @this.PadLeft(length,empty);
+            }
+            return @this.Substring(@this.Length - length);
+        }
+
+        public static int ToInt(this string @this)
+        {
+            return int.Parse(@this);
+        }
+
+        public static string PadYear(this string @this)
+        {
+            if (@this.EndsWith('年'))
+            {
+                @this = @this.TrimEnd('年');
+                if (@this.Length == 2)
+                {
+                    var now = DateTime.Now.Year.ToString().GetLast(2).ToInt();
+                    var year = @this.ToInt();
+                    if (year > now)
+                    {
+                        return $"19{year}";
+                    }
+                    else
+                    {
+                        return $"20{year}";
+                    }
+                }
+            }
+            return @this;
         }
     }
 }

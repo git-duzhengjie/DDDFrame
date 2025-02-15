@@ -5,11 +5,10 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<Platforms>AnyCPU;x64</Platforms>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Infra.Core" Version="1.0.1" />
-		<PackageReference Include="Infra.IdGenerater" Version="1.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0">
@@ -20,6 +19,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\Infra.Core\Infra.Core.csproj" />
 	  <ProjectReference Include="..\Infra.IdGenerater\Infra.IdGenerater.csproj" />
 	</ItemGroup>
 
