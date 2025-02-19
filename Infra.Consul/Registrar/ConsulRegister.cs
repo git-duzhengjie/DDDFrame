@@ -17,7 +17,7 @@ namespace Infra.Consul.Registrar
             });
             var registration = new AgentServiceRegistration
             {
-                ID= $"{consulConfig.ServiceName}.{DateTime.Now.Ticks}",
+                ID= $"{consulConfig.IP}.{consulConfig.Port}",
                 Name=consulConfig.ServiceName,
                 Meta=new Dictionary<string, string>() { ["Scheme"] =address.Scheme},
                 Address=consulConfig.IP,
