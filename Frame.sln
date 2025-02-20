@@ -35,6 +35,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDDFrameSample.Application.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{91FE5032-7DC2-4929-98D7-C4AD96B60E48}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ocelot.Provider.Consul", "C:\Users\杜政颉\source\repos\Ocelot\Ocelot-develop\Ocelot-develop\src\Ocelot.Provider.Consul\Ocelot.Provider.Consul.csproj", "{9CC47966-E6FD-468A-BD51-FAFFF9C33749}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ocelot.Provider.Polly", "C:\Users\杜政颉\source\repos\Ocelot\Ocelot-develop\Ocelot-develop\src\Ocelot.Provider.Polly\Ocelot.Provider.Polly.csproj", "{1AED7911-BA13-4606-B90B-1283F6E641F5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -89,6 +93,14 @@ Global
 		{60B4396F-F328-4003-B6E7-6E4D47E2E23B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60B4396F-F328-4003-B6E7-6E4D47E2E23B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60B4396F-F328-4003-B6E7-6E4D47E2E23B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CC47966-E6FD-468A-BD51-FAFFF9C33749}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CC47966-E6FD-468A-BD51-FAFFF9C33749}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CC47966-E6FD-468A-BD51-FAFFF9C33749}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CC47966-E6FD-468A-BD51-FAFFF9C33749}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AED7911-BA13-4606-B90B-1283F6E641F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AED7911-BA13-4606-B90B-1283F6E641F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AED7911-BA13-4606-B90B-1283F6E641F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AED7911-BA13-4606-B90B-1283F6E641F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -106,6 +118,8 @@ Global
 		{4D96C532-AE69-45CB-8621-23B4AD8F9394} = {F4F4B1F2-3FE6-469F-97A7-2593025496C8}
 		{2DC1002C-E6C6-4118-8653-0D89B2D841B2} = {F4F4B1F2-3FE6-469F-97A7-2593025496C8}
 		{60B4396F-F328-4003-B6E7-6E4D47E2E23B} = {F4F4B1F2-3FE6-469F-97A7-2593025496C8}
+		{9CC47966-E6FD-468A-BD51-FAFFF9C33749} = {47499530-E18D-4DC9-B921-DEF275CAE1D8}
+		{1AED7911-BA13-4606-B90B-1283F6E641F5} = {47499530-E18D-4DC9-B921-DEF275CAE1D8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D5456616-63EA-43DE-92B6-257462BEF983}
