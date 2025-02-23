@@ -504,12 +504,27 @@ namespace Infra.WebApi.DependInjection
                     .ToArray();
                 foreach(var modelAbstractType in modelAbstractTypes)
                 {
-                    var modelType = appAssembly.GetExportedTypes()
-                    .FirstOrDefault(m => m.IsAssignableTo(modelAbstractType) && m.IsNotAbstractClass(true));
-                    if (modelType != null)
+                    var modelTypes = appAssembly.GetExportedTypes()
+                    .Where(m => m.IsAssignableTo(modelAbstractType) && m.IsNotAbstractClass(true))
+                    .ToArray();
+                    if (modelTypes.Length == 1)
                     {
-                        Services.AddScoped(modelAbstractType,modelType);
+                        var modelType = modelTypes[0];
+                        if (modelType != null)
+                        {
+                            Services.AddScoped(modelAbstractType, modelType);
+                        }
+                    }else if (modelTypes.Length > 1)
+                    {
+                        var modelType = modelTypes
+                            .Where(x => x.GetCustomAttribute<AppServiceInjectionAttribute>() != null)
+                            .FirstOrDefault();
+                        if (modelType != null)
+                        {
+                            Services.AddScoped(modelAbstractType, modelType);
+                        }
                     }
+                    
                 }
             }
         }
