@@ -70,14 +70,14 @@ namespace Infra.EF.PG.Context
                 querable = querable.OrderByDescending(typeof(T).Key());
             }
             var data = querable.Skip(offset).Take(query.Count).ToArray();
-            var total = querable.Count();
+            decimal total = querable.Count();
             return new PagedList<object>
             {
                 DataList = data,
                 Page = query.Page,
-                Total = total,
+                Total = (int)total,
                 Count = query.Count,
-                Pages = total / query.Count,
+                Pages = (int)Math.Ceiling(total / query.Count),
             };
         }
     }

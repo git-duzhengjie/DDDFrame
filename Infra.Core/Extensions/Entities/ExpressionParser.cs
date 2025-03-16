@@ -1,6 +1,7 @@
 ﻿using Infra.Core.Enums;
 using Infra.Core.Models;
 using System.Linq.Expressions;
+using System.Reflection.Metadata;
 
 namespace Infra.Core.Extensions.Entities
 {
@@ -96,6 +97,9 @@ namespace Infra.Core.Extensions.Entities
                 case ConditionSymbol.GreaterEqual:
                     value = ToValue(condition.Value, originType);
                     return Expression.GreaterThanOrEqual(key, value);
+                case ConditionSymbol.GreaterEqualOrNone:
+                    value = ToValue(condition.Value, originType);
+                    return Expression.Or(Expression.Equal(key, Expression.Constant(null, typeof(object))), Expression.GreaterThanOrEqual(key, value));
                 case ConditionSymbol.Less:
                     value = ToValue(condition.Value, originType);
                     return Expression.LessThan(key, value);

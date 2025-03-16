@@ -7,6 +7,7 @@
         NotEqual,
         Greater,
         GreaterEqual,
+        GreaterEqualOrNone,
         Less,
         LessEqual,
         In,
