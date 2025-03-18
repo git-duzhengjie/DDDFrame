@@ -111,7 +111,7 @@ namespace Infra.Core.Extensions
                     var customAttribute = field.GetCustomAttribute(typeof(NameAttribute), inherit: true) as NameAttribute;
                     if (customAttribute != null)
                     {
-                        if (customAttribute.Name == name)
+                        if (customAttribute.Name == name||customAttribute.Name.Contains(name))
                         {
                             return (T)Enum.Parse(type,field.Name);
                         }

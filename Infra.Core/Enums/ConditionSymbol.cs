@@ -3,6 +3,9 @@
     public enum ConditionSymbol
     {
         Contains,
+        ContainsAll,
+        NotContains,
+        NotContainsAll,
         Equal,
         NotEqual,
         Greater,
@@ -14,6 +17,7 @@
         NotIn,
         Between,
         NotMapped,
+        LeftOrRight,
         None
     }
 }
