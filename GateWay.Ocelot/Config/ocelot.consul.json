@@ -12,6 +12,9 @@
       "UpstreamPathTemplate": "/notifyHub",
       "DownstreamPathTemplate": "/notifyHub",
       "DownstreamScheme": "ws",
+      "UpstreamHeaderTransform": {
+        "X-Forwarded-For": "{RemoteIpAddress}"
+      },
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -23,6 +26,9 @@
       "UpstreamPathTemplate": "/notifyHub/negotiate",
       "DownstreamPathTemplate": "/notifyHub/negotiate",
       "DownstreamScheme": "ws",
+      "UpstreamHeaderTransform": {
+        "X-Forwarded-For": "{RemoteIpAddress}"
+      },
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -39,6 +45,9 @@
         "Delete"
       ],
       "DownstreamScheme": "http",
+      "UpstreamHeaderTransform": {
+        "X-Forwarded-For": "{RemoteIpAddress}"
+      },
       "DownstreamPathTemplate": "/NotifyCenter{everything}",
       "ServiceName": "NotifyCenter",
       "LoadBalancerOptions": {
@@ -61,6 +70,9 @@
       "DownstreamScheme": "http",
       "DownstreamPathTemplate": "/h5/index.html",
       "ServiceName": "LetUsMarry",
+      "UpstreamHeaderTransform": {
+        "X-Forwarded-For": "{RemoteIpAddress}"
+      },
       "LoadBalancerOptions": {
         "Type": "RoundRobin"
       },
@@ -80,6 +92,9 @@
       ],
       "DownstreamScheme": "http",
       "DownstreamPathTemplate": "/h5/{everything}",
+      "UpstreamHeaderTransform": {
+        "X-Forwarded-For": "{RemoteIpAddress}"
+      },
       "ServiceName": "LetUsMarry",
       "LoadBalancerOptions": {
         "Type": "RoundRobin"
@@ -100,6 +115,9 @@
       ],
       "DownstreamScheme": "http",
       "DownstreamPathTemplate": "/LetUsMarry{everything}",
+      "UpstreamHeaderTransform": {
+        "X-Forwarded-For": "{RemoteIpAddress}"
+      },
       "ServiceName": "LetUsMarry",
       "LoadBalancerOptions": {
         "Type": "RoundRobin"
@@ -120,6 +138,9 @@
       ],
       "DownstreamScheme": "http",
       "DownstreamPathTemplate": "/LetUsMarry{everything}",
+      "UpstreamHeaderTransform": {
+        "X-Forwarded-For": "{RemoteIpAddress}"
+      },
       "ServiceName": "LetUsMarry",
       "LoadBalancerOptions": {
         "Type": "RoundRobin"
@@ -132,6 +153,9 @@
     },
     {
       "UpstreamPathTemplate": "/api/Cloud{everything}",
+      "UpstreamHeaderTransform": {
+        "X-Forwarded-For": "{RemoteIpAddress}"
+      },
       "UpstreamHttpMethod": [
         "Get",
         "Put",
@@ -160,6 +184,9 @@
       ],
       "DownstreamScheme": "http",
       "DownstreamPathTemplate": "/Cloud{everything}",
+      "UpstreamHeaderTransform": {
+        "X-Forwarded-For": "{RemoteIpAddress}"
+      },
       "ServiceName": "Cloud",
       "LoadBalancerOptions": {
         "Type": "RoundRobin"
@@ -180,6 +207,9 @@
       ],
       "DownstreamScheme": "http",
       "DownstreamPathTemplate": "/File{everything}",
+      "UpstreamHeaderTransform": {
+        "X-Forwarded-For": "{RemoteIpAddress}"
+      },
       "ServiceName": "file",
       "LoadBalancerOptions": {
         "Type": "RoundRobin"
@@ -192,6 +222,9 @@
     },
     {
       "UpstreamPathTemplate": "/File{everything}",
+      "UpstreamHeaderTransform": {
+        "X-Forwarded-For": "{RemoteIpAddress}"
+      },
       "UpstreamHttpMethod": [
         "Get",
         "Put",

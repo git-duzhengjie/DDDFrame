@@ -1,5 +1,6 @@
 ﻿using Infra.Core.Enums;
 using Infra.Core.Models;
+using System.Collections;
 using System.Linq.Expressions;
 using System.Reflection.Metadata;
 
@@ -139,6 +140,44 @@ namespace Infra.Core.Extensions.Entities
                 case ConditionSymbol.Equal:
                     Expression value = ToValue(condition.Value, originType);
                     return Expression.Equal(key, value);
+                case ConditionSymbol.Equals:
+                    if(condition.Value is IList list)
+                    {
+                        result = null;
+                        foreach (var v in list)
+                        {
+                            value = ToValue(v, originType);
+                            if (result == null)
+                            {
+                                result = Expression.Equal(key, value);
+                            }
+                            else
+                            {
+                                result = Expression.Or(result, Expression.Equal(key, value));
+                            }
+                        }
+                        return result;
+                    }
+                    return null;
+                case ConditionSymbol.NotEquals:
+                    if (condition.Value is IList list2)
+                    {
+                        result = null;
+                        foreach (var v in list2)
+                        {
+                            value = ToValue(v, originType);
+                            if (result == null)
+                            {
+                                result = Expression.Equal(key, value);
+                            }
+                            else
+                            {
+                                result = Expression.And(result, Expression.Equal(key, value));
+                            }
+                        }
+                        return Expression.Not(result);
+                    }
+                    return null;
                 case ConditionSymbol.Greater:
                     value = ToValue(condition.Value, originType);
                     return Expression.GreaterThan(key, value);
@@ -234,20 +273,6 @@ namespace Infra.Core.Extensions.Entities
                 return Expression.Constant((int)value, typeof(int));
             }
             return Expression.Constant(value, type);
-            //var tuple = Tuple.Create(value);
-            //if (type.IsEnum)
-            //{
-            //    return Expression.Constant(Enum.Parse(type,value))
-            //}
-            //if (type.IsEnum)
-            //{
-            //    return Expression.Convert(
-            //     Expression.Property(Expression.Constant(tuple), nameof(tuple.Item1))
-            //     , type);
-            //}
-            //return Expression.Convert(
-            //     Expression.Property(Expression.Constant(tuple), nameof(tuple.Item1))
-            //     , type);
         }
 
     }

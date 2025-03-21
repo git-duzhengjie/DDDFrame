@@ -1,7 +1,9 @@
+
 using Microsoft.Extensions.FileProviders;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 using Ocelot.Provider.Consul;
+using Ocelot.Provider.Consul.Interfaces;
 using Ocelot.Provider.Polly;
 using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);

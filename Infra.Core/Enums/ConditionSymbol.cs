@@ -7,7 +7,9 @@
         NotContains,
         NotContainsAll,
         Equal,
+        Equals,
         NotEqual,
+        NotEquals,
         Greater,
         GreaterEqual,
         GreaterEqualOrNone,
@@ -18,6 +20,7 @@
         Between,
         NotMapped,
         LeftOrRight,
-        None
+        None,
+        Not
     }
 }

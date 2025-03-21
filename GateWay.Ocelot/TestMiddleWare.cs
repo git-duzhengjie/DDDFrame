@@ -4,6 +4,7 @@
 
     public async Task Invoke(HttpContext context)
     {
+        Console.WriteLine(context.Request.Host.Host);
         await Task.CompletedTask;
     }
 }

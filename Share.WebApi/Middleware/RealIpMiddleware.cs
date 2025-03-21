@@ -25,6 +25,8 @@ namespace Infra.WebApi.WebApi.Middleware
         public async Task Invoke(HttpContext context)
         {
             var headers = context.Request.Headers;
+            _logger.LogDebug($"请求Host:{context.Request.Host.Host}");
+            _logger.LogDebug($"请求Token:{context.Request.Headers["Authorization"]}");
             if (_option.HeaderKeys != null && _option.HeaderKeys.Length > 0)
             {
                 foreach (var headerKey in _option.HeaderKeys)
