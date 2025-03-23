@@ -434,18 +434,18 @@ namespace System
             if (@this.EndsWith('年'))
             {
                 @this = @this.TrimEnd('年');
-                if (@this.Length == 2)
+            }
+            if (@this.Length == 2)
+            {
+                var now = DateTime.Now.Year.ToString().GetLast(2).ToInt();
+                var year = @this.ToInt();
+                if (year > now)
                 {
-                    var now = DateTime.Now.Year.ToString().GetLast(2).ToInt();
-                    var year = @this.ToInt();
-                    if (year > now)
-                    {
-                        return $"19{year}";
-                    }
-                    else
-                    {
-                        return $"20{year}";
-                    }
+                    return $"19{year}";
+                }
+                else
+                {
+                    return $"20{year}";
                 }
             }
             return @this;

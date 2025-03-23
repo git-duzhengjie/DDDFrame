@@ -15,5 +15,10 @@ namespace Infra.Core.Attributes
         /// 是否加入或运算
         /// </summary>
         public bool Or { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool OrAnd { get; set; }
     }
 }

@@ -21,6 +21,8 @@
         NotMapped,
         LeftOrRight,
         None,
-        Not
+        Not,
+        CountGreaterEqual,
+        CountEqual,
     }
 }

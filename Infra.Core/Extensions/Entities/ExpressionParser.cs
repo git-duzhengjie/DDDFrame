@@ -22,13 +22,13 @@ namespace Infra.Core.Extensions.Entities
             return Expression.Lambda<Func<TEntity, bool>>(expression);
         }
 
-        private Expression ParseExpressionBody(IEnumerable<Condition> conditions)
+        private BinaryExpression ParseExpressionBody(IEnumerable<Condition> conditions)
         {
             var ors=conditions.Where(x=>x.Or).ToArray();
             var ands=conditions.Except(ors).ToArray();
             Expression andExpression= ParseAnds(ands);
             Expression orExpression = ParseOrs(ors);
-            return Expression.AndAlso(andExpression, orExpression);
+            return ors.Length>1? Expression.AndAlso(andExpression, orExpression): Expression.OrElse(andExpression, orExpression);
         }
 
         private Expression ParseOrs(Condition[] ors)
@@ -43,8 +43,10 @@ namespace Infra.Core.Extensions.Entities
             }
             else
             {
-                Expression left = ParseCondition(ors.First());
-                Expression right = ParseExpressionBody(ors.Skip(1));
+                var ands=ors.Where(x=>x.OrAnd).ToArray();
+                var os = ors.Except(ands).ToArray();
+                Expression left = ParseAnds(ands);
+                Expression right = ParseOrs(os);
                 return Expression.OrElse(left, right);
             }
         }
@@ -62,7 +64,7 @@ namespace Infra.Core.Extensions.Entities
             else
             {
                 Expression left = ParseCondition(ands.First());
-                Expression right = ParseExpressionBody(ands.Skip(1));
+                Expression right = ParseAnds(ands.Skip(1).ToArray());
                 return Expression.AndAlso(left, right);
             }
         }
@@ -202,6 +204,10 @@ namespace Infra.Core.Extensions.Entities
                     return Expression.Not(ParserIn(condition));
                 case ConditionSymbol.Between:
                     return ParserBetween(condition);
+                case ConditionSymbol.CountGreaterEqual:
+                    return Expression.GreaterThanOrEqual(Expression.ArrayLength(key), Expression.Constant(condition.Value,typeof(int)));
+                case ConditionSymbol.CountEqual:
+                    return Expression.Equal(Expression.ArrayLength(key), Expression.Constant(condition.Value, typeof(int)));
                 default:
                     throw new NotImplementedException("不支持此操作。");
             }

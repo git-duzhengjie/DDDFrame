@@ -66,7 +66,8 @@ namespace Infra.Core.Extensions.Entities
                         Key = attribute.Key,
                         Value = property.GetValue(t),
                         QuerySymbol = symbol,
-                        Or=attribute.Or
+                        Or=attribute.Or,
+                        OrAnd=attribute.OrAnd,
                     });
                 }
             }
