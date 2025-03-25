@@ -28,7 +28,7 @@ namespace Infra.Core.Extensions.Entities
             var ands=conditions.Except(ors).ToArray();
             Expression andExpression= ParseAnds(ands);
             Expression orExpression = ParseOrs(ors);
-            return ors.Length>1? Expression.AndAlso(andExpression, orExpression): Expression.OrElse(andExpression, orExpression);
+            return Expression.AndAlso(andExpression, orExpression);
         }
 
         private Expression ParseOrs(Condition[] ors)
@@ -45,8 +45,18 @@ namespace Infra.Core.Extensions.Entities
             {
                 var ands=ors.Where(x=>x.OrAnd).ToArray();
                 var os = ors.Except(ands).ToArray();
-                Expression left = ParseAnds(ands);
-                Expression right = ParseOrs(os);
+                Expression left;
+                Expression right;
+                if (ands.Length != 0)
+                {
+                    left = ParseAnds(ands);
+                    right = ParseOrs(os);
+                }
+                else
+                {
+                    left=ParseCondition(ors.First());
+                    right=ParseOrs(os.Skip(1).ToArray());
+                }
                 return Expression.OrElse(left, right);
             }
         }
