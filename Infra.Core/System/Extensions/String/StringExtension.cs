@@ -435,17 +435,21 @@ namespace System
             {
                 @this = @this.TrimEnd('年');
             }
+            if (@this.EndsWith('后'))
+            {
+                @this = @this.TrimEnd('后');
+            }
             if (@this.Length == 2)
             {
                 var now = DateTime.Now.Year.ToString().GetLast(2).ToInt();
                 var year = @this.ToInt();
                 if (year > now)
                 {
-                    return $"19{year}";
+                    return $"19{year:00}";
                 }
                 else
                 {
-                    return $"20{year}";
+                    return $"20{year:00}";
                 }
             }
             return @this;
