@@ -177,20 +177,20 @@ namespace Infra.Core.Json
             }
         }
 
-        private object? JsonElementToValue(JsonElement value, Type propertyType)
+        private static object? JsonElementToValue(JsonElement value, Type propertyType)
         {
             if (value.ValueKind == JsonValueKind.String && propertyType != typeof(string))
             {
                 if (propertyType.IsEnum)
                 {
                     return Enum.Parse(propertyType, value.GetString());
-                }else if (propertyType==typeof(int))
+                }else if (propertyType==typeof(int)||propertyType==typeof(int?))
                 {
                     return int.Parse(value.GetString());
-                }else if (propertyType == typeof(float))
+                }else if (propertyType == typeof(float)||propertyType==typeof(float?))
                 {
                     return float.Parse(value.GetString());
-                }else if (propertyType == typeof(double))
+                }else if (propertyType == typeof(double)||propertyType==typeof(double?))
                 {
                     return double.Parse(value.GetString());
                 }
