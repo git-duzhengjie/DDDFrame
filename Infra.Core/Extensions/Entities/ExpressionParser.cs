@@ -227,7 +227,7 @@ namespace Infra.Core.Extensions.Entities
         {
             var keyExpression= Expression.Property(Parameter, key);
             originType = keyExpression.Type;
-            if (keyExpression.Type.IsEnum)
+            if (keyExpression.Type.IsEnum||(keyExpression.Type.IsNullableType(out var valueType)&&valueType.IsEnum))
             {
                 return Expression.Convert(keyExpression, typeof(int));
             }
@@ -282,9 +282,9 @@ namespace Infra.Core.Extensions.Entities
             return expression;
         }
 
-        private Expression ToValue(object value, Type type)
+        private static Expression ToValue(object value, Type type)
         {
-            if (type.IsEnum)
+            if (type.IsEnum || (type.IsNullableType(out var valueType)&&valueType.IsEnum))
             {
                 return Expression.Constant((int)value, typeof(int));
             }

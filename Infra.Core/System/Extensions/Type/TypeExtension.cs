@@ -11,6 +11,19 @@ namespace System
 {
     public static class TypeExtension
     {
+        public static bool IsNullableType(this Type type,out Type valueType)
+        {
+            bool isNullable= type.IsGenericType && type.Name.StartsWith("Nullable");
+            if (isNullable)
+            {
+                valueType = type.GenericTypeArguments[0];
+            }
+            else
+            {
+                valueType = null;
+            }
+            return isNullable;
+        }
         public static string Table(this Type type)
         {
             Attribute attribute = Attribute.GetCustomAttribute(type, typeof(TableAttribute));
