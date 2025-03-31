@@ -32,7 +32,10 @@ namespace Infra.Core.Json
         }
         public static string Serialize<T>(T obj, JsonSerializerOptions serializerOptions = null) where T : IObject
         {
-            return JsonSerializer.Serialize(obj, serializerOptions);
+            return Newtonsoft.Json.JsonConvert.SerializeObject(obj, new Newtonsoft.Json.JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            });
         }
 
         private static bool IsIObject(string json)
@@ -113,7 +116,10 @@ namespace Infra.Core.Json
 
         public string Serialize(object obj)
         {
-            return JsonSerializer.Serialize(obj, JsonSerializerSetting.JsonSerializerOptions);
+            return Newtonsoft.Json.JsonConvert.SerializeObject(obj, new Newtonsoft.Json.JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            });
         }
 
         public T Deserialize<T>(string str)
