@@ -48,7 +48,7 @@ namespace Infra.EF.PG.Context
             return querable.Select(x=>x.Id).Count();
         }
 
-        public static IPagedList<object> PageQuery(IPageQueryDTO query, FrameDbContext frameDbContext)
+        public static PagedList<object> PageQuery(IPageQueryDTO query, FrameDbContext frameDbContext)
         {
             int offset = (query.Page - 1) * query.Count;
             var querable = frameDbContext.Set<T>()

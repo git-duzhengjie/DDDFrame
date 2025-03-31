@@ -18,45 +18,16 @@ using System.IO.Pipelines;
 using Newtonsoft.Json.Linq;
 using System.Buffers;
 using System.IO;
+using UniversalRpc.Abstracts;
+using UniversalRPC.Extensions;
 namespace Infra.Core.Json
 {
     public class FrameJson : IOutputFormatter, IInputFormatter, ISerialize
     {
-        private static Dictionary<string, Type?> objectTypeMap = null;
-
-
         public FrameJson()
         {
             RegisterProvider(CodePagesEncodingProvider.Instance);
-            if (objectTypeMap == null)
-            {
-                objectTypeMap = new Dictionary<string, Type?>();
-                var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-                foreach (var assembly in assemblies)
-                {
-                    var types = assembly.GetExportedTypes()
-                        .Where(x => x.IsNotAbstractClass(true))
-                        .ToArray();
-                    foreach (var type in types)
-                    {
-                        var interfaces = type.GetInterfaces();
-                        if (interfaces.Contains(typeof(IObject)))
-                        {
-                            var instance = Activator.CreateInstance(type) as IObject;
-
-                            if (!objectTypeMap.ContainsKey(instance.ObjectName))
-                            {
-                                objectTypeMap.Add(instance.ObjectName, type);
-                            }
-                            else
-                            {
-                                throw new Exception($"{instance.ObjectName}该对象名已经存在");
-                            }
-                        }
-                    }
-                }
-
-            }
+            WebApplicationExtensions.GenerateTypeMap();
 
         }
         public static string Serialize<T>(T obj, JsonSerializerOptions serializerOptions = null) where T : IObject
@@ -64,15 +35,23 @@ namespace Infra.Core.Json
             return JsonSerializer.Serialize(obj, serializerOptions);
         }
 
+        private static bool IsIObject(string json)
+        {
+            return json.Contains("ObjectName") || json.Contains("objectName");
+        }
         public static T Desialize<T>(string json, JsonSerializerOptions serializerOptions = null)
         {
-            if (!json.Contains("ObjectName")&&!json.Contains("$type"))
+            if (json.IsNullOrEmpty())
+            {
+                return default;
+            }
+            if (!IsIObject(json)&&!json.Contains("$type")&&typeof(T).IsNotAbstractClass(true))
             {
                 return JsonSerializer.Deserialize<T>(json, serializerOptions);
             }
             else
             {
-                return new FrameTypeJson(json,serializerOptions, objectTypeMap,null).Deserialize<T>();
+                return new FrameTypeJson(json,serializerOptions, WebApplicationExtensions.ObjectTypeMap,null).Deserialize<T>();
             }
             
         }
@@ -81,15 +60,15 @@ namespace Infra.Core.Json
         {
             if (json.IsNullOrEmpty())
             {
-                return json;
+                return null;
             }
-            if (!json.Contains("ObjectName") && !json.Contains("$type"))
+            if (!IsIObject(json)&& !json.Contains("$type")&&modelType.IsNotAbstractClass(true))
             {
                 return JsonSerializer.Deserialize(json,modelType, serializerOptions);
             }
             else
             {
-                return new FrameTypeJson(json, serializerOptions, objectTypeMap,logger).Deserialize(modelType);
+                return new FrameTypeJson(json, serializerOptions, WebApplicationExtensions.ObjectTypeMap,logger).Deserialize(modelType);
             }
         }
 

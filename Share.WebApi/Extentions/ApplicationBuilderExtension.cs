@@ -17,6 +17,8 @@ using UniversalRPC.Services;
 using Microsoft.Extensions.FileProviders;
 using Infra.EF.PG.Context;
 using Microsoft.EntityFrameworkCore;
+using Infra.Core.Json;
+using UniversalRPC.Serialization;
 
 namespace Microsoft.AspNetCore.Builder
 {
@@ -119,7 +121,7 @@ namespace Microsoft.AspNetCore.Builder
                 dbContext.Database.Migrate();
             }
         }
-        private static void UseURPCSerivice(IEndpointRouteBuilder endpoints, IServiceProvider applicationServices, bool useURPCServiceName)
+        private static void UseURPCSerivice(IEndpointRouteBuilder endpoints, IServiceProvider applicationServices, bool useURPCServiceName,ISerialize serialize=null)
         {
             var serviceFactory = applicationServices.GetService<URPCServiceFactory>();
             var types = serviceFactory?.GetURPCServiceITypes();
@@ -129,11 +131,11 @@ namespace Microsoft.AspNetCore.Builder
                 {
                     var type = types[0];
                     var serviceName = type.GetServiceName();
-                    endpoints.UseURPCService(serviceName);
+                    endpoints.UseURPCService(serviceName,serialize??new FrameJson());
                 }
                 else
                 {
-                    endpoints.UseURPCService();
+                    endpoints.UseURPCService("",serialize??new FrameJson());
                 }
             }
         }

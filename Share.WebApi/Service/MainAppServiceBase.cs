@@ -46,7 +46,7 @@ namespace Infra.WebApi.Service
 
         }
 
-        public async Task<IPagedList<IOutputDTO>> PageQueryAsync(IPageQueryDTO pageQueryDTO)
+        public async virtual Task<IPagedList<IOutputDTO>> PageQueryAsync(IPageQueryDTO pageQueryDTO)
         {
             var domainService = domainServiceFactory.GetDomainService(pageQueryDTO.ObjectType);
             return await domainService.PageQueryAsync(pageQueryDTO);

@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using UniversalRPC.Extensions;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Infra.Core.Json
@@ -106,7 +107,14 @@ namespace Infra.Core.Json
                                 }
                                 else
                                 {
-                                    result.Add(ParseObjectWithType(geType, element));
+                                    if (IObject(element))
+                                    {
+                                        result.Add(ParseObjectWithoutType(element, geType));
+                                    }
+                                    else
+                                    {
+                                        result.Add(ParseObjectWithType(geType, element));
+                                    }
                                 }
                             }
                         }
@@ -131,12 +139,26 @@ namespace Infra.Core.Json
             return obj;
         }
 
+        private bool IObject(JsonElement jValue)
+        {
+            if (TryGetValue("ObjectName",jValue,out _))
+            {
+                return true;
+            }
+            return false;
+        }
         private object ParseObjectWithoutType(JsonElement jValue, Type modelType)
         {
-            var objectName = jValue.GetProperty("ObjectName").ToString();
+            TryGetValue("ObjectName", jValue, out var value);
+            var objectName = value.ToString();
             if (objectName.IsNotNullOrEmpty() && objectTypeMap.TryGetValue(objectName, out var type))
             {
-                var obj = Activator.CreateInstance(type);
+                object obj;
+                if (type.IsGenericType)
+                {
+                    type=type.MakeGenericType(modelType.GenericTypeArguments);
+                }
+                obj = Activator.CreateInstance(type);
                 SetValue(obj, jValue);
                 return obj;
             }

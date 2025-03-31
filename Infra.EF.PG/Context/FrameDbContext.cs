@@ -104,13 +104,13 @@ namespace Infra.EF.PG.Context
             });
         }
 
-        public async Task<IPagedList<object>> PageQueryAsync(IPageQueryDTO queryDTO, Type queryType)
+        public async Task<PagedList<object>> PageQueryAsync(IPageQueryDTO queryDTO, Type queryType)
         {
             var frameDbType = typeof(FrameDbContextType<>).MakeGenericType(queryType);
-            return await Task.Run<IPagedList<object>>(() =>
+            return await Task.Run<PagedList<object>>(() =>
             {
                 var result= frameDbType.InvokeMethod("PageQuery", [queryDTO, this]);
-                return result as IPagedList<object>;
+                return result as PagedList<object>;
             });
         }
     }

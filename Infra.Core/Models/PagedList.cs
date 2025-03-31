@@ -1,9 +1,10 @@
 ﻿using Infra.Core.Abstract;
+using UniversalRpc.Abstracts;
 
 namespace Infra.Core.Models
 {
     [Serializable]
-    public class PagedList<TEntity> : IPagedList<TEntity>
+    public class PagedList<TEntity> : IPagedList<TEntity>,IObject
     {
         public IList<TEntity> DataList { get; set; }
 
@@ -81,5 +82,9 @@ namespace Infra.Core.Models
         public bool HasPrev => Page > 1;
 
         public bool HasNext => Page < Pages;
+
+        public string ObjectName => "PagedList";
+
+        public int ObjectType => -1;
     }
 }
