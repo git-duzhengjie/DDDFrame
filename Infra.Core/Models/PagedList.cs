@@ -80,7 +80,7 @@ namespace Infra.Core.Models
 
         public bool HasNext => Page < Pages;
 
-        public string ObjectName => "PagedList";
+        public string ObjectName => GetType().Name;
 
         public int ObjectType => -1;
     }
