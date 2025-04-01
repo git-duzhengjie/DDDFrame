@@ -1,6 +1,4 @@
 ﻿using Infra.Core.Abstract;
-using UniversalRpc.Abstracts;
-
 namespace Infra.Core.Models
 {
     [Serializable]
@@ -11,7 +9,7 @@ namespace Infra.Core.Models
         public PagedList()
         {
             Count = 1;
-            DataList = new List<TEntity>();
+            DataList = [];
         }
 
         public PagedList(IQueryable<TEntity> queryable, int page, int size)
@@ -36,8 +34,7 @@ namespace Infra.Core.Models
         {
             if (entityList == null)
                 return;
-            if (DataList == null)
-                DataList = new List<TEntity>();
+            DataList ??= [];
             foreach (TEntity entity in entityList)
                 DataList.Add(entity);
         }
@@ -45,7 +42,7 @@ namespace Infra.Core.Models
         public PagedList(IList<TEntity> list, int page, int size)
           : this()
         {
-            Total = list.Count();
+            Total = list.Count;
             Pages = Total / size;
             if (Total % size > 0)
                 ++Pages;

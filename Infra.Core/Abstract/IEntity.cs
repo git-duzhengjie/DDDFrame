@@ -1,6 +1,4 @@
-﻿using UniversalRpc.Abstracts;
-
-namespace Infra.Core.Abstract
+﻿namespace Infra.Core.Abstract
 {
     public interface IEntity:IObject
     {

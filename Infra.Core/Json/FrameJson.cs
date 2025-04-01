@@ -18,17 +18,54 @@ using System.IO.Pipelines;
 using Newtonsoft.Json.Linq;
 using System.Buffers;
 using System.IO;
-using UniversalRpc.Abstracts;
 using UniversalRPC.Extensions;
 namespace Infra.Core.Json
 {
     public class FrameJson : IOutputFormatter, IInputFormatter, ISerialize
     {
+        private static Dictionary<string, Type?> objectTypeMap = null;
         public FrameJson()
         {
             RegisterProvider(CodePagesEncodingProvider.Instance);
-            WebApplicationExtensions.GenerateTypeMap();
+            GenerateTypeMap();
 
+        }
+        public static void GenerateTypeMap()
+        {
+            if (objectTypeMap == null)
+            {
+                objectTypeMap = [];
+                var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                foreach (var assembly in assemblies)
+                {
+                    var types = assembly.GetExportedTypes()
+                        .Where(x => x.IsNotAbstractClass(true))
+                        .ToArray();
+                    foreach (var type in types)
+                    {
+                        var interfaces = type.GetInterfaces();
+                        if (interfaces.Contains(typeof(IObject)))
+                        {
+                            IObject instance;
+                            if (type.IsGenericType)
+                            {
+                                var newType = type.MakeGenericType(typeof(int));
+                                instance = Activator.CreateInstance(newType) as IObject;
+                            }
+                            else
+                            {
+                                instance = Activator.CreateInstance(type) as IObject;
+                            }
+
+                            if (!objectTypeMap.TryAdd(instance.ObjectName, type))
+                            {
+                                throw new Exception($"{instance.ObjectName}该对象名已经存在");
+                            }
+                        }
+                    }
+                }
+
+            }
         }
         public static string Serialize<T>(T obj, JsonSerializerOptions serializerOptions = null) where T : IObject
         {
@@ -54,7 +91,7 @@ namespace Infra.Core.Json
             }
             else
             {
-                return new FrameTypeJson(json,serializerOptions, WebApplicationExtensions.ObjectTypeMap,null).Deserialize<T>();
+                return new FrameTypeJson(json,serializerOptions, objectTypeMap,null).Deserialize<T>();
             }
             
         }
@@ -71,7 +108,7 @@ namespace Infra.Core.Json
             }
             else
             {
-                return new FrameTypeJson(json, serializerOptions, WebApplicationExtensions.ObjectTypeMap,logger).Deserialize(modelType);
+                return new FrameTypeJson(json, serializerOptions, objectTypeMap,logger).Deserialize(modelType);
             }
         }
 

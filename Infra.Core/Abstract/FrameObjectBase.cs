@@ -1,5 +1,4 @@
-﻿using UniversalRpc.Abstracts;
-
+﻿
 namespace Infra.Core.Abstract
 {
     public abstract class FrameObjectBase : IObject
