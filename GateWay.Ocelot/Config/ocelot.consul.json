@@ -2,7 +2,7 @@
   "GlobalConfiguration": {
     "ServiceDiscoveryProvider": {
       "Scheme": "http",
-      "Host": "192.168.1.151",
+      "Host": "192.168.1.215",
       "Port": 8500,
       "Type": "Consul"
     }
@@ -49,7 +49,7 @@
         "X-Forwarded-For": "{RemoteIpAddress}"
       },
       "DownstreamPathTemplate": "/NotifyCenter{everything}",
-      "ServiceName": "NotifyCenter",
+      "ServiceName": "NotifyCenterDev",
       "LoadBalancerOptions": {
         "Type": "RoundRobin"
       },
@@ -69,7 +69,7 @@
       ],
       "DownstreamScheme": "http",
       "DownstreamPathTemplate": "/h5/index.html",
-      "ServiceName": "LetUsMarry",
+      "ServiceName": "LetUsMarryDev",
       "UpstreamHeaderTransform": {
         "X-Forwarded-For": "{RemoteIpAddress}"
       },
@@ -95,7 +95,7 @@
       "UpstreamHeaderTransform": {
         "X-Forwarded-For": "{RemoteIpAddress}"
       },
-      "ServiceName": "LetUsMarry",
+      "ServiceName": "LetUsMarryDev",
       "LoadBalancerOptions": {
         "Type": "RoundRobin"
       },
@@ -118,7 +118,7 @@
       "UpstreamHeaderTransform": {
         "X-Forwarded-For": "{RemoteIpAddress}"
       },
-      "ServiceName": "LetUsMarry",
+      "ServiceName": "LetUsMarryDev",
       "LoadBalancerOptions": {
         "Type": "RoundRobin"
       },
@@ -141,7 +141,7 @@
       "UpstreamHeaderTransform": {
         "X-Forwarded-For": "{RemoteIpAddress}"
       },
-      "ServiceName": "LetUsMarry",
+      "ServiceName": "LetUsMarryDev",
       "LoadBalancerOptions": {
         "Type": "RoundRobin"
       },
@@ -164,7 +164,7 @@
       ],
       "DownstreamScheme": "http",
       "DownstreamPathTemplate": "/Cloud{everything}",
-      "ServiceName": "Cloud",
+      "ServiceName": "CloudDev",
       "LoadBalancerOptions": {
         "Type": "RoundRobin"
       },
@@ -187,7 +187,7 @@
       "UpstreamHeaderTransform": {
         "X-Forwarded-For": "{RemoteIpAddress}"
       },
-      "ServiceName": "Cloud",
+      "ServiceName": "CloudDev",
       "LoadBalancerOptions": {
         "Type": "RoundRobin"
       },
@@ -210,7 +210,7 @@
       "UpstreamHeaderTransform": {
         "X-Forwarded-For": "{RemoteIpAddress}"
       },
-      "ServiceName": "file",
+      "ServiceName": "FileDev",
       "LoadBalancerOptions": {
         "Type": "RoundRobin"
       },
@@ -233,7 +233,7 @@
       ],
       "DownstreamScheme": "http",
       "DownstreamPathTemplate": "/File{everything}",
-      "ServiceName": "file",
+      "ServiceName": "FileDev",
       "LoadBalancerOptions": {
         "Type": "RoundRobin"
       },
