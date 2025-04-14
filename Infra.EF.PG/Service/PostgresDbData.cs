@@ -1,8 +1,8 @@
 ﻿using Infra.Core.Abstract;
 using Infra.Core.Json;
-using Infra.EF.PG.Attributes;
-using Infra.EF.PG.Context;
-using Infra.EF.PG.Entities;
+using Infra.EF.Attributes;
+using Infra.EF.Context;
+using Infra.EF.Entities;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
@@ -14,29 +14,22 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infra.EF.PG.Service
+namespace Infra.EF.Service
 {
-    public class DbData:IDbData
+    /// <summary>
+    /// 
+    /// </summary>
+    public class PostgresDbData(FramePGDbContext lougeDbContext) : IDbData
     {
         #region <常量>
         #endregion <常量>
 
         #region <变量>
-        private readonly FrameDbContext _lougeDbContext;
-        private static readonly Dictionary<string, string> s_navigaitonTypeTableMap = new();
+        private readonly FramePGDbContext dbContext = lougeDbContext;
+        private static readonly Dictionary<string, string> s_navigaitonTypeTableMap = [];
+
         #endregion <变量>
-
-        #region <属性>
-        #endregion <属性>
-
         #region <构造方法和析构方法>
-        /// <summary>
-        /// 
-        /// </summary>
-        public DbData(FrameDbContext lougeDbContext)
-        {
-            _lougeDbContext = lougeDbContext;
-        }
         #endregion <构造方法和析构方法>
 
         #region 自定义类
@@ -60,7 +53,7 @@ namespace Infra.EF.PG.Service
         public async Task DeleteAsync(EntityBase entity)
         {
             var tableName = GetTableName(entity);
-            await _lougeDbContext.Database.ExecuteSqlRawAsync($"delete from {0} where id={1}",tableName,entity.Id);
+            await dbContext.Database.ExecuteSqlRawAsync($"delete from {0} where id={1}",tableName,entity.Id);
         }
 
         /// <summary>
@@ -77,7 +70,7 @@ namespace Infra.EF.PG.Service
             }
             if (sql.IsNotNullOrEmpty())
             {
-                await _lougeDbContext.Database.ExecuteSqlRawAsync(sql);
+                await dbContext.Database.ExecuteSqlRawAsync(sql);
             }
 
         }
@@ -162,7 +155,7 @@ namespace Infra.EF.PG.Service
         /// <returns></returns>
         public async Task SaveAsync()
         {
-            await _lougeDbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
         }
 
         /// <summary>
@@ -196,7 +189,7 @@ namespace Infra.EF.PG.Service
                         keyArray.Add($"{key}={{{i}}}");
                     }
                     sql += $"{string.Join(",", keyArray)} where id={{{keyValues.Count}}}";
-                    await _lougeDbContext.Database.ExecuteSqlRawAsync(sql, keyValues.Select(x => x.Value).Append(refTable.KeyValues.First(x => x.Key == "id").Value).ToArray());
+                    await dbContext.Database.ExecuteSqlRawAsync(sql, keyValues.Select(x => x.Value).Append(refTable.KeyValues.First(x => x.Key == "id").Value).ToArray());
                 }
             }
 
@@ -216,8 +209,8 @@ namespace Infra.EF.PG.Service
                     var insertValue = ",".Join(insertArray);
                     var sql = $"insert into {navigationTable.TableName}({navigationTable.Key}) values{insertValue} ON CONFLICT({navigationTable.Key}) DO NOTHING";
                     var sqlRaw = $@"delete from {navigationTable.TableName} where {entity.GetType().Name.ToLower()}sid={entity.Id};";
-                    await _lougeDbContext.Database.ExecuteSqlRawAsync(sqlRaw);
-                    await _lougeDbContext.Database.ExecuteSqlRawAsync(sql, navigationTable.Values.SelectMany(x => x).ToArray());
+                    await dbContext.Database.ExecuteSqlRawAsync(sqlRaw);
+                    await dbContext.Database.ExecuteSqlRawAsync(sql, navigationTable.Values.SelectMany(x => x).ToArray());
 
                 }
             }
@@ -226,7 +219,7 @@ namespace Infra.EF.PG.Service
                 foreach (var manyToOneNavigationTable in manyToOneNavigationTables)
                 {
                     var sql = $"update {manyToOneNavigationTable.TableName} set {manyToOneNavigationTable.Key}={{0}} where id={{1}}";
-                    await _lougeDbContext.Database.ExecuteSqlRawAsync(sql, manyToOneNavigationTable.Value, manyToOneNavigationTable.CurrentValue);
+                    await dbContext.Database.ExecuteSqlRawAsync(sql, manyToOneNavigationTable.Value, manyToOneNavigationTable.CurrentValue);
                 }
             }
         }
@@ -271,7 +264,7 @@ namespace Infra.EF.PG.Service
                         sql += $"{string.Join(",", keyArray)} where id={{{keyValues.Count + i * (keyValues.Count + 1)}}}";
                         allSql += sql + ";";
                     }
-                    await _lougeDbContext.Database.ExecuteSqlRawAsync(allSql, group.SelectMany(x => x.KeyValues.Where(k => k.Key != "id").Select(k => k.Value).Append(x.KeyValues.First(k => k.Key == "id").Value)).ToArray());
+                    await dbContext.Database.ExecuteSqlRawAsync(allSql, group.SelectMany(x => x.KeyValues.Where(k => k.Key != "id").Select(k => k.Value).Append(x.KeyValues.First(k => k.Key == "id").Value)).ToArray());
                 }
             }
 
@@ -296,8 +289,8 @@ namespace Infra.EF.PG.Service
                     insertSql += $"insert into {navigationTable.TableName}({navigationTable.Key}) values{insertValue} ON CONFLICT({navigationTable.Key}) DO NOTHING;";
                     deleteSql += $@"delete from {navigationTable.TableName} where {navigationTable.ThisKey.ToLower()}sid={navigationTable.Value};";
                 }
-                await _lougeDbContext.Database.ExecuteSqlRawAsync(deleteSql);
-                await _lougeDbContext.Database.ExecuteSqlRawAsync(insertSql, manyToManyNavigationTables.SelectMany(x => x.Values.SelectMany(v => v)).ToArray());
+                await dbContext.Database.ExecuteSqlRawAsync(deleteSql);
+                await dbContext.Database.ExecuteSqlRawAsync(insertSql, manyToManyNavigationTables.SelectMany(x => x.Values.SelectMany(v => v)).ToArray());
             }
             if (manyToOneNavigationTables.Any())
             {
@@ -308,7 +301,7 @@ namespace Infra.EF.PG.Service
                     allSql += $"update {manyToOneNavigationTable.TableName} set {manyToOneNavigationTable.Key}={{{index * 2}}} where id={{{index * 2 + 1}}};";
                     index++;
                 }
-                await _lougeDbContext.Database.ExecuteSqlRawAsync(allSql, manyToOneNavigationTables.SelectMany(x => new List<object> { x.Value, x.CurrentValue }).ToArray());
+                await dbContext.Database.ExecuteSqlRawAsync(allSql, manyToOneNavigationTables.SelectMany(x => new List<object> { x.Value, x.CurrentValue }).ToArray());
             }
         }
 
@@ -354,7 +347,7 @@ namespace Infra.EF.PG.Service
                         sql += $"{string.Join(",", keyArray)} where id={{{keyValues.Count + i * (keyValues.Count + 1)}}}";
                         allSql += sql + ";";
                     }
-                    await _lougeDbContext.Database.ExecuteSqlRawAsync(allSql, group.SelectMany(x => x.KeyValues.Where(k => k.Key != "id").Select(k => k.Value).Append(x.KeyValues.First(k => k.Key == "id").Value)).ToArray());
+                    await dbContext.Database.ExecuteSqlRawAsync(allSql, group.SelectMany(x => x.KeyValues.Where(k => k.Key != "id").Select(k => k.Value).Append(x.KeyValues.First(k => k.Key == "id").Value)).ToArray());
 
                 }
             }
@@ -380,8 +373,8 @@ namespace Infra.EF.PG.Service
                     insertSql += $"insert into {navigationTable.TableName}({navigationTable.Key}) values{insertValue} ON CONFLICT({navigationTable.Key}) DO NOTHING;";
                     deleteSql += $@"delete from {navigationTable.TableName} where {navigationTable.ThisKey.ToLower()}sid={navigationTable.Value};";
                 }
-                await _lougeDbContext.Database.ExecuteSqlRawAsync(deleteSql);
-                await _lougeDbContext.Database.ExecuteSqlRawAsync(insertSql, manyToManyNavigationTables.SelectMany(x => x.Values.SelectMany(v => v)).ToArray());
+                await dbContext.Database.ExecuteSqlRawAsync(deleteSql);
+                await dbContext.Database.ExecuteSqlRawAsync(insertSql, manyToManyNavigationTables.SelectMany(x => x.Values.SelectMany(v => v)).ToArray());
             }
             if (manyToOneNavigationTables.Any())
             {
@@ -392,7 +385,7 @@ namespace Infra.EF.PG.Service
                     allSql += $"update {manyToOneNavigationTable.TableName} set {manyToOneNavigationTable.Key}={{{index * 2}}} where id={{{index * 2 + 1}}};";
                     index++;
                 }
-                await _lougeDbContext.Database.ExecuteSqlRawAsync(allSql, manyToOneNavigationTables.SelectMany(x => new List<object> { x.Value, x.CurrentValue }).ToArray());
+                await dbContext.Database.ExecuteSqlRawAsync(allSql, manyToOneNavigationTables.SelectMany(x => new List<object> { x.Value, x.CurrentValue }).ToArray());
             }
         }
 
@@ -499,7 +492,7 @@ namespace Infra.EF.PG.Service
             {
                 properties = properties.Where(x => propertyNames.Any(p => p.ToLower() == x.Name.ToLower()) || x.Name.ToLower() == "id").ToArray();
             }
-            var efProperties = _lougeDbContext.Model.FindEntityType(table.GetType()).GetProperties();
+            var efProperties = dbContext.Model.FindEntityType(table.GetType()).GetProperties();
             foreach (var property in properties)
             {
                 try
@@ -527,7 +520,7 @@ namespace Infra.EF.PG.Service
                                     if (!s_navigaitonTypeTableMap.TryGetValue(key, out var navigationTableName))
                                     {
                                         navigationTableName = $"{table.GetType().Name.ToLower()}{type.Name.ToLower()}";
-                                        var r = await _lougeDbContext.Database.ExecuteSqlRawAsync($"update pg_class set relname=relname where  relname='{navigationTableName}'");
+                                        var r = await dbContext.Database.ExecuteSqlRawAsync($"update pg_class set relname=relname where  relname='{navigationTableName}'");
                                         if (r <= 0)
                                         {
                                             navigationTableName = $"{type.Name.ToLower()}{table.GetType().Name.ToLower()}";
@@ -686,7 +679,7 @@ namespace Infra.EF.PG.Service
                     }
                     var tableName = refTable.TableName;
                     var sql = $"insert into {tableName}({string.Join(",", refTable.KeyValues.Select(x => x.Key))}) values({string.Join(",", valueParameters)}) ON CONFLICT(id) DO NOTHING";
-                    await _lougeDbContext.Database.ExecuteSqlRawAsync(sql, refTable.KeyValues.Select(x => x.Value).ToArray());
+                    await dbContext.Database.ExecuteSqlRawAsync(sql, refTable.KeyValues.Select(x => x.Value).ToArray());
                 }
             }
 
@@ -706,7 +699,7 @@ namespace Infra.EF.PG.Service
                     var insertValue = ",".Join(insertArray);
                     var tableName = navigationTable.TableName;
                     var sql = $"insert into {navigationTable.TableName}({navigationTable.Key}) values{insertValue} ON CONFLICT({navigationTable.Key}) DO NOTHING";
-                    await _lougeDbContext.Database.ExecuteSqlRawAsync(sql, navigationTable.Values.SelectMany(x => x).ToArray());
+                    await dbContext.Database.ExecuteSqlRawAsync(sql, navigationTable.Values.SelectMany(x => x).ToArray());
                 }
             }
 
@@ -717,7 +710,7 @@ namespace Infra.EF.PG.Service
                 {
                     var tableName = manyToOneNavigationTable.TableName;
                     sql = $"update {tableName} set {manyToOneNavigationTable.Key}={manyToOneNavigationTable.Value} where id={manyToOneNavigationTable.CurrentValue};";
-                    await _lougeDbContext.Database.ExecuteSqlRawAsync(sql);
+                    await dbContext.Database.ExecuteSqlRawAsync(sql);
                 }
 
             }
@@ -762,7 +755,7 @@ namespace Infra.EF.PG.Service
                     }
                     var tableName = refTable.TableName;
                     var sql = $"insert into {tableName}({string.Join(",", refTable.KeyValues.Select(x => x.Key))}) values {string.Join(",", valueParameterStrs)} ON CONFLICT(id) DO NOTHING";
-                    await _lougeDbContext.Database.ExecuteSqlRawAsync(sql, group.SelectMany(x => x.KeyValues.Select(k => k.Value)).ToArray());
+                    await dbContext.Database.ExecuteSqlRawAsync(sql, group.SelectMany(x => x.KeyValues.Select(k => k.Value)).ToArray());
                 }
             }
 
@@ -787,7 +780,7 @@ namespace Infra.EF.PG.Service
                     var tableName = navigationTable.TableName;
                     insertSql += $"insert into {tableName}({navigationTable.Key}) values{insertValue} ON CONFLICT({navigationTable.Key}) DO NOTHING;";
                 }
-                await _lougeDbContext.Database.ExecuteSqlRawAsync(insertSql, manyToManyNavigationTables.SelectMany(x => x.Values.SelectMany(v => v)).ToArray());
+                await dbContext.Database.ExecuteSqlRawAsync(insertSql, manyToManyNavigationTables.SelectMany(x => x.Values.SelectMany(v => v)).ToArray());
             }
 
             if (manyToOneNavigationTables.Any())
@@ -800,7 +793,7 @@ namespace Infra.EF.PG.Service
                     allSql += $"update {tableName} set {manyToOneNavigationTable.Key}={{{index * 2}}} where id={{{index * 2 + 1}}};";
                     index++;
                 }
-                await _lougeDbContext.Database.ExecuteSqlRawAsync(allSql, manyToOneNavigationTables.SelectMany(x => new List<object> { x.Value, x.CurrentValue }).ToArray());
+                await dbContext.Database.ExecuteSqlRawAsync(allSql, manyToOneNavigationTables.SelectMany(x => new List<object> { x.Value, x.CurrentValue }).ToArray());
 
             }
         }

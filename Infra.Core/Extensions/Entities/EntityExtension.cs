@@ -16,6 +16,17 @@ namespace Infra.Core.Extensions.Entities
 {
     public static class EntityExtension
     {
+        public static void UpdatePropertyValue<T>(this T t1, T t2) where T : IEntity
+        {
+            var properties = t1.GetType().GetProperties();
+            foreach (var property in properties)
+            {
+                if (property.CanRead && property.CanWrite&&property.Name!="Id")
+                {
+                    property.SetValue(t1,property.GetValue(t2));
+                }
+            }
+        }
         public static Expression<Func<TEntity, bool>> GetPrimaryKeyFilter<TEntity>(this TEntity tEntity)
         {
             Condition condition = Condition.GetPrimaryKeyCondition(tEntity);

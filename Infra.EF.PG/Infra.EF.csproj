@@ -9,7 +9,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0">
 		  <PrivateAssets>all</PrivateAssets>
@@ -19,6 +18,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\..\mongo-efcore-provider\src\MongoDB.EntityFrameworkCore\MongoDB.EntityFrameworkCore.csproj" />
 	  <ProjectReference Include="..\Infra.Core\Infra.Core.csproj" />
 	  <ProjectReference Include="..\Infra.IdGenerater\Infra.IdGenerater.csproj" />
 	</ItemGroup>

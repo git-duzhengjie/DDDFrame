@@ -1,10 +1,11 @@
 ﻿using Infra.Core.Abstract;
 using Infra.Core.DTOs;
 using Infra.Core.Extensions;
-using Infra.EF.PG.Service;
+using Infra.EF.Service;
 using Infra.WebApi.DTOs;
 using System.Configuration;
 using System.Diagnostics;
+using UniversalRpc.Extensions;
 
 namespace Infra.WebApi.Service
 {
@@ -124,6 +125,7 @@ namespace Infra.WebApi.Service
         public EnumDTO[] GetEnums(string enumName)
         {
             var enumType = AppDomain.CurrentDomain.GetAssemblies()
+                .Where(x=>x.IsNotOut())
                 .SelectMany(x=>x.GetExportedTypes())
                 .Where(x=>x.IsEnum)
                 .FirstOrDefault(x=>x.Name.EqualsIgnoreCase(enumName));

@@ -19,6 +19,7 @@ using Newtonsoft.Json.Linq;
 using System.Buffers;
 using System.IO;
 using UniversalRPC.Extensions;
+using UniversalRpc.Extensions;
 namespace Infra.Core.Json
 {
     public class FrameJson : IOutputFormatter, IInputFormatter, ISerialize
@@ -35,34 +36,44 @@ namespace Infra.Core.Json
             if (objectTypeMap == null)
             {
                 objectTypeMap = [];
-                var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                var assemblies = AppDomain.CurrentDomain.GetAssemblies()
+                    .Where(x=>x.IsNotOut())
+                    .ToArray();
                 foreach (var assembly in assemblies)
                 {
-                    var types = assembly.GetExportedTypes()
+                    try
+                    {
+                        var types = assembly.GetExportedTypes()
                         .Where(x => x.IsNotAbstractClass(true))
                         .ToArray();
-                    foreach (var type in types)
-                    {
-                        var interfaces = type.GetInterfaces();
-                        if (interfaces.Contains(typeof(IObject)))
+                        foreach (var type in types)
                         {
-                            IObject instance;
-                            if (type.IsGenericType)
+                            var interfaces = type.GetInterfaces();
+                            if (interfaces.Contains(typeof(IObject)))
                             {
-                                var newType = type.MakeGenericType(typeof(int));
-                                instance = Activator.CreateInstance(newType) as IObject;
-                            }
-                            else
-                            {
-                                instance = Activator.CreateInstance(type) as IObject;
-                            }
+                                IObject instance;
+                                if (type.IsGenericType)
+                                {
+                                    var newType = type.MakeGenericType(typeof(int));
+                                    instance = Activator.CreateInstance(newType) as IObject;
+                                }
+                                else
+                                {
+                                    instance = Activator.CreateInstance(type) as IObject;
+                                }
 
-                            if (!objectTypeMap.TryAdd(instance.ObjectName, type))
-                            {
-                                throw new Exception($"{instance.ObjectName}该对象名已经存在");
+                                if (!objectTypeMap.TryAdd(instance.ObjectName, type))
+                                {
+                                    throw new Exception($"{instance.ObjectName}该对象名已经存在");
+                                }
                             }
                         }
                     }
+                    catch
+                    {
+                        continue;
+                    }
+                    
                 }
 
             }

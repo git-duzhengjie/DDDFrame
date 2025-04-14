@@ -15,7 +15,7 @@ using Infra.Core.Abstract;
 using UniversalRPC.Extensions;
 using UniversalRPC.Services;
 using Microsoft.Extensions.FileProviders;
-using Infra.EF.PG.Context;
+using Infra.EF.Context;
 using Microsoft.EntityFrameworkCore;
 using Infra.Core.Json;
 using UniversalRPC.Serialization;
@@ -117,8 +117,11 @@ namespace Microsoft.AspNetCore.Builder
             var migrationAssembly = serviceInfo.GetMigrationAssembly();
             if (migrationAssembly != null)
             {
-                var dbContext = scope.ServiceProvider.GetService<FrameDbContext>();
-                dbContext.Database.Migrate();
+                var dbContext = scope.ServiceProvider.GetService<FrameDbContextBase>();
+                if (dbContext.RelationDatabase)
+                {
+                    dbContext?.Database.Migrate();
+                }
             }
         }
         private static void UseURPCSerivice(IEndpointRouteBuilder endpoints, IServiceProvider applicationServices, bool useURPCServiceName,ISerialize serialize=null)

@@ -26,12 +26,13 @@ using System.Text.Json;
 using Infra.WebApi.Service;
 using Infra.IdGenerater.Extensions;
 using ServiceConfig = Infra.WebApi.Configuration.ServiceConfig;
-using Infra.EF.PG.Service;
-using Infra.EF.PG.Context;
+using Infra.EF.Service;
+using Infra.EF.Context;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Infra.Core.Models;
 using System.Diagnostics;
+using UniversalRpc.Extensions;
 
 namespace Infra.WebApi.DependInjection
 {
@@ -93,7 +94,9 @@ namespace Infra.WebApi.DependInjection
         {
             var directory=AppDomain.CurrentDomain.BaseDirectory;
             var assemblyFiles = Directory.GetFiles(directory).Where(x=>x.EndsWith(".dll")).ToArray();
-            var loadAssemblies=AppDomain.CurrentDomain.GetAssemblies();
+            var loadAssemblies=AppDomain.CurrentDomain.GetAssemblies()
+                .Where(x=>x.IsNotOut())
+                .ToArray();
             foreach(var assemblyFile in assemblyFiles)
             {
                 var name=Path.GetFileNameWithoutExtension(assemblyFile);
@@ -111,12 +114,12 @@ namespace Infra.WebApi.DependInjection
             }
         }
 
-        private void AddDbContext()
+        protected virtual void AddDbContext()
         {
             //pgsql默认只支持utc时间
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             var config= Configuration.GetPgsqlSection().Get<PgsqlConfig>();
-            Services.AddDbContext<FrameDbContext>(option =>
+            Services.AddDbContext<FrameDbContextBase, FramePGDbContext>(option =>
             {
                 option.UseNpgsql(config.ConnectionString, b =>
                 {
@@ -124,7 +127,7 @@ namespace Infra.WebApi.DependInjection
                 });
             });
             Services.AddScoped<EntityFactory>();
-            Services.AddScoped<IDbData, DbData>();
+            Services.AddScoped<IDbData, PostgresDbData>();
         }
 
         private string? GetMigrationAssembName()

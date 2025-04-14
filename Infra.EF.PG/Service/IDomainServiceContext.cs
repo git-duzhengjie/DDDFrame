@@ -1,6 +1,6 @@
-﻿using Infra.EF.PG.Entities;
+﻿using Infra.EF.Entities;
 
-namespace Infra.EF.PG.Service
+namespace Infra.EF.Service
 {
     public interface IDomainServiceContext
     {

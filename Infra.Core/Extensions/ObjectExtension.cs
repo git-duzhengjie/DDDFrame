@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infra.EF.Attributes
+namespace Infra.Core.Extensions
 {
-    public class FrameJsonAttribute:Attribute
+    public static class ObjectExtension
     {
+        
     }
 }

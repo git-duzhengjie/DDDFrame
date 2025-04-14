@@ -1,5 +1,5 @@
 ﻿
-using Infra.EF.PG.Internal;
+using Infra.EF.Internal;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System.Diagnostics.CodeAnalysis;
 

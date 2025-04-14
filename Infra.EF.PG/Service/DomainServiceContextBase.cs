@@ -1,24 +1,23 @@
-﻿using Infra.EF.PG.Context;
-using Infra.EF.PG.Entities;
+﻿using Infra.EF.Context;
+using Infra.EF.Entities;
 using Microsoft.Extensions.Logging;
 
-namespace Infra.EF.PG.Service
+namespace Infra.EF.Service
 {
-    public abstract class DomainServiceContextBase : IDomainServiceContext
+    public abstract class DomainServiceContextBase(
+        FrameDbContextBase frameDbContext, 
+        IDbData dbData,
+        ILoggerFactory loggerFactory) 
+        : IDomainServiceContext
     {
-        private FrameDbContext frameDbContext;
-        private IDbData dbData;
-        private ILogger logger;
-        private List<(EntityBase,bool)> adds=new List<(EntityBase, bool)>();
-        private List<EntityBase> removes=new List<EntityBase>();
-        private List<(EntityBase, bool)> updates=new List<(EntityBase, bool)>();
-        private List<UpdateData> updateProperties=new List<UpdateData>();
+        protected readonly FrameDbContextBase frameDbContext = frameDbContext;
+        protected readonly IDbData dbData = dbData;
+        protected readonly ILogger logger = loggerFactory.CreateLogger("DomainServiceContextBase");
+        protected readonly List<(EntityBase,bool)> adds=[];
+        protected readonly List<EntityBase> removes=[];
+        protected readonly List<(EntityBase, bool)> updates=[];
+        protected readonly List<UpdateData> updateProperties=[];
 
-        public DomainServiceContextBase(FrameDbContext frameDbContext,IDbData dbData, ILoggerFactory loggerFactory) { 
-            this.frameDbContext=frameDbContext;
-            this.dbData=dbData;
-            logger = loggerFactory.CreateLogger("DomainServiceContextBase");
-        }
         public virtual void Add(EntityBase entity,bool withNavigation)
         {
             if (adds.Any(a => a.Item1.Id == entity.Id))
@@ -43,7 +42,7 @@ namespace Infra.EF.PG.Service
 
         public virtual async Task SaveAsync()
         {
-            var transaction = await frameDbContext.Database.BeginTransactionAsync();
+            var transaction = frameDbContext.RelationDatabase? await frameDbContext.Database.BeginTransactionAsync():null;
             try
             {
                 if (removes.Count != 0)
@@ -73,15 +72,26 @@ namespace Infra.EF.PG.Service
                 }
                 if (updateProperties.Count != 0)
                 {
-                    await dbData.UpdateAsync(updateProperties.ToArray());
+                    await dbData.UpdateAsync([.. updateProperties]);
                     updateProperties.Clear();
                 }
-                await transaction.CommitAsync();
+                
+                if (transaction == null)
+                {
+                    await frameDbContext.SaveChangesAsync();
+                }
+                else
+                {
+                    await transaction?.CommitAsync();
+                }
             }
             catch(Exception ex)
             {
-                logger.LogError(ex.ToString());
-                await transaction.RollbackAsync();
+                logger.LogError(ex,"保存数据异常");
+                if (transaction != null)
+                {
+                    await transaction?.RollbackAsync();
+                }
                 throw;
             }
             

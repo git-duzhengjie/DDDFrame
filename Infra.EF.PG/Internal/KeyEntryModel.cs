@@ -1,5 +1,5 @@
 ﻿
-namespace Infra.EF.PG.Internal
+namespace Infra.EF.Internal
 {
     internal class KeyEntryModel
     {

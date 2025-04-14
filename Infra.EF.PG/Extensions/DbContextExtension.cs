@@ -1,6 +1,6 @@
 ﻿
 
-using Infra.EF.PG.Internal;
+using Infra.EF.Internal;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Diagnostics.CodeAnalysis;
 

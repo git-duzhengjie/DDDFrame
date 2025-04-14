@@ -1,9 +1,9 @@
 ﻿using Infra.Core.Abstract;
 using Infra.Core.Attributes;
-using Infra.EF.PG.Service;
+using Infra.EF.Service;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Infra.EF.PG.Entities
+namespace Infra.EF.Entities
 {
     [NotMapped]
     public abstract class EntityBase:FrameObjectBase,IEntity
@@ -24,7 +24,7 @@ namespace Infra.EF.PG.Entities
         /// <summary>
         /// 更新时间
         /// </summary>
-        public virtual DateTime UpdateTime { get; set; }
+        public virtual DateTime? UpdateTime { get; set; }
 
         /// <summary>
         /// 最后一次时间

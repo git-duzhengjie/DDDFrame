@@ -3,7 +3,7 @@ using Infra.Core.Attributes;
 using Infra.Core.Extensions;
 using System.Reflection;
 
-namespace Infra.EF.PG.Service
+namespace Infra.EF.Service
 {
     public class EntityFactory:IFactory
     {

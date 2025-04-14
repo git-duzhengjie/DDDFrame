@@ -1,5 +1,5 @@
 ﻿
-using Infra.EF.PG.Attributes;
+using Infra.EF.Attributes;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
