@@ -23,15 +23,9 @@ builder.Services.AddCors(options =>
     });
 });
 builder.Services.AddSwaggerGen();
-#if DEBUG
 builder.Services.AddOcelot()
     .AddConsul<CustomConsulServiceBuilder>()
     .AddPolly();
-#else
-builder.Services.AddOcelot()
-    .AddConsul()
-    .AddPolly();
-#endif
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.

@@ -17,4 +17,10 @@
     <ProjectReference Include="C:\Users\杜政颉\source\repos\Ocelot\Ocelot-develop\Ocelot-develop\src\Ocelot.Provider.Polly\Ocelot.Provider.Polly.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Config\ocelot.consul.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
