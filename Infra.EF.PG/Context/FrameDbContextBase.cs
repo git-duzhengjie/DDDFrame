@@ -139,7 +139,7 @@ namespace Infra.EF.Context
             }
         }
 
-        public async Task UpdateAsync<T>(params EntityBase[] entities) where T : EntityBase
+        public async Task UpdateAsync<T>(params T[] entities) where T : EntityBase
         {
             var ids = entities.Select(x => x.Id).ToArray();
             var exists = await Set<T>().Where(x => ids.Contains(x.Id)).ToArrayAsync();
@@ -171,7 +171,7 @@ namespace Infra.EF.Context
                         {
                             if (updateEntity.Properties.Any(x => x == property.Name))
                             {
-                                property.SetValue(entity, updateEntity.Update.GetPropertyValue(property.Name));
+                                property.SetValue(entity, property.GetValue(updateEntity.Update));
                             }
                         }
                     }

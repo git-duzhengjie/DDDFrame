@@ -1,6 +1,7 @@
 ﻿using Infra.Core.Abstract;
 using Infra.Core.Models;
 using Infra.EF.Entities;
+using Infra.EF.Service;
 
 namespace Infra.EF.Context
 {
@@ -38,5 +39,37 @@ namespace Infra.EF.Context
         /// <param name="queryType"></param>
         /// <returns></returns>
         Task<PagedList<IEntity>> PageQueryAsync<T>(IPageQueryDTO queryDTO) where T : EntityBase;
+
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entities"></param>
+        /// <returns></returns>
+        Task DeleteAsync<T>(params T[] entities) where T : EntityBase;
+
+        /// <summary>
+        /// 修改
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entities"></param>
+        /// <returns></returns>
+        Task UpdateAsync<T>(params T[] entities) where T : EntityBase;
+
+        /// <summary>
+        /// 局部修改
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entities"></param>
+        /// <returns></returns>
+        Task UpdateAsync<T>(params UpdateData[] entities) where T : EntityBase;
+
+        /// <summary>
+        /// 添加
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entities"></param>
+        /// <returns></returns>
+        Task AddAsync<T>(params T[] entities) where T : EntityBase;
     }
 }
