@@ -17,9 +17,9 @@ namespace Infra.WebApi.Service
         EntityFactory entityFactory,
         IDomainServiceContext domainServiceContext) : IDomainService
     {
-        protected readonly FrameDbContextBase FrameDbContext = frameDbContext;
-        protected readonly EntityFactory EntityFactory = entityFactory;
-        protected readonly IDomainServiceContext DomainServiceContext = domainServiceContext;
+        protected readonly FrameDbContextBase frameDbContext = frameDbContext;
+        protected readonly EntityFactory entityFactory = entityFactory;
+        protected readonly IDomainServiceContext domainServiceContext = domainServiceContext;
 
         public int InsertOrUpdatePriority => 0;
 
@@ -32,25 +32,25 @@ namespace Infra.WebApi.Service
             var result = new FrameChangeOutputDTO();
             foreach (var input in inputs)
             {
-                var iEntity = EntityFactory.GetEntity(input);
+                var iEntity = entityFactory.GetEntity(input);
                 if (iEntity is EntityBase entity)
                 {
                     if (input.IsNew)
                     {
                         entity.Build();
-                        entity.Build(DomainServiceContext);
-                        DomainServiceContext.Add(entity,false);
+                        entity.Build(domainServiceContext);
+                        domainServiceContext.Add(entity,false);
                     }
                     else
                     {
-                        var method = FrameDbContext.GetMethod("GetValueAsync");
+                        var method = frameDbContext.GetMethod("GetValueAsync");
                         method = method.MakeGenericMethod(entity.GetType());
-                        var exist = await (method.Invoke(FrameDbContext, [entity.Id,false]) as Task<IEntity>) as EntityBase;
+                        var exist = await (method.Invoke(frameDbContext, [entity.Id,false]) as Task<IEntity>) as EntityBase;
                         Debug.Assert(exist!=null);
                         exist.SetValue(entity);
                         exist.Build();
-                        exist.Build(DomainServiceContext);
-                        DomainServiceContext.Update(exist, false);
+                        exist.Build(domainServiceContext);
+                        domainServiceContext.Update(exist, false);
                     }
                     result.Changes.Add(entity.Output);
                 }
@@ -60,10 +60,10 @@ namespace Infra.WebApi.Service
 
         public virtual async Task<IPagedList<IOutputDTO>> PageQueryAsync(IPageQueryDTO pageQueryDTO)
         {
-            var entityType = EntityFactory.GetEntityType(pageQueryDTO.ObjectType);
-            var method = FrameDbContext.GetMethod("PageQueryAsync");
+            var entityType = entityFactory.GetEntityType(pageQueryDTO.ObjectType);
+            var method = frameDbContext.GetMethod("PageQueryAsync");
             method=method.MakeGenericMethod(entityType);
-            var ret = method.Invoke(FrameDbContext, [pageQueryDTO]);
+            var ret = method.Invoke(frameDbContext, [pageQueryDTO]);
             var data = await (ret as Task<PagedList<IEntity>>);
             return new PagedList<IOutputDTO>
             {
@@ -80,10 +80,10 @@ namespace Infra.WebApi.Service
             var result=new List<IOutputDTO[]>();
             foreach(var queryDTO in queryDTOs)
             {
-                var entityType = EntityFactory.GetEntityType(queryDTO.ObjectType);
-                var method = FrameDbContext.GetMethod("QueryAsync");
+                var entityType = entityFactory.GetEntityType(queryDTO.ObjectType);
+                var method = frameDbContext.GetMethod("QueryAsync");
                 method = method.MakeGenericMethod(entityType);
-                var data = await (method.Invoke(FrameDbContext, [queryDTO]) as Task<IEntity[]>);
+                var data = await (method.Invoke(frameDbContext, [queryDTO]) as Task<IEntity[]>);
                 result.Add([.. data.Select(x=>x.Output)]);
             }
             return [.. result];
@@ -94,10 +94,10 @@ namespace Infra.WebApi.Service
             var result = new List<int>();
             foreach (var queryDTO in queryDTOs)
             {
-                var entityType = EntityFactory.GetEntityType(queryDTO.ObjectType);
-                var method = FrameDbContext.GetMethod("CountAsync");
+                var entityType = entityFactory.GetEntityType(queryDTO.ObjectType);
+                var method = frameDbContext.GetMethod("CountAsync");
                 method = method.MakeGenericMethod(entityType);
-                var data = await (method.Invoke(FrameDbContext, [queryDTO]) as Task<int>);
+                var data = await (method.Invoke(frameDbContext, [queryDTO]) as Task<int>);
                 result.Add(data);
             }
             return [.. result];
@@ -108,8 +108,8 @@ namespace Infra.WebApi.Service
             var result = new FrameChangeOutputDTO();
             foreach (var remove in removes)
             {
-                var entity = EntityFactory.GetEntity(remove) as EntityBase;
-                DomainServiceContext.Remove(entity);
+                var entity = entityFactory.GetEntity(remove) as EntityBase;
+                domainServiceContext.Remove(entity);
             }
             await Task.CompletedTask;
             return result;

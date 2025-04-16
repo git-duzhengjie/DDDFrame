@@ -12,26 +12,23 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Serialization;
 using UniversalRPC.Serialization;
 using static System.Text.Encoding;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using Microsoft.Extensions.Logging;
-using System.IO.Pipelines;
-using Newtonsoft.Json.Linq;
 using System.Buffers;
-using System.IO;
 using UniversalRPC.Extensions;
 using UniversalRpc.Extensions;
+using System.Collections.Concurrent;
 namespace Infra.Core.Json
 {
     public class FrameJson : IOutputFormatter, IInputFormatter, ISerialize
     {
-        private static Dictionary<string, Type?> objectTypeMap = null;
+        private ConcurrentDictionary<string, Type?> objectTypeMap = null;
         public FrameJson()
         {
             RegisterProvider(CodePagesEncodingProvider.Instance);
             GenerateTypeMap();
 
         }
-        public static void GenerateTypeMap()
+        public void GenerateTypeMap()
         {
             if (objectTypeMap == null)
             {
@@ -86,11 +83,11 @@ namespace Infra.Core.Json
             });
         }
 
-        private static bool IsIObject(string json)
+        private bool IsIObject(string json)
         {
             return json.Contains("ObjectName") || json.Contains("objectName");
         }
-        public static T Desialize<T>(string json, JsonSerializerOptions serializerOptions = null)
+        public T Desialize<T>(string json, JsonSerializerOptions serializerOptions = null)
         {
             if (json.IsNullOrEmpty())
             {
@@ -107,7 +104,7 @@ namespace Infra.Core.Json
             
         }
 
-        public static object Desialize(string json, Type modelType, ILogger<FrameJson>? logger, JsonSerializerOptions serializerOptions = null)
+        public object Desialize(string json, Type modelType, ILogger<FrameJson>? logger, JsonSerializerOptions serializerOptions = null)
         {
             if (json.IsNullOrEmpty())
             {
@@ -131,7 +128,7 @@ namespace Infra.Core.Json
         public async Task WriteAsync(OutputFormatterWriteContext context)
         {
             ArgumentNullException.ThrowIfNull(context);
-            var jsonOptions = context.HttpContext.RequestServices.GetRequiredService<IOptions<JsonSerializerOptions>>().Value;
+            _ = context.HttpContext.RequestServices.GetRequiredService<IOptions<JsonSerializerOptions>>().Value;
             var response = context.HttpContext.Response;
             var value = context.Object;
             var content = Newtonsoft.Json.JsonConvert.SerializeObject(value,new Newtonsoft.Json.JsonSerializerSettings

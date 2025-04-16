@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
@@ -15,10 +16,10 @@ namespace Infra.Core.Json
     {
         private string json;
         private JsonSerializerOptions serializerOptions;
-        private Dictionary<string, Type?> objectTypeMap;
+        private ConcurrentDictionary<string, Type?> objectTypeMap;
         private ILogger<FrameJson>? logger;
 
-        public FrameTypeJson(string json, JsonSerializerOptions serializerOptions, Dictionary<string, Type?> objectTypeMap, Microsoft.Extensions.Logging.ILogger<FrameJson>? logger)
+        public FrameTypeJson(string json, JsonSerializerOptions serializerOptions, ConcurrentDictionary<string, Type?> objectTypeMap, Microsoft.Extensions.Logging.ILogger<FrameJson>? logger)
         {
             this.json = json;
             this.serializerOptions = serializerOptions;
