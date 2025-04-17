@@ -204,8 +204,12 @@ namespace Infra.Core.Json
         {
             if (value.ValueKind == JsonValueKind.String && propertyType != typeof(string))
             {
-                if (propertyType.IsEnum)
+                if (propertyType.IsEnum || (propertyType.IsGenericType && propertyType.GenericTypeArguments[0].IsEnum))
                 {
+                    if (value.GetString().IsNullOrEmpty())
+                    {
+                        return null;
+                    }
                     return Enum.Parse(propertyType, value.GetString());
                 }else if (propertyType==typeof(int)||propertyType==typeof(int?))
                 {
