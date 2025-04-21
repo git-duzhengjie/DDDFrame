@@ -8,15 +8,29 @@ namespace Infra.Core.Abstract
 {
     public interface IPagedList<TEntity>
     {
+        /// <summary>
+        /// 数据
+        /// </summary>
         IList<TEntity> DataList { get; set; }
 
+        /// <summary>
+        /// 页码
+        /// </summary>
         int Page { get; }
 
+        /// <summary>
+        /// 每页个数
+        /// </summary>
         int Count { get; }
 
-        int Total { get; }
-
-        int Pages { get; }
+        /// <summary>
+        /// 总数
+        /// </summary>
+        int Total { get; set; }
+        /// <summary>
+        /// 总页数
+        /// </summary>
+        int Pages { get; set; }
 
         bool HasPrev { get; }
 

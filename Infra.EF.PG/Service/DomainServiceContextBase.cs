@@ -47,7 +47,7 @@ namespace Infra.EF.Service
             {
                 if (removes.Count != 0)
                 {
-                    await dbData.DeleteAsync(removes.ToArray());
+                    await dbData.DeleteAsync([.. removes]);
                     removes.Clear();
                 }
                 if (adds.Count != 0)
