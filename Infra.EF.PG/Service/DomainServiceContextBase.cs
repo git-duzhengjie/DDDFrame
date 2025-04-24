@@ -42,6 +42,10 @@ namespace Infra.EF.Service
 
         public virtual async Task SaveAsync()
         {
+            if (!frameDbContext.RelationDatabase)
+            {
+                frameDbContext.Database.AutoTransactionBehavior = Microsoft.EntityFrameworkCore.AutoTransactionBehavior.Never;
+            }
             var transaction = frameDbContext.RelationDatabase? await frameDbContext.Database.BeginTransactionAsync():null;
             try
             {
