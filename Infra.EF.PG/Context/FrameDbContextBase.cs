@@ -26,6 +26,11 @@ namespace Infra.EF.Context
         /// <summary>
         /// 是否是关系型数据库
         /// </summary>
+        public abstract bool RelationDatabase { get;}
+
+        /// <summary>
+        /// 是否开启事务
+        /// </summary>
         public abstract bool Transaction { get;}
 
         protected void IgnoreTypes(ModelBuilder modelBuilder)

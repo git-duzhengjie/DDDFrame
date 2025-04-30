@@ -8,6 +8,11 @@ namespace Infra.EF.Context
 {
     public class FrameMongoDbContext(DbContextOptions<FrameMongoDbContext> dbContextOptions, IServiceInfo serviceInfo) : FrameDbContextBase(dbContextOptions, serviceInfo)
     {
+        public override bool RelationDatabase => false;
+
+        /// <summary>
+        /// 是否开启事务
+        /// </summary>
         public override bool Transaction => false;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

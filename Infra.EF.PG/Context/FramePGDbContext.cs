@@ -10,7 +10,13 @@ namespace Infra.EF.Context
 {
     public class FramePGDbContext(DbContextOptions<FramePGDbContext> dbContextOptions, IServiceInfo serviceInfo) : FrameDbContextBase(dbContextOptions,serviceInfo),IFrameDbContext
     {
+        public override bool RelationDatabase => true;
+
+        /// <summary>
+        /// 是否开启事务
+        /// </summary>
         public override bool Transaction => true;
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
