@@ -118,7 +118,7 @@ namespace Microsoft.AspNetCore.Builder
             if (migrationAssembly != null)
             {
                 var dbContext = scope.ServiceProvider.GetService<FrameDbContextBase>();
-                if (dbContext.RelationDatabase)
+                if (dbContext.Transaction)
                 {
                     dbContext?.Database.Migrate();
                 }

@@ -42,17 +42,19 @@ namespace Infra.EF.Service
 
         public virtual async Task SaveAsync()
         {
-            if (!frameDbContext.RelationDatabase)
+            if (!frameDbContext.Transaction)
             {
                 frameDbContext.Database.AutoTransactionBehavior = Microsoft.EntityFrameworkCore.AutoTransactionBehavior.Never;
             }
-            var transaction = frameDbContext.RelationDatabase? await frameDbContext.Database.BeginTransactionAsync():null;
+            var transaction = frameDbContext.Transaction? await frameDbContext.Database.BeginTransactionAsync():null;
             try
             {
+                bool save = false;
                 if (removes.Count != 0)
                 {
                     await dbData.DeleteAsync([.. removes]);
                     removes.Clear();
+                    save = true;
                 }
                 if (adds.Count != 0)
                 {
@@ -63,6 +65,7 @@ namespace Infra.EF.Service
                         await dbData.AddAsync(g.Key, adds);
                     }
                     adds.Clear();
+                    save = true;
                 }
                 if (updates.Count != 0)
                 {
@@ -73,16 +76,21 @@ namespace Infra.EF.Service
                         await dbData.UpdateAsync(g.Key, updates);
                     }
                     updates.Clear();
+                    save = true;
                 }
                 if (updateProperties.Count != 0)
                 {
                     await dbData.UpdateAsync([.. updateProperties]);
                     updateProperties.Clear();
+                    save = true;
                 }
                 
                 if (transaction == null)
                 {
-                    await frameDbContext.SaveChangesAsync();
+                    if (save)
+                    {
+                        await frameDbContext.SaveChangesAsync();
+                    }
                 }
                 else
                 {

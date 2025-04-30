@@ -17,22 +17,16 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Infra.EF.Context
 {
-    public abstract class FrameDbContextBase : DbContext, IFrameDbContext
+    public abstract class FrameDbContextBase(DbContextOptions dbContextOptions, IServiceInfo serviceInfo) : DbContext(dbContextOptions), IFrameDbContext
 
 
     {
-        protected readonly Assembly assembly;
+        protected readonly Assembly assembly = serviceInfo?.GetDomainAssembly();
 
         /// <summary>
         /// 是否是关系型数据库
         /// </summary>
-        public abstract bool RelationDatabase { get; }
-
-        public FrameDbContextBase(DbContextOptions dbContextOptions, IServiceInfo serviceInfo) : base(dbContextOptions)
-        {
-            assembly = serviceInfo?.GetDomainAssembly();
-        }
-
+        public abstract bool Transaction { get;}
 
         protected void IgnoreTypes(ModelBuilder modelBuilder)
         {

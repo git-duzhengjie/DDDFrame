@@ -1,25 +1,15 @@
 ﻿using Infra.Core.Abstract;
 using Infra.EF.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using MongoDB.EntityFrameworkCore.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infra.EF.Context
 {
-    public class FrameMongoDbContext:FrameDbContextBase
+    public class FrameMongoDbContext(DbContextOptions<FrameMongoDbContext> dbContextOptions, IServiceInfo serviceInfo) : FrameDbContextBase(dbContextOptions, serviceInfo)
     {
+        public override bool Transaction => false;
 
-        public FrameMongoDbContext(DbContextOptions<FrameMongoDbContext> dbContextOptions, IServiceInfo serviceInfo) : base(dbContextOptions, serviceInfo)
-        {
-
-        }
-        public override bool RelationDatabase => false;
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

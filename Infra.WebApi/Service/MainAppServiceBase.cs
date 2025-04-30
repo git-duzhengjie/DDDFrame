@@ -12,7 +12,7 @@ namespace Infra.WebApi.Service
     public abstract class MainAppServiceBase:AppServiceBase,IMainAppService
     {
         private readonly IDomainServiceFactory domainServiceFactory;
-        private readonly IDomainServiceContext domainServiceContext;
+        protected readonly IDomainServiceContext domainServiceContext;
 
         public MainAppServiceBase(IDomainServiceFactory domainServiceFactory,IDomainServiceContext domainServiceContext) {
             this.domainServiceFactory = domainServiceFactory;
