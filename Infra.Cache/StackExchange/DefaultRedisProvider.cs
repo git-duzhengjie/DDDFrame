@@ -18,51 +18,51 @@ namespace Infra.Cache.StackExchange
         /// <summary>
         /// The cache.
         /// </summary>
-        private readonly IDatabase _redisDb;
+        private readonly IDatabase redisDb;
 
         /// <summary>
         /// The servers.
         /// </summary>
-        private readonly IEnumerable<IServer> _servers;
+        private readonly IEnumerable<IServer> servers;
 
         /// <summary>
         /// The db provider.
         /// </summary>
-        private readonly IRedisDatabaseProvider _dbProvider;
+        private readonly IRedisDatabaseProvider dbProvider;
 
         /// <summary>
         /// The serializer.
         /// </summary>
-        private readonly ICachingSerializer _serializer;
+        private readonly ICachingSerializer serializer;
 
         /// <summary>
         /// The logger.
         /// </summary>
-        private readonly ILogger _logger;
+        private readonly ILogger logger;
 
         /// <summary>
         /// The options.
         /// </summary>
-        private readonly CacheOptions _cacheOptions;
+        private readonly CacheOptions cacheOptions;
 
-        public override CacheOptions CacheOptions => _cacheOptions;
+        public override CacheOptions CacheOptions => cacheOptions;
 
         /// <summary>
         /// The cache stats.
         /// </summary>
         private readonly CacheStats _cacheStats;
 
-        public override String Name
+        public override string Name
         { get { return CachingConstValue.StackExchange; } }
 
-        public override String CachingProviderType
+        public override string CachingProviderType
         { get { return nameof(DefaultRedisProvider); } }
 
         /// <summary>
         /// The serializer.
         /// </summary>
         public override ICachingSerializer Serializer
-        { get { return _serializer; } }
+        { get { return serializer; } }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Infra.Cache.Redis.DefaultRedisCachingProvider"/> class.
@@ -80,14 +80,14 @@ namespace Infra.Cache.StackExchange
             ArgumentCheck.NotNull(dbProviders, nameof(dbProviders));
 
             //this.ProviderName = nameof(DefaultRedisProvider);
-            this._dbProvider = dbProviders;
-            this._serializer = !String.IsNullOrWhiteSpace(cacheOptions.SerializerName)
+            this.dbProvider = dbProviders;
+            this.serializer = !string.IsNullOrWhiteSpace(cacheOptions.SerializerName)
                                        ? serializers.Single(x => x.Name.Equals(cacheOptions.SerializerName))
                                        : serializers.Single(x => x.Name.Equals(CachingConstValue.DefaultSerializerName));
-            this._cacheOptions = cacheOptions;
-            this._logger = loggerFactory?.CreateLogger<DefaultRedisProvider>();
-            this._redisDb = _dbProvider.GetDatabase();
-            this._servers = _dbProvider.GetServerList();
+            this.cacheOptions = cacheOptions;
+            this.logger = loggerFactory?.CreateLogger<DefaultRedisProvider>();
+            this.redisDb = dbProvider.GetDatabase();
+            this.servers = dbProvider.GetServerList();
             this._cacheStats = new CacheStats();
         }
 
@@ -104,38 +104,38 @@ namespace Infra.Cache.StackExchange
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
             ArgumentCheck.NotNegativeOrZero(expiration, nameof(expiration));
 
-            if (!_cacheOptions.PenetrationSetting.Disable)
+            if (!cacheOptions.PenetrationSetting.Disable)
             {
-                var exists = _redisDb.BloomExistsAsync(_cacheOptions.PenetrationSetting.BloomFilterSetting.Name, cacheKey).GetAwaiter().GetResult();
+                var exists = redisDb.BloomExistsAsync(cacheOptions.PenetrationSetting.BloomFilterSetting.Name, cacheKey).GetAwaiter().GetResult();
                 if (!exists)
                 {
-                    if (_cacheOptions.EnableLogging)
-                        _logger?.LogInformation($"Cache Penetrated : cachekey = {cacheKey}");
+                    if (cacheOptions.EnableLogging)
+                        logger?.LogInformation($"Cache Penetrated : cachekey = {cacheKey}");
                     return CacheValue<T>.NoValue;
                 }
             }
 
-            var result = _redisDb.StringGet(cacheKey);
+            var result = redisDb.StringGet(cacheKey);
             if (!result.IsNull)
             {
                 _cacheStats.OnHit();
 
-                if (_cacheOptions.EnableLogging)
-                    _logger?.LogInformation($"Cache Hit : cachekey = {cacheKey}");
+                if (cacheOptions.EnableLogging)
+                    logger?.LogInformation($"Cache Hit : cachekey = {cacheKey}");
 
-                var value = _serializer.Deserialize<T>(result);
+                var value = serializer.Deserialize<T>(result);
                 return new CacheValue<T>(value, true);
             }
 
             _cacheStats.OnMiss();
 
-            if (_cacheOptions.EnableLogging)
-                _logger?.LogInformation($"Cache Missed : cachekey = {cacheKey}");
+            if (cacheOptions.EnableLogging)
+                logger?.LogInformation($"Cache Missed : cachekey = {cacheKey}");
 
-            var flag = _redisDb.Lock(cacheKey, _cacheOptions.LockMs / 1000);
+            var flag = redisDb.Lock(cacheKey, cacheOptions.LockMs / 1000);
             if (!flag.Success)
             {
-                System.Threading.Thread.Sleep(_cacheOptions.SleepMs);
+                System.Threading.Thread.Sleep(cacheOptions.SleepMs);
                 return Get(cacheKey, dataRetriever, expiration);
             }
 
@@ -159,7 +159,7 @@ namespace Infra.Cache.StackExchange
             finally
             {
                 //remove mutex key
-                _redisDb.SafedUnLock(cacheKey, flag.LockValue);
+                redisDb.SafedUnLock(cacheKey, flag.LockValue);
             }
         }
 
@@ -173,34 +173,34 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            if (!_cacheOptions.PenetrationSetting.Disable)
+            if (!cacheOptions.PenetrationSetting.Disable)
             {
-                var exists = _redisDb.BloomExistsAsync(_cacheOptions.PenetrationSetting.BloomFilterSetting.Name, cacheKey).GetAwaiter().GetResult();
+                var exists = redisDb.BloomExistsAsync(cacheOptions.PenetrationSetting.BloomFilterSetting.Name, cacheKey).GetAwaiter().GetResult();
                 if (!exists)
                 {
-                    if (_cacheOptions.EnableLogging)
-                        _logger?.LogInformation($"Cache Penetrated : cachekey = {cacheKey}");
+                    if (cacheOptions.EnableLogging)
+                        logger?.LogInformation($"Cache Penetrated : cachekey = {cacheKey}");
                     return CacheValue<T>.NoValue;
                 }
             }
 
-            var result = _redisDb.StringGet(cacheKey);
+            var result = redisDb.StringGet(cacheKey);
             if (!result.IsNull)
             {
                 _cacheStats.OnHit();
 
-                if (_cacheOptions.EnableLogging)
-                    _logger?.LogInformation($"Cache Hit : cachekey = {cacheKey}");
+                if (cacheOptions.EnableLogging)
+                    logger?.LogInformation($"Cache Hit : cachekey = {cacheKey}");
 
-                var value = _serializer.Deserialize<T>(result);
+                var value = serializer.Deserialize<T>(result);
                 return new CacheValue<T>(value, true);
             }
             else
             {
                 _cacheStats.OnMiss();
 
-                if (_cacheOptions.EnableLogging)
-                    _logger?.LogInformation($"Cache Missed : cachekey = {cacheKey}");
+                if (cacheOptions.EnableLogging)
+                    logger?.LogInformation($"Cache Missed : cachekey = {cacheKey}");
 
                 return CacheValue<T>.NoValue;
             }
@@ -215,7 +215,7 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            _redisDb.KeyDelete(cacheKey);
+            redisDb.KeyDelete(cacheKey);
         }
 
         /// <summary>
@@ -232,15 +232,15 @@ namespace Infra.Cache.StackExchange
             ArgumentCheck.NotNull(cacheValue, nameof(cacheValue));
             ArgumentCheck.NotNegativeOrZero(expiration, nameof(expiration));
 
-            if (_cacheOptions.MaxRdSecond > 0)
+            if (cacheOptions.MaxRdSecond > 0)
             {
-                var addSec = new Random().Next(1, _cacheOptions.MaxRdSecond);
+                var addSec = new Random().Next(1, cacheOptions.MaxRdSecond);
                 expiration = expiration.Add(TimeSpan.FromSeconds(addSec));
             }
 
-            _redisDb.StringSet(
+            redisDb.StringSet(
                 cacheKey,
-                _serializer.Serialize(cacheValue),
+                serializer.Serialize(cacheValue),
                 expiration);
         }
 
@@ -253,7 +253,7 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            return _redisDb.KeyExists(cacheKey);
+            return redisDb.KeyExists(cacheKey);
         }
 
         /// <summary>
@@ -266,12 +266,12 @@ namespace Infra.Cache.StackExchange
 
             prefix = this.HandlePrefix(prefix);
 
-            if (_cacheOptions.EnableLogging)
-                _logger?.LogInformation($"RemoveByPrefix : prefix = {prefix}");
+            if (cacheOptions.EnableLogging)
+                logger?.LogInformation($"RemoveByPrefix : prefix = {prefix}");
 
             var redisKeys = this.SearchRedisKeys(prefix);
 
-            _redisDb.KeyDelete(redisKeys);
+            redisDb.KeyDelete(redisKeys);
         }
 
         /// <summary>
@@ -289,8 +289,8 @@ namespace Infra.Cache.StackExchange
         {
             var keys = new List<RedisKey>();
 
-            foreach (var server in _servers)
-                keys.AddRange(server.Keys(pattern: pattern, database: _redisDb.Database, pageSize: 200));
+            foreach (var server in servers)
+                keys.AddRange(server.Keys(pattern: pattern, database: redisDb.Database, pageSize: 200));
 
             return keys.Distinct().ToArray();
 
@@ -345,10 +345,10 @@ namespace Infra.Cache.StackExchange
             ArgumentCheck.NotNegativeOrZero(expiration, nameof(expiration));
             ArgumentCheck.NotNullAndCountGTZero(values, nameof(values));
 
-            var batch = _redisDb.CreateBatch();
+            var batch = redisDb.CreateBatch();
 
             foreach (var item in values)
-                batch.StringSetAsync(item.Key, _serializer.Serialize(item.Value), expiration);
+                batch.StringSetAsync(item.Key, serializer.Serialize(item.Value), expiration);
 
             batch.Execute();
         }
@@ -364,14 +364,14 @@ namespace Infra.Cache.StackExchange
             ArgumentCheck.NotNullAndCountGTZero(cacheKeys, nameof(cacheKeys));
 
             var keyArray = cacheKeys.ToArray();
-            var values = _redisDb.StringGet(keyArray.Select(k => (RedisKey)k).ToArray());
+            var values = redisDb.StringGet(keyArray.Select(k => (RedisKey)k).ToArray());
 
             var result = new Dictionary<string, CacheValue<T>>();
             for (int i = 0; i < keyArray.Length; i++)
             {
                 var cachedValue = values[i];
                 if (!cachedValue.IsNull)
-                    result.Add(keyArray[i], new CacheValue<T>(_serializer.Deserialize<T>(cachedValue), true));
+                    result.Add(keyArray[i], new CacheValue<T>(serializer.Deserialize<T>(cachedValue), true));
                 else
                     result.Add(keyArray[i], CacheValue<T>.NoValue);
             }
@@ -393,14 +393,14 @@ namespace Infra.Cache.StackExchange
 
             var redisKeys = this.SearchRedisKeys(prefix);
 
-            var values = _redisDb.StringGet(redisKeys).ToArray();
+            var values = redisDb.StringGet(redisKeys).ToArray();
 
             var result = new Dictionary<string, CacheValue<T>>();
             for (int i = 0; i < redisKeys.Length; i++)
             {
                 var cachedValue = values[i];
                 if (!cachedValue.IsNull)
-                    result.Add(redisKeys[i], new CacheValue<T>(_serializer.Deserialize<T>(cachedValue), true));
+                    result.Add(redisKeys[i], new CacheValue<T>(serializer.Deserialize<T>(cachedValue), true));
                 else
                     result.Add(redisKeys[i], CacheValue<T>.NoValue);
             }
@@ -418,7 +418,7 @@ namespace Infra.Cache.StackExchange
 
             var redisKeys = cacheKeys.Where(k => !string.IsNullOrEmpty(k)).Select(k => (RedisKey)k).ToArray();
             if (redisKeys.Length > 0)
-                _redisDb.KeyDelete(redisKeys);
+                redisDb.KeyDelete(redisKeys);
         }
 
         /// <summary>
@@ -432,8 +432,8 @@ namespace Infra.Cache.StackExchange
             {
                 var allCount = 0;
 
-                foreach (var server in _servers)
-                    allCount += (int)server.DatabaseSize(_redisDb.Database);
+                foreach (var server in servers)
+                    allCount += (int)server.DatabaseSize(redisDb.Database);
 
                 return allCount;
             }
@@ -446,12 +446,12 @@ namespace Infra.Cache.StackExchange
         /// </summary>
         protected override void BaseFlush()
         {
-            if (_cacheOptions.EnableLogging)
-                _logger?.LogInformation("Redis -- Flush");
+            if (cacheOptions.EnableLogging)
+                logger?.LogInformation("Redis -- Flush");
 
-            foreach (var server in _servers)
+            foreach (var server in servers)
             {
-                server.FlushDatabase(_redisDb.Database);
+                server.FlushDatabase(redisDb.Database);
             }
         }
 
@@ -469,15 +469,15 @@ namespace Infra.Cache.StackExchange
             ArgumentCheck.NotNull(cacheValue, nameof(cacheValue));
             ArgumentCheck.NotNegativeOrZero(expiration, nameof(expiration));
 
-            if (_cacheOptions.MaxRdSecond > 0)
+            if (cacheOptions.MaxRdSecond > 0)
             {
-                var addSec = new Random().Next(1, _cacheOptions.MaxRdSecond);
+                var addSec = new Random().Next(1, cacheOptions.MaxRdSecond);
                 expiration = expiration.Add(TimeSpan.FromSeconds(addSec));
             }
 
-            return _redisDb.StringSet(
+            return redisDb.StringSet(
                 cacheKey,
-                _serializer.Serialize(cacheValue),
+                serializer.Serialize(cacheValue),
                 expiration,
                 When.NotExists
                 );
@@ -492,7 +492,7 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var timeSpan = _redisDb.KeyTimeToLive(cacheKey);
+            var timeSpan = redisDb.KeyTimeToLive(cacheKey);
             return timeSpan.HasValue ? timeSpan.Value : TimeSpan.Zero;
         }
     }

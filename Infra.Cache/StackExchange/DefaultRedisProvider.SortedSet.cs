@@ -19,10 +19,10 @@ namespace Infra.Cache.StackExchange
 
             foreach (var item in cacheValues)
             {
-                param.Add(new SortedSetEntry(_serializer.Serialize(item.Key), item.Value));
+                param.Add(new SortedSetEntry(serializer.Serialize(item.Key), item.Value));
             }
 
-            var len = _redisDb.SortedSetAdd(cacheKey, param.ToArray());
+            var len = redisDb.SortedSetAdd(cacheKey, param.ToArray());
 
             return len;
         }
@@ -31,7 +31,7 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var len = _redisDb.SortedSetLength(cacheKey);
+            var len = redisDb.SortedSetLength(cacheKey);
             return len;
         }
 
@@ -39,7 +39,7 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var len = _redisDb.SortedSetLengthByValue(cacheKey, min, max);
+            var len = redisDb.SortedSetLengthByValue(cacheKey, min, max);
             return len;
         }
 
@@ -48,7 +48,7 @@ namespace Infra.Cache.StackExchange
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
             ArgumentCheck.NotNullOrWhiteSpace(field, nameof(field));
 
-            var value = _redisDb.SortedSetIncrement(cacheKey, field, val);
+            var value = redisDb.SortedSetIncrement(cacheKey, field, val);
             return value;
         }
 
@@ -56,7 +56,7 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var len = _redisDb.SortedSetLengthByValue(cacheKey, min, max);
+            var len = redisDb.SortedSetLengthByValue(cacheKey, min, max);
             return len;
         }
 
@@ -66,11 +66,11 @@ namespace Infra.Cache.StackExchange
 
             var list = new List<T>();
 
-            var bytes = _redisDb.SortedSetRangeByRank(cacheKey, start, stop);
+            var bytes = redisDb.SortedSetRangeByRank(cacheKey, start, stop);
 
             foreach (var item in bytes)
             {
-                list.Add(_serializer.Deserialize<T>(item));
+                list.Add(serializer.Deserialize<T>(item));
             }
 
             return list;
@@ -80,9 +80,9 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var bytes = _serializer.Serialize(cacheValue);
+            var bytes = serializer.Serialize(cacheValue);
 
-            var index = _redisDb.SortedSetRank(cacheKey, bytes);
+            var index = redisDb.SortedSetRank(cacheKey, bytes);
 
             return index;
         }
@@ -95,10 +95,10 @@ namespace Infra.Cache.StackExchange
 
             foreach (var item in cacheValues)
             {
-                bytes.Add(_serializer.Serialize(item));
+                bytes.Add(serializer.Serialize(item));
             }
 
-            var len = _redisDb.SortedSetRemove(cacheKey, bytes.ToArray());
+            var len = redisDb.SortedSetRemove(cacheKey, bytes.ToArray());
 
             return len;
         }
@@ -107,9 +107,9 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var bytes = _serializer.Serialize(cacheValue);
+            var bytes = serializer.Serialize(cacheValue);
 
-            var score = _redisDb.SortedSetScore(cacheKey, bytes);
+            var score = redisDb.SortedSetScore(cacheKey, bytes);
 
             return score;
         }
@@ -122,10 +122,10 @@ namespace Infra.Cache.StackExchange
 
             foreach (var item in cacheValues)
             {
-                param.Add(new SortedSetEntry(_serializer.Serialize(item.Key), item.Value));
+                param.Add(new SortedSetEntry(serializer.Serialize(item.Key), item.Value));
             }
 
-            var len = await _redisDb.SortedSetAddAsync(cacheKey, param.ToArray());
+            var len = await redisDb.SortedSetAddAsync(cacheKey, [.. param]);
 
             return len;
         }
@@ -134,7 +134,7 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var len = await _redisDb.SortedSetLengthAsync(cacheKey);
+            var len = await redisDb.SortedSetLengthAsync(cacheKey);
             return len;
         }
 
@@ -142,7 +142,7 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var len = await _redisDb.SortedSetLengthByValueAsync(cacheKey, min, max);
+            var len = await redisDb.SortedSetLengthByValueAsync(cacheKey, min, max);
             return len;
         }
 
@@ -151,7 +151,7 @@ namespace Infra.Cache.StackExchange
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
             ArgumentCheck.NotNullOrWhiteSpace(field, nameof(field));
 
-            var value = await _redisDb.SortedSetIncrementAsync(cacheKey, field, val);
+            var value = await redisDb.SortedSetIncrementAsync(cacheKey, field, val);
             return value;
         }
 
@@ -159,7 +159,7 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var len = await _redisDb.SortedSetLengthByValueAsync(cacheKey, min, max);
+            var len = await redisDb.SortedSetLengthByValueAsync(cacheKey, min, max);
             return len;
         }
 
@@ -169,11 +169,11 @@ namespace Infra.Cache.StackExchange
 
             var list = new List<T>();
 
-            var bytes = await _redisDb.SortedSetRangeByRankAsync(cacheKey, start, stop);
+            var bytes = await redisDb.SortedSetRangeByRankAsync(cacheKey, start, stop);
 
             foreach (var item in bytes)
             {
-                list.Add(_serializer.Deserialize<T>(item));
+                list.Add(serializer.Deserialize<T>(item));
             }
 
             return list;
@@ -183,9 +183,9 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var bytes = _serializer.Serialize(cacheValue);
+            var bytes = serializer.Serialize(cacheValue);
 
-            var index = await _redisDb.SortedSetRankAsync(cacheKey, bytes);
+            var index = await redisDb.SortedSetRankAsync(cacheKey, bytes);
 
             return index;
         }
@@ -198,10 +198,10 @@ namespace Infra.Cache.StackExchange
 
             foreach (var item in cacheValues)
             {
-                bytes.Add(_serializer.Serialize(item));
+                bytes.Add(serializer.Serialize(item));
             }
 
-            var len = await _redisDb.SortedSetRemoveAsync(cacheKey, bytes.ToArray());
+            var len = await redisDb.SortedSetRemoveAsync(cacheKey, bytes.ToArray());
 
             return len;
         }
@@ -210,9 +210,9 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var bytes = _serializer.Serialize(cacheValue);
+            var bytes = serializer.Serialize(cacheValue);
 
-            var score = await _redisDb.SortedSetScoreAsync(cacheKey, bytes);
+            var score = await redisDb.SortedSetScoreAsync(cacheKey, bytes);
 
             return score;
         }

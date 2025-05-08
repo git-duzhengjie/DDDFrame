@@ -9,16 +9,16 @@ namespace Microsoft.AspNetCore.Authorization
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
     public class PermissionAttribute : AuthorizeAttribute
     {
-        public const String JwtWithBasicSchemes = $"{JwtBearerDefaults.AuthenticationScheme}";
+        public const string JwtWithBasicSchemes = $"{JwtBearerDefaults.AuthenticationScheme}";
 
-        public String[] Codes { get; set; }
+        public string[] Codes { get; set; }
 
-        public PermissionAttribute(String code, String schemes = JwtBearerDefaults.AuthenticationScheme)
-            : this(new String[] { code }, schemes)
+        public PermissionAttribute(string code, string schemes = JwtBearerDefaults.AuthenticationScheme)
+            : this(new string[] { code }, schemes)
         {
         }
 
-        public PermissionAttribute(String[] codes, String schemes = JwtBearerDefaults.AuthenticationScheme)
+        public PermissionAttribute(string[] codes, string schemes = JwtBearerDefaults.AuthenticationScheme)
         {
             Codes = codes;
             Policy = AuthorizePolicy.Default;

@@ -8,26 +8,26 @@ namespace Infra.Cache.StackExchange
     /// <summary>
     /// Default redis caching provider.
     /// </summary>
-    public partial class DefaultRedisProvider : Infra.Cache.IDistributedLocker
+    public partial class DefaultRedisProvider : IDistributedLocker
     {
-        public (bool Success, String LockValue) Lock(String cacheKey, Int32 timeoutSeconds = 5, bool autoDelay = false)
+        public (bool Success, string LockValue) Lock(string cacheKey, int timeoutSeconds = 5, bool autoDelay = false)
         {
-            return _redisDb.Lock(cacheKey, timeoutSeconds, autoDelay);
+            return redisDb.Lock(cacheKey, timeoutSeconds, autoDelay);
         }
 
-        public async Task<(bool Success, String LockValue)> LockAsync(String cacheKey, Int32 timeoutSeconds = 5, bool autoDelay = false)
+        public async Task<(bool Success, string LockValue)> LockAsync(string cacheKey, int timeoutSeconds = 5, bool autoDelay = false)
         {
-            return await _redisDb.LockAsync(cacheKey, timeoutSeconds, autoDelay);
+            return await redisDb.LockAsync(cacheKey, timeoutSeconds, autoDelay);
         }
 
-        public bool SafedUnLock(String cacheKey, String lockValue)
+        public bool SafedUnLock(string cacheKey, string lockValue)
         {
-            return _redisDb.SafedUnLock(cacheKey, lockValue);
+            return redisDb.SafedUnLock(cacheKey, lockValue);
         }
 
-        public async Task<bool> SafedUnLockAsync(String cacheKey, String lockValue)
+        public async Task<bool> SafedUnLockAsync(string cacheKey, string lockValue)
         {
-            return await _redisDb.SafedUnLockAsync(cacheKey, lockValue);
+            return await redisDb.SafedUnLockAsync(cacheKey, lockValue);
         }
     }
 }

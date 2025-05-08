@@ -75,7 +75,7 @@ namespace Infra.Cache.Configurations
         /// </summary>
         public sealed class BloomFilterSetting
         {
-            public String Name { get; set; }
+            public string Name { get; set; }
 
             public Int32 Capacity { get; set; }
 

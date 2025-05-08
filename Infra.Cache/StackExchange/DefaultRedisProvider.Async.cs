@@ -24,34 +24,34 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            if (!_cacheOptions.PenetrationSetting.Disable)
+            if (!cacheOptions.PenetrationSetting.Disable)
             {
-                var exists = await _redisDb.BloomExistsAsync(_cacheOptions.PenetrationSetting.BloomFilterSetting.Name, cacheKey);
+                var exists = await redisDb.BloomExistsAsync(cacheOptions.PenetrationSetting.BloomFilterSetting.Name, cacheKey);
                 if (!exists)
                 {
-                    if (_cacheOptions.EnableLogging)
-                        _logger?.LogInformation($"Cache Penetrated : cachekey = {cacheKey}");
+                    if (cacheOptions.EnableLogging)
+                        logger?.LogInformation($"Cache Penetrated : cachekey = {cacheKey}");
                     return null;
                 }
             }
 
-            var result = await _redisDb.StringGetAsync(cacheKey);
+            var result = await redisDb.StringGetAsync(cacheKey);
             if (!result.IsNull)
             {
                 _cacheStats.OnHit();
 
-                if (_cacheOptions.EnableLogging)
-                    _logger?.LogInformation($"Cache Hit : cachekey = {cacheKey}");
+                if (cacheOptions.EnableLogging)
+                    logger?.LogInformation($"Cache Hit : cachekey = {cacheKey}");
 
-                var value = _serializer.Deserialize(result, type);
+                var value = serializer.Deserialize(result, type);
                 return value;
             }
             else
             {
                 _cacheStats.OnMiss();
 
-                if (_cacheOptions.EnableLogging)
-                    _logger?.LogInformation($"Cache Missed : cachekey = {cacheKey}");
+                if (cacheOptions.EnableLogging)
+                    logger?.LogInformation($"Cache Missed : cachekey = {cacheKey}");
 
                 return null;
             }
@@ -70,39 +70,39 @@ namespace Infra.Cache.StackExchange
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
             ArgumentCheck.NotNegativeOrZero(expiration, nameof(expiration));
 
-            if (!_cacheOptions.PenetrationSetting.Disable)
+            if (!cacheOptions.PenetrationSetting.Disable)
             {
-                var exists = await _redisDb.BloomExistsAsync(_cacheOptions.PenetrationSetting.BloomFilterSetting.Name, cacheKey);
+                var exists = await redisDb.BloomExistsAsync(cacheOptions.PenetrationSetting.BloomFilterSetting.Name, cacheKey);
                 if (!exists)
                 {
-                    if (_cacheOptions.EnableLogging)
-                        _logger?.LogInformation($"Cache Penetrated : cachekey = {cacheKey}");
+                    if (cacheOptions.EnableLogging)
+                        logger?.LogInformation($"Cache Penetrated : cachekey = {cacheKey}");
                     return CacheValue<T>.NoValue;
                 }
             }
 
-            var result = await _redisDb.StringGetAsync(cacheKey);
+            var result = await redisDb.StringGetAsync(cacheKey);
             if (!result.IsNull)
             {
                 _cacheStats.OnHit();
 
-                if (_cacheOptions.EnableLogging)
-                    _logger?.LogInformation($"Cache Hit : cachekey = {cacheKey}");
+                if (cacheOptions.EnableLogging)
+                    logger?.LogInformation($"Cache Hit : cachekey = {cacheKey}");
 
-                var value = _serializer.Deserialize<T>(result);
+                var value = serializer.Deserialize<T>(result);
                 return new CacheValue<T>(value, true);
             }
 
             _cacheStats.OnMiss();
 
-            if (_cacheOptions.EnableLogging)
-                _logger?.LogInformation($"Cache Missed : cachekey = {cacheKey}");
+            if (cacheOptions.EnableLogging)
+                logger?.LogInformation($"Cache Missed : cachekey = {cacheKey}");
 
-            var flag = await _redisDb.LockAsync(cacheKey, _cacheOptions.LockMs / 1000);
+            var flag = await redisDb.LockAsync(cacheKey, cacheOptions.LockMs / 1000);
 
             if (!flag.Success)
             {
-                await Task.Delay(_cacheOptions.SleepMs);
+                await Task.Delay(cacheOptions.SleepMs);
                 return await GetAsync(cacheKey, dataRetriever, expiration);
             }
 
@@ -126,7 +126,7 @@ namespace Infra.Cache.StackExchange
             finally
             {
                 //remove mutex key
-                await _redisDb.SafedUnLockAsync(cacheKey, flag.LockValue);
+                await redisDb.SafedUnLockAsync(cacheKey, flag.LockValue);
             }
         }
 
@@ -140,34 +140,34 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            if (!_cacheOptions.PenetrationSetting.Disable)
+            if (!cacheOptions.PenetrationSetting.Disable)
             {
-                var exists = await _redisDb.BloomExistsAsync(_cacheOptions.PenetrationSetting.BloomFilterSetting.Name, cacheKey);
+                var exists = await redisDb.BloomExistsAsync(cacheOptions.PenetrationSetting.BloomFilterSetting.Name, cacheKey);
                 if (!exists)
                 {
-                    if (_cacheOptions.EnableLogging)
-                        _logger?.LogInformation($"Cache Penetrated : cachekey = {cacheKey}");
+                    if (cacheOptions.EnableLogging)
+                        logger?.LogInformation($"Cache Penetrated : cachekey = {cacheKey}");
                     return CacheValue<T>.NoValue;
                 }
             }
 
-            var result = await _redisDb.StringGetAsync(cacheKey);
+            var result = await redisDb.StringGetAsync(cacheKey);
             if (!result.IsNull)
             {
                 _cacheStats.OnHit();
 
-                if (_cacheOptions.EnableLogging)
-                    _logger?.LogInformation($"Cache Hit : cachekey = {cacheKey}");
+                if (cacheOptions.EnableLogging)
+                    logger?.LogInformation($"Cache Hit : cachekey = {cacheKey}");
 
-                var value = _serializer.Deserialize<T>(result);
+                var value = serializer.Deserialize<T>(result);
                 return new CacheValue<T>(value, true);
             }
             else
             {
                 _cacheStats.OnMiss();
 
-                if (_cacheOptions.EnableLogging)
-                    _logger?.LogInformation($"Cache Missed : cachekey = {cacheKey}");
+                if (cacheOptions.EnableLogging)
+                    logger?.LogInformation($"Cache Missed : cachekey = {cacheKey}");
 
                 return CacheValue<T>.NoValue;
             }
@@ -184,8 +184,8 @@ namespace Infra.Cache.StackExchange
             {
                 var allCount = 0;
 
-                foreach (var server in _servers)
-                    allCount += (int)server.DatabaseSize(_redisDb.Database);
+                foreach (var server in servers)
+                    allCount += (int)server.DatabaseSize(redisDb.Database);
 
                 return Task.FromResult(allCount);
             }
@@ -202,7 +202,7 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            await _redisDb.KeyDeleteAsync(cacheKey);
+            await redisDb.KeyDeleteAsync(cacheKey);
         }
 
         /// <summary>
@@ -219,15 +219,15 @@ namespace Infra.Cache.StackExchange
             ArgumentCheck.NotNull(cacheValue, nameof(cacheValue));
             ArgumentCheck.NotNegativeOrZero(expiration, nameof(expiration));
 
-            if (_cacheOptions.MaxRdSecond > 0)
+            if (cacheOptions.MaxRdSecond > 0)
             {
-                var addSec = new Random().Next(1, _cacheOptions.MaxRdSecond);
+                var addSec = new Random().Next(1, cacheOptions.MaxRdSecond);
                 expiration = expiration.Add(TimeSpan.FromSeconds(addSec));
             }
 
-            await _redisDb.StringSetAsync(
+            await redisDb.StringSetAsync(
                     cacheKey,
-                    _serializer.Serialize(cacheValue),
+                    serializer.Serialize(cacheValue),
                     expiration);
         }
 
@@ -240,7 +240,7 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            return await _redisDb.KeyExistsAsync(cacheKey);
+            return await redisDb.KeyExistsAsync(cacheKey);
         }
 
         /// <summary>
@@ -253,12 +253,12 @@ namespace Infra.Cache.StackExchange
 
             prefix = this.HandlePrefix(prefix);
 
-            if (_cacheOptions.EnableLogging)
-                _logger?.LogInformation($"RemoveByPrefixAsync : prefix = {prefix}");
+            if (cacheOptions.EnableLogging)
+                logger?.LogInformation($"RemoveByPrefixAsync : prefix = {prefix}");
 
             var redisKeys = this.SearchRedisKeys(prefix);
 
-            await _redisDb.KeyDeleteAsync(redisKeys);
+            await redisDb.KeyDeleteAsync(redisKeys);
         }
 
         /// <summary>
@@ -292,14 +292,14 @@ namespace Infra.Cache.StackExchange
             ArgumentCheck.NotNullAndCountGTZero(cacheKeys, nameof(cacheKeys));
 
             var keyArray = cacheKeys.ToArray();
-            var values = await _redisDb.StringGetAsync(keyArray.Select(k => (RedisKey)k).ToArray());
+            var values = await redisDb.StringGetAsync(keyArray.Select(k => (RedisKey)k).ToArray());
 
             var result = new Dictionary<string, CacheValue<T>>();
             for (int i = 0; i < keyArray.Length; i++)
             {
                 var cachedValue = values[i];
                 if (!cachedValue.IsNull)
-                    result.Add(keyArray[i], new CacheValue<T>(_serializer.Deserialize<T>(cachedValue), true));
+                    result.Add(keyArray[i], new CacheValue<T>(serializer.Deserialize<T>(cachedValue), true));
                 else
                     result.Add(keyArray[i], CacheValue<T>.NoValue);
             }
@@ -321,14 +321,14 @@ namespace Infra.Cache.StackExchange
 
             var redisKeys = this.SearchRedisKeys(prefix);
 
-            var values = (await _redisDb.StringGetAsync(redisKeys)).ToArray();
+            var values = (await redisDb.StringGetAsync(redisKeys)).ToArray();
 
             var result = new Dictionary<string, CacheValue<T>>();
             for (int i = 0; i < redisKeys.Length; i++)
             {
                 var cachedValue = values[i];
                 if (!cachedValue.IsNull)
-                    result.Add(redisKeys[i], new CacheValue<T>(_serializer.Deserialize<T>(cachedValue), true));
+                    result.Add(redisKeys[i], new CacheValue<T>(serializer.Deserialize<T>(cachedValue), true));
                 else
                     result.Add(redisKeys[i], CacheValue<T>.NoValue);
             }
@@ -347,7 +347,7 @@ namespace Infra.Cache.StackExchange
 
             var redisKeys = cacheKeys.Where(k => !string.IsNullOrEmpty(k)).Select(k => (RedisKey)k).ToArray();
             if (redisKeys.Length > 0)
-                await _redisDb.KeyDeleteAsync(redisKeys);
+                await redisDb.KeyDeleteAsync(redisKeys);
         }
 
         /// <summary>
@@ -356,14 +356,14 @@ namespace Infra.Cache.StackExchange
         /// <returns>The async.</returns>
         protected override async Task BaseFlushAsync()
         {
-            if (_cacheOptions.EnableLogging)
-                _logger?.LogInformation("Redis -- FlushAsync");
+            if (cacheOptions.EnableLogging)
+                logger?.LogInformation("Redis -- FlushAsync");
 
             var tasks = new List<Task>();
 
-            foreach (var server in _servers)
+            foreach (var server in servers)
             {
-                tasks.Add(server.FlushDatabaseAsync(_redisDb.Database));
+                tasks.Add(server.FlushDatabaseAsync(redisDb.Database));
             }
 
             await Task.WhenAll(tasks);
@@ -383,15 +383,15 @@ namespace Infra.Cache.StackExchange
             ArgumentCheck.NotNull(cacheValue, nameof(cacheValue));
             ArgumentCheck.NotNegativeOrZero(expiration, nameof(expiration));
 
-            if (_cacheOptions.MaxRdSecond > 0)
+            if (cacheOptions.MaxRdSecond > 0)
             {
-                var addSec = new Random().Next(1, _cacheOptions.MaxRdSecond);
+                var addSec = new Random().Next(1, cacheOptions.MaxRdSecond);
                 expiration = expiration.Add(TimeSpan.FromSeconds(addSec));
             }
 
-            return _redisDb.StringSetAsync(
+            return redisDb.StringSetAsync(
                 cacheKey,
-                _serializer.Serialize(cacheValue),
+                serializer.Serialize(cacheValue),
                 expiration,
                 When.NotExists
                 );
@@ -406,7 +406,7 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var timeSpan = await _redisDb.KeyTimeToLiveAsync(cacheKey);
+            var timeSpan = await redisDb.KeyTimeToLiveAsync(cacheKey);
             return timeSpan.HasValue ? timeSpan.Value : TimeSpan.Zero;
         }
 
@@ -419,7 +419,7 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullAndCountGTZero(cacheKeys, nameof(cacheKeys));
 
-            await _redisDb.KeyExpireAsync(cacheKeys, seconds);
+            await redisDb.KeyExpireAsync(cacheKeys, seconds);
         }
     }
 }

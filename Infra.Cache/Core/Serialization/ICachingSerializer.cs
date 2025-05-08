@@ -38,7 +38,7 @@ namespace Infra.Cache.Core.Serialization
         /// Gets the name.
         /// </summary>
         /// <value>The name.</value>
-        String Name { get; }
+        string Name { get; }
 
         /// <summary>
         /// Serialize the specified value.

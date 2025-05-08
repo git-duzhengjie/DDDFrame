@@ -5,6 +5,6 @@
     /// </summary>
     public static class AuthorizePolicy
     {
-        public static readonly String Default = "default";
+        public static readonly string Default = "default";
     }
 }

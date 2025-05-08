@@ -5,17 +5,17 @@ namespace Infra.Cache.Core.Diagnostics
 {
     public class EventData
     {
-        public EventData(String cacheType, String name, String operation)
+        public EventData(string cacheType, string name, string operation)
         {
             this.CacheType = cacheType;
             this.Name = name;
             this.Operation = operation;
         }
 
-        public String CacheType { get; set; }
+        public string CacheType { get; set; }
 
-        public String Name { get; set; }
+        public string Name { get; set; }
 
-        public String Operation { get; set; }
+        public string Operation { get; set; }
     }
 }

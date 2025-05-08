@@ -13,7 +13,7 @@ namespace Infra.Cache.StackExchange
     /// </summary>
     public partial class DefaultRedisProvider : IRedisProvider
     {
-        public long GeoAdd(String cacheKey, List<(Double longitude, Double latitude, String member)> values)
+        public long GeoAdd(string cacheKey, List<(Double longitude, Double latitude, string member)> values)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
             ArgumentCheck.NotNullAndCountGTZero(values, nameof(values));
@@ -25,11 +25,11 @@ namespace Infra.Cache.StackExchange
                 list.Add(new GeoEntry(item.longitude, item.latitude, item.member));
             }
 
-            var res = _redisDb.GeoAdd(cacheKey, list.ToArray());
+            var res = redisDb.GeoAdd(cacheKey, list.ToArray());
             return res;
         }
 
-        public async Task<Int64> GeoAddAsync(String cacheKey, List<(Double longitude, Double latitude, String member)> values)
+        public async Task<Int64> GeoAddAsync(string cacheKey, List<(Double longitude, Double latitude, string member)> values)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
             ArgumentCheck.NotNullAndCountGTZero(values, nameof(values));
@@ -41,33 +41,33 @@ namespace Infra.Cache.StackExchange
                 list.Add(new GeoEntry(item.longitude, item.latitude, item.member));
             }
 
-            var res = await _redisDb.GeoAddAsync(cacheKey, list.ToArray());
+            var res = await redisDb.GeoAddAsync(cacheKey, list.ToArray());
             return res;
         }
 
-        public Double? GeoDist(String cacheKey, String member1, String member2, String unit = "m")
+        public Double? GeoDist(string cacheKey, string member1, string member2, string unit = "m")
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
             ArgumentCheck.NotNullOrWhiteSpace(member1, nameof(member1));
             ArgumentCheck.NotNullOrWhiteSpace(member2, nameof(member2));
             ArgumentCheck.NotNullOrWhiteSpace(unit, nameof(unit));
 
-            var res = _redisDb.GeoDistance(cacheKey, member1, member2, GetGeoUnit(unit));
+            var res = redisDb.GeoDistance(cacheKey, member1, member2, GetGeoUnit(unit));
             return res;
         }
 
-        public async Task<Double?> GeoDistAsync(String cacheKey, String member1, String member2, String unit = "m")
+        public async Task<Double?> GeoDistAsync(string cacheKey, string member1, string member2, string unit = "m")
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
             ArgumentCheck.NotNullOrWhiteSpace(member1, nameof(member1));
             ArgumentCheck.NotNullOrWhiteSpace(member2, nameof(member2));
             ArgumentCheck.NotNullOrWhiteSpace(unit, nameof(unit));
 
-            var res = await _redisDb.GeoDistanceAsync(cacheKey, member1, member2, GetGeoUnit(unit));
+            var res = await redisDb.GeoDistanceAsync(cacheKey, member1, member2, GetGeoUnit(unit));
             return res;
         }
 
-        public List<String> GeoHash(String cacheKey, List<String> members)
+        public List<string> GeoHash(string cacheKey, List<string> members)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
             ArgumentCheck.NotNullAndCountGTZero(members, nameof(members));
@@ -78,11 +78,11 @@ namespace Infra.Cache.StackExchange
                 list.Add(item);
             }
 
-            var res = _redisDb.GeoHash(cacheKey, list.ToArray());
+            var res = redisDb.GeoHash(cacheKey, list.ToArray());
             return res.ToList();
         }
 
-        public async Task<List<String>> GeoHashAsync(String cacheKey, List<String> members)
+        public async Task<List<string>> GeoHashAsync(string cacheKey, List<string> members)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
             ArgumentCheck.NotNullAndCountGTZero(members, nameof(members));
@@ -93,11 +93,11 @@ namespace Infra.Cache.StackExchange
                 list.Add(item);
             }
 
-            var res = await _redisDb.GeoHashAsync(cacheKey, list.ToArray());
+            var res = await redisDb.GeoHashAsync(cacheKey, list.ToArray());
             return res.ToList();
         }
 
-        public List<(Double longitude, Double latitude)?> GeoPos(String cacheKey, List<String> members)
+        public List<(Double longitude, Double latitude)?> GeoPos(string cacheKey, List<string> members)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
             ArgumentCheck.NotNullAndCountGTZero(members, nameof(members));
@@ -108,7 +108,7 @@ namespace Infra.Cache.StackExchange
                 list.Add(item);
             }
 
-            var res = _redisDb.GeoPosition(cacheKey, list.ToArray());
+            var res = redisDb.GeoPosition(cacheKey, list.ToArray());
 
             var tuple = new List<(Double longitude, Double latitude)?>();
 
@@ -127,7 +127,7 @@ namespace Infra.Cache.StackExchange
             return tuple;
         }
 
-        public async Task<List<(Double longitude, Double latitude)?>> GeoPosAsync(String cacheKey, List<String> members)
+        public async Task<List<(Double longitude, Double latitude)?>> GeoPosAsync(string cacheKey, List<string> members)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
             ArgumentCheck.NotNullAndCountGTZero(members, nameof(members));
@@ -138,7 +138,7 @@ namespace Infra.Cache.StackExchange
                 list.Add(item);
             }
 
-            var res = await _redisDb.GeoPositionAsync(cacheKey, list.ToArray());
+            var res = await redisDb.GeoPositionAsync(cacheKey, list.ToArray());
 
             var tuple = new List<(Double longitude, Double latitude)?>();
 
@@ -157,7 +157,7 @@ namespace Infra.Cache.StackExchange
             return tuple;
         }
 
-        private GeoUnit GetGeoUnit(String unit)
+        private GeoUnit GetGeoUnit(string unit)
         {
             GeoUnit geoUnit;
             switch (unit)

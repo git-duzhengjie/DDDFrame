@@ -22,6 +22,6 @@ namespace Infra.Cache.Configurations
         /// <returns>The server list.</returns>
         IEnumerable<IServer> GetServerList();
 
-        String DBProviderName { get; }
+        string DBProviderName { get; }
     }
 }

@@ -11,11 +11,11 @@ namespace Infra.Cache.StackExchange
     /// </summary>
     public partial class DefaultRedisProvider : Infra.Cache.IRedisProvider
     {
-        public long IncrBy(String cacheKey, long value = 1)
+        public long IncrBy(string cacheKey, long value = 1)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var res = _redisDb.StringIncrement(cacheKey, value);
+            var res = redisDb.StringIncrement(cacheKey, value);
             return res;
         }
 
@@ -23,7 +23,7 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var res = await _redisDb.StringIncrementAsync(cacheKey, value);
+            var res = await redisDb.StringIncrementAsync(cacheKey, value);
             return res;
         }
 
@@ -31,7 +31,7 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var res = _redisDb.StringIncrement(cacheKey, value);
+            var res = redisDb.StringIncrement(cacheKey, value);
             return res;
         }
 
@@ -39,7 +39,7 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var res = await _redisDb.StringIncrementAsync(cacheKey, value);
+            var res = await redisDb.StringIncrementAsync(cacheKey, value);
             return res;
         }
 
@@ -58,7 +58,7 @@ namespace Infra.Cache.StackExchange
                 w = When.Exists;
             }
 
-            bool flag = _redisDb.StringSet(cacheKey, cacheValue, expiration, w);
+            bool flag = redisDb.StringSet(cacheKey, cacheValue, expiration, w);
             return flag;
         }
 
@@ -77,7 +77,7 @@ namespace Infra.Cache.StackExchange
                 w = When.Exists;
             }
 
-            bool flag = await _redisDb.StringSetAsync(cacheKey, cacheValue, expiration, w);
+            bool flag = await redisDb.StringSetAsync(cacheKey, cacheValue, expiration, w);
             return flag;
         }
 
@@ -85,7 +85,7 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var val = _redisDb.StringGet(cacheKey);
+            var val = redisDb.StringGet(cacheKey);
             return val;
         }
 
@@ -93,7 +93,7 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var val = await _redisDb.StringGetAsync(cacheKey);
+            var val = await redisDb.StringGetAsync(cacheKey);
             return val;
         }
 
@@ -101,7 +101,7 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var len = _redisDb.StringLength(cacheKey);
+            var len = redisDb.StringLength(cacheKey);
             return len;
         }
 
@@ -109,7 +109,7 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var len = await _redisDb.StringLengthAsync(cacheKey);
+            var len = await redisDb.StringLengthAsync(cacheKey);
             return len;
         }
 
@@ -117,7 +117,7 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var res = _redisDb.StringSetRange(cacheKey, offest, value);
+            var res = redisDb.StringSetRange(cacheKey, offest, value);
             return (long)res;
         }
 
@@ -125,7 +125,7 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var res = await _redisDb.StringSetRangeAsync(cacheKey, offest, value);
+            var res = await redisDb.StringSetRangeAsync(cacheKey, offest, value);
             return (long)res;
         }
 
@@ -133,7 +133,7 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var res = _redisDb.StringGetRange(cacheKey, start, end);
+            var res = redisDb.StringGetRange(cacheKey, start, end);
             return res;
         }
 
@@ -141,7 +141,7 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var res = await _redisDb.StringGetRangeAsync(cacheKey, start, end);
+            var res = await redisDb.StringGetRangeAsync(cacheKey, start, end);
             return res;
         }
     }

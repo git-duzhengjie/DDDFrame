@@ -45,13 +45,13 @@ namespace Infra.Cache.Core
         //protected int ProviderMaxRdSecond { get; set; }
         //protected CacheStats ProviderStats { get; set; }
 
-        public abstract String Name { get; }
+        public abstract string Name { get; }
         public abstract CacheOptions CacheOptions { get; }
         //public bool IsDistributedCache => this.IsDistributedProvider;
         //public int MaxRdSecond => this.ProviderMaxRdSecond;
         //public CacheStats CacheStats => this.ProviderStats;
 
-        public abstract String CachingProviderType { get; }
+        public abstract string CachingProviderType { get; }
 
         public abstract ICachingSerializer Serializer { get; }
 

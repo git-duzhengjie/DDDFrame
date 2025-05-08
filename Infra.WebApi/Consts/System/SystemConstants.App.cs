@@ -5,8 +5,8 @@ namespace Infra.WebApi.Consts.System
 {
     public static class AppConstants
     {
-        public const String LougeWebApp = "lougeWebApp";
-        public const String LougeRihnoApp = "lougRhinoApp";
-        public const String UploadFolder = "uploads";
+        public const string LougeWebApp = "lougeWebApp";
+        public const string LougeRihnoApp = "lougRhinoApp";
+        public const string UploadFolder = "uploads";
     }
 }

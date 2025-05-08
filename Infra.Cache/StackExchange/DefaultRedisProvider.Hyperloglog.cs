@@ -12,7 +12,7 @@ namespace Infra.Cache.StackExchange
     /// </summary>
     public partial class DefaultRedisProvider : IRedisProvider
     {
-        public bool PfAdd<T>(String cacheKey, List<T> values)
+        public bool PfAdd<T>(string cacheKey, List<T> values)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
             ArgumentCheck.NotNullAndCountGTZero(values, nameof(values));
@@ -21,14 +21,14 @@ namespace Infra.Cache.StackExchange
 
             foreach (var item in values)
             {
-                list.Add(_serializer.Serialize(item));
+                list.Add(serializer.Serialize(item));
             }
 
-            var res = _redisDb.HyperLogLogAdd(cacheKey, list.ToArray());
+            var res = redisDb.HyperLogLogAdd(cacheKey, list.ToArray());
             return res;
         }
 
-        public async Task<bool> PfAddAsync<T>(String cacheKey, List<T> values)
+        public async Task<bool> PfAddAsync<T>(string cacheKey, List<T> values)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
             ArgumentCheck.NotNullAndCountGTZero(values, nameof(values));
@@ -37,14 +37,14 @@ namespace Infra.Cache.StackExchange
 
             foreach (var item in values)
             {
-                list.Add(_serializer.Serialize(item));
+                list.Add(serializer.Serialize(item));
             }
 
-            var res = await _redisDb.HyperLogLogAddAsync(cacheKey, list.ToArray());
+            var res = await redisDb.HyperLogLogAddAsync(cacheKey, list.ToArray());
             return res;
         }
 
-        public long PfCount(List<String> cacheKeys)
+        public long PfCount(List<string> cacheKeys)
         {
             ArgumentCheck.NotNullAndCountGTZero(cacheKeys, nameof(cacheKeys));
 
@@ -55,11 +55,11 @@ namespace Infra.Cache.StackExchange
                 list.Add(item);
             }
 
-            var res = _redisDb.HyperLogLogLength(list.ToArray());
+            var res = redisDb.HyperLogLogLength(list.ToArray());
             return res;
         }
 
-        public async Task<Int64> PfCountAsync(List<String> cacheKeys)
+        public async Task<Int64> PfCountAsync(List<string> cacheKeys)
         {
             ArgumentCheck.NotNullAndCountGTZero(cacheKeys, nameof(cacheKeys));
 
@@ -70,11 +70,11 @@ namespace Infra.Cache.StackExchange
                 list.Add(item);
             }
 
-            var res = await _redisDb.HyperLogLogLengthAsync(list.ToArray());
+            var res = await redisDb.HyperLogLogLengthAsync(list.ToArray());
             return res;
         }
 
-        public bool PfMerge(String destKey, List<String> sourceKeys)
+        public bool PfMerge(string destKey, List<string> sourceKeys)
         {
             ArgumentCheck.NotNullOrWhiteSpace(destKey, nameof(destKey));
             ArgumentCheck.NotNullAndCountGTZero(sourceKeys, nameof(sourceKeys));
@@ -86,11 +86,11 @@ namespace Infra.Cache.StackExchange
                 list.Add(item);
             }
 
-            _redisDb.HyperLogLogMerge(destKey, list.ToArray());
+            redisDb.HyperLogLogMerge(destKey, list.ToArray());
             return true;
         }
 
-        public async Task<bool> PfMergeAsync(String destKey, List<String> sourceKeys)
+        public async Task<bool> PfMergeAsync(string destKey, List<string> sourceKeys)
         {
             ArgumentCheck.NotNullOrWhiteSpace(destKey, nameof(destKey));
             ArgumentCheck.NotNullAndCountGTZero(sourceKeys, nameof(sourceKeys));
@@ -102,7 +102,7 @@ namespace Infra.Cache.StackExchange
                 list.Add(item);
             }
 
-            await _redisDb.HyperLogLogMergeAsync(destKey, list.ToArray());
+            await redisDb.HyperLogLogMergeAsync(destKey, list.ToArray());
             return true;
         }
     }

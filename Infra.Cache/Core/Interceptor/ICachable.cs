@@ -12,6 +12,6 @@ namespace Louge.Infra.Core.Interceptor
         /// Gets the cache key.
         /// </summary>
         /// <value>The cache key.</value>
-        String CacheKey { get; }
+        string CacheKey { get; }
     }
 }

@@ -10,37 +10,37 @@ namespace Infra.WebApi.Consts.Permissions.User
     {
         public static class User
         {
-            public const String Create = "userAdd";
-            public const String Update = "userEdit";
-            public const String Delete = "userDelete";
-            public const String SetRole = "userSetRole";
-            public const String GetList = "userList";
-            public const String ChangeStatus = "userFreeze";
+            public const string Create = "userAdd";
+            public const string Update = "userEdit";
+            public const string Delete = "userDelete";
+            public const string SetRole = "userSetRole";
+            public const string GetList = "userList";
+            public const string ChangeStatus = "userFreeze";
         }
 
         public static class Dept
         {
-            public const String Create = "deptAdd";
-            public const String Update = "deptEdit";
-            public const String Delete = "deptDelete";
-            public const String GetList = "deptList";
+            public const string Create = "deptAdd";
+            public const string Update = "deptEdit";
+            public const string Delete = "deptDelete";
+            public const string GetList = "deptList";
         }
 
         public static class Menu
         {
-            public const String Create = "menuAdd";
-            public const String Update = "menuEdit";
-            public const String Delete = "menuDelete";
-            public const String GetList = "menuList";
+            public const string Create = "menuAdd";
+            public const string Update = "menuEdit";
+            public const string Delete = "menuDelete";
+            public const string GetList = "menuList";
         }
 
         public static class Role
         {
-            public const String Create = "roleAdd";
-            public const String Update = "roleEdit";
-            public const String Delete = "roleDelete";
-            public const String GetList = "roleList";
-            public const String SetPermissons = "roleSetAuthority";
+            public const string Create = "roleAdd";
+            public const string Update = "roleEdit";
+            public const string Delete = "roleDelete";
+            public const string GetList = "roleList";
+            public const string SetPermissons = "roleSetAuthority";
         }
     }
 }

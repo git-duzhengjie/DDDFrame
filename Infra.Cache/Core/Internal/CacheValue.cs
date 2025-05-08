@@ -48,7 +48,7 @@ namespace Infra.Cache.Core
         ///
         /// </summary>
         /// <returns></returns>
-        public override String ToString()
+        public override string ToString()
         {
             return Value?.ToString() ?? "<null>";
         }

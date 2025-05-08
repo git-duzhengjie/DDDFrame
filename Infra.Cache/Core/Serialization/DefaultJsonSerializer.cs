@@ -38,7 +38,7 @@ namespace Infra.Cache.Core.Serialization
 {
     public class DefaultJsonSerializer : ICachingSerializer
     {
-        public String Name => CachingConstValue.DefaultJsonSerializerName;
+        public string Name => CachingConstValue.DefaultJsonSerializerName;
 
         public T Deserialize<T>(byte[] bytes)
         {

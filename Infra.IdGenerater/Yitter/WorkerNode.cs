@@ -5,32 +5,25 @@ using Infra.Core.System.Extensions;
 
 namespace Infra.IdGenerater.Yitter
 {
-    public sealed class WorkerNode
-    {
-        private readonly ILogger<WorkerNode> _logger;
-        private readonly IRedisProvider _redisProvider;
-        private readonly IDistributedLocker _distributedLocker;
-
-        public WorkerNode(ILogger<WorkerNode> logger
+    public sealed class WorkerNode(ILogger<WorkerNode> logger
            , IRedisProvider redisProvider
            , IDistributedLocker distributedLocker)
-        {
-            _redisProvider = redisProvider;
-            _distributedLocker = distributedLocker;
-            _logger = logger;
-        }
+    {
+        private readonly ILogger<WorkerNode> logger = logger;
+        private readonly IRedisProvider redisProvider = redisProvider;
+        private readonly IDistributedLocker distributedLocker = distributedLocker;
 
-        internal async Task InitWorkerNodesAsync(String serviceName)
+        internal async Task InitWorkerNodesAsync(string serviceName)
         {
             var workerIdSortedSetCacheKey = GetWorkerIdCacheKey(serviceName);
 
-            if (!_redisProvider.KeyExists(workerIdSortedSetCacheKey))
+            if (!redisProvider.KeyExists(workerIdSortedSetCacheKey))
             {
-                _logger.LogInformation("Starting InitWorkerNodes:{0}", workerIdSortedSetCacheKey);
+                logger.LogInformation("Starting InitWorkerNodes:{workerIdSortedSetCacheKey}", workerIdSortedSetCacheKey);
 
-                var flag = await _distributedLocker.LockAsync(workerIdSortedSetCacheKey);
+                var (Success, LockValue) = await distributedLocker.LockAsync(workerIdSortedSetCacheKey);
 
-                if (!flag.Success)
+                if (!Success)
                 {
                     await Task.Delay(300);
                     await InitWorkerNodesAsync(serviceName);
@@ -44,7 +37,7 @@ namespace Infra.IdGenerater.Yitter
                     {
                         set.Add(index, DateTime.Now.GetTotalMilliseconds());
                     }
-                    count = await _redisProvider.ZAddAsync(workerIdSortedSetCacheKey, set);
+                    count = await redisProvider.ZAddAsync(workerIdSortedSetCacheKey, set);
                 }
                 catch (Exception ex)
                 {
@@ -52,13 +45,14 @@ namespace Infra.IdGenerater.Yitter
                 }
                 finally
                 {
-                    await _distributedLocker.SafedUnLockAsync(workerIdSortedSetCacheKey, flag.LockValue);
+                    await distributedLocker.SafedUnLockAsync(workerIdSortedSetCacheKey, LockValue);
                 }
 
-                _logger.LogInformation("Finlished InitWorkerNodes:{0}:{1}", workerIdSortedSetCacheKey, count);
+                logger.LogInformation("Finlished InitWorkerNodes:{workerIdSortedSetCacheKey}:{count}"
+                    , workerIdSortedSetCacheKey, count);
             }
             else
-                _logger.LogInformation("Exists WorkerNodes:{0}", workerIdSortedSetCacheKey);
+                logger.LogInformation("Exists WorkerNodes:{workerIdSortedSetCacheKey}", workerIdSortedSetCacheKey);
         }
 
         internal async Task<long> GetWorkerIdAsync(string serviceName)
@@ -70,10 +64,10 @@ namespace Infra.IdGenerater.Yitter
                                     return workerids[1]";
 
             var parameters = new { key = workerIdSortedSetCacheKey, start = 0, stop = 0, score = DateTime.Now.GetTotalMilliseconds() };
-            var luaResult = (byte[])await _redisProvider.ScriptEvaluateAsync(scirpt, parameters);
-            var workerId = _redisProvider.Serializer.Deserialize<long>(luaResult);
+            var luaResult = (byte[])await redisProvider.ScriptEvaluateAsync(scirpt, parameters);
+            var workerId = redisProvider.Serializer.Deserialize<long>(luaResult);
 
-            _logger.LogInformation("Get WorkerNodes:{0}", workerId);
+            logger.LogInformation("Get WorkerNodes:{workerId}", workerId);
 
             return workerId;
         }
@@ -86,8 +80,8 @@ namespace Infra.IdGenerater.Yitter
             var workerIdSortedSetCacheKey = GetWorkerIdCacheKey(serviceName);
 
             var score = workerIdScore == null ? DateTime.Now.GetTotalMilliseconds() : workerIdScore.Value;
-            await _redisProvider.ZAddAsync(workerIdSortedSetCacheKey, new Dictionary<long, double> { { workerId, score } });
-            _logger.LogDebug("Refresh WorkerNodes:{0}:{1}", workerId, score);
+            await redisProvider.ZAddAsync(workerIdSortedSetCacheKey, new Dictionary<long, double> { { workerId, score } });
+            logger.LogDebug("Refresh WorkerNodes:{workerId}:{score}", workerId, score);
         }
 
         internal static string GetWorkerIdCacheKey(string serviceName) => $"frame:{serviceName}:workids";

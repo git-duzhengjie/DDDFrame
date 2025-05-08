@@ -59,7 +59,7 @@ namespace Infra.Cache.StackExchange
         /// <returns>The connection multiplexer.</returns>
         private ConnectionMultiplexer CreateConnectionMultiplexer()
         {
-            if (String.IsNullOrWhiteSpace(_options.ConnectionString))
+            if (string.IsNullOrWhiteSpace(_options.ConnectionString))
             {
                 var configurationOptions = new ConfigurationOptions
                 {

@@ -10,7 +10,7 @@ namespace Microsoft.AspNetCore.Authorization
     public sealed class PermissionHandlerRemote : AbstractPermissionHandler
     {
 
-        protected override Task<bool> CheckUserPermissions(Int64 userId, IEnumerable<String> codes, String validationVersion)
+        protected override Task<bool> CheckUserPermissions(Int64 userId, IEnumerable<string> codes, string validationVersion)
         {
             return Task.FromResult(true);
         }

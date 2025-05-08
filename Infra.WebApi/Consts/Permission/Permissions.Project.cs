@@ -7,7 +7,7 @@ namespace Infra.WebApi.Consts.Permissions.Project
     {
         public static class Project 
         {
-            public const String GetList = "projectList";
+            public const string GetList = "projectList";
         }
     }
 }

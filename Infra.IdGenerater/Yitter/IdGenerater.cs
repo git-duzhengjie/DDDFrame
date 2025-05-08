@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Yitter.IdGenerator;
+﻿using Yitter.IdGenerator;
 
 namespace Infra.IdGenerater.Yitter
 {
@@ -12,8 +7,8 @@ namespace Infra.IdGenerater.Yitter
     /// </summary>
     public static class IdGenerater
     {
-        private static bool _isSet = false;
-        private static readonly object _locker = new object();
+        private static bool isSet = false;
+        private static readonly Lock locker = new();
 
         public static byte WorkerIdBitLength => 6;
         public static byte SeqBitLength => 6;
@@ -26,15 +21,15 @@ namespace Infra.IdGenerater.Yitter
         /// <param name="workerId"></param>
         public static void SetWorkerId(ushort workerId)
         {
-            if (_isSet)
+            if (isSet)
                 throw new InvalidOperationException("allow only once");
 
             if (workerId > MaxWorkerId || workerId < 0)
                 throw new ArgumentException($"worker Id can't be greater than {MaxWorkerId} or less than 0");
 
-            lock (_locker)
+            lock (locker)
             {
-                if (_isSet)
+                if (isSet)
                     throw new InvalidOperationException("allow only once");
 
                 YitIdHelper.SetIdGenerator(new IdGeneratorOptions(workerId)
@@ -43,8 +38,8 @@ namespace Infra.IdGenerater.Yitter
                     SeqBitLength = SeqBitLength
                 });
 
-                CurrentWorkerId = (int)workerId;
-                _isSet = true;
+                CurrentWorkerId = workerId;
+                isSet = true;
             }
         }
 
@@ -56,9 +51,9 @@ namespace Infra.IdGenerater.Yitter
         /// 如果需要提高速度，可以修改SeqBitLength长度。当SeqBitLength =10 ,100W个id约800毫秒。
         /// </summary>
         /// <returns>Id</returns>
-        public static Int64 GetNextId()
+        public static long GetNextId()
         {
-            if (!_isSet)
+            if (!isSet)
                 throw new InvalidOperationException("please call SetIdGenerator first");
 
             return YitIdHelper.NextId();

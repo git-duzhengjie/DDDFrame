@@ -15,13 +15,13 @@ namespace Infra.Cache.Core
         /// <summary>
         /// The default name of the serializer.
         /// </summary>
-        public const String DefaultSerializerName = "binary";
+        public const string DefaultSerializerName = "binary";
 
-        public const String DefaultProtobufSerializerName = "proto";
+        public const string DefaultProtobufSerializerName = "proto";
 
-        public const String DefaultJsonSerializerName = "json";
+        public const string DefaultJsonSerializerName = "json";
 
-        public const String StackExchange = "redis.stackexchange";
+        public const string StackExchange = "redis.stackexchange";
 
         public const Int32 PollyTimeout = 5;
     }

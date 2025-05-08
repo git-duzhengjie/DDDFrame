@@ -14,7 +14,7 @@ namespace Infra.Cache.Configurations
         /// </summary>
         /// <param name="host">主机</param>
         /// <param name="port">端口</param>
-        public ServerEndPoint(String host, Int32 port)
+        public ServerEndPoint(string host, Int32 port)
         {
             ArgumentCheck.NotNullOrWhiteSpace(host, nameof(host));
 
@@ -37,6 +37,6 @@ namespace Infra.Cache.Configurations
         /// <summary>
         /// 主机
         /// </summary>
-        public String Host { get; set; }
+        public string Host { get; set; }
     }
 }

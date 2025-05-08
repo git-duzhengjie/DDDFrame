@@ -33,7 +33,7 @@ namespace Infra.Cache.Core
     public class AutoDelayTimers
     {
         private static readonly Lazy<AutoDelayTimers> lazy = new Lazy<AutoDelayTimers>(() => new AutoDelayTimers());
-        private static ConcurrentDictionary<String, Timer> _timers;
+        private static ConcurrentDictionary<string, Timer> _timers;
 
         static AutoDelayTimers()
         {
@@ -41,7 +41,7 @@ namespace Infra.Cache.Core
 
         private AutoDelayTimers()
         {
-            _timers = new ConcurrentDictionary<String, Timer>();
+            _timers = new ConcurrentDictionary<string, Timer>();
         }
 
         public static AutoDelayTimers Instance
@@ -52,12 +52,12 @@ namespace Infra.Cache.Core
             }
         }
 
-        public bool TryAdd(String key, Timer dealytimer)
+        public bool TryAdd(string key, Timer dealytimer)
         {
             return _timers.TryAdd(key, dealytimer);
         }
 
-        public void CloseTimer(String key)
+        public void CloseTimer(string key)
         {
             if (_timers.ContainsKey(key))
             {
@@ -68,7 +68,7 @@ namespace Infra.Cache.Core
             }
         }
 
-        public bool ContainsKey(String key)
+        public bool ContainsKey(string key)
         {
             return _timers.ContainsKey(key);
         }

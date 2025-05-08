@@ -51,13 +51,13 @@ namespace Infra.Cache.Core
         public sealed class Model
         {
             //[2022.0707][Jay:修改][为了支持.netstandard2.0，语法不支持]
-            //public List<String> CacheKeys { get; init; }
+            //public List<string> CacheKeys { get; init; }
             //public DateTime ExpireDt { get; init; }
 
-            public List<String> CacheKeys { get; set; }
+            public List<string> CacheKeys { get; set; }
             public DateTime ExpireDt { get; set; }
 
-            public Model(IEnumerable<String> cacheKeys, DateTime expireDt)
+            public Model(IEnumerable<string> cacheKeys, DateTime expireDt)
             {
                 CacheKeys = cacheKeys.ToList();
                 ExpireDt = expireDt;

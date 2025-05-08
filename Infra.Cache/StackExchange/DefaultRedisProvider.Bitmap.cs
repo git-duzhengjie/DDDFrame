@@ -18,16 +18,16 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            return _redisDb.StringGetBit(cacheKey, offset);
+            return redisDb.StringGetBit(cacheKey, offset);
         }
 
-        public List<bool> StringGetBit(String cacheKey, IEnumerable<long> offsets)
+        public List<bool> StringGetBit(string cacheKey, IEnumerable<long> offsets)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
             var results = new Task<bool>[offsets.Count()];
 
-            var batch = _redisDb.CreateBatch();
+            var batch = redisDb.CreateBatch();
             int index = 0;
             foreach (var position in offsets)
             {
@@ -45,7 +45,7 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            return _redisDb.StringSetBit(cacheKey, position, value);
+            return redisDb.StringSetBit(cacheKey, position, value);
         }
 
         public List<bool> StringSetBit(string cacheKey, IEnumerable<long> offsets, bool value)
@@ -54,7 +54,7 @@ namespace Infra.Cache.StackExchange
 
             var results = new Task<bool>[offsets.Count()];
 
-            var batch = _redisDb.CreateBatch();
+            var batch = redisDb.CreateBatch();
             var index = 0;
             foreach (var position in offsets)
             {
@@ -71,7 +71,7 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            return await _redisDb.StringGetBitAsync(cacheKey, offset);
+            return await redisDb.StringGetBitAsync(cacheKey, offset);
         }
 
         public async Task<List<bool>> StringGetBitAsync(string cacheKey, IEnumerable<long> offsets)
@@ -80,7 +80,7 @@ namespace Infra.Cache.StackExchange
 
             var results = new bool[offsets.Count()];
 
-            var batch = _redisDb.CreateBatch();
+            var batch = redisDb.CreateBatch();
             int index = 0;
             foreach (var position in offsets)
             {
@@ -96,7 +96,7 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            return await _redisDb.StringSetBitAsync(cacheKey, offset, value);
+            return await redisDb.StringSetBitAsync(cacheKey, offset, value);
         }
 
         public async Task<List<bool>> StringSetBitAsync(string cacheKey, IEnumerable<long> offsets, bool value)
@@ -105,7 +105,7 @@ namespace Infra.Cache.StackExchange
 
             var results = new bool[offsets.Count()];
 
-            var batch = _redisDb.CreateBatch();
+            var batch = redisDb.CreateBatch();
             var index = 0;
             foreach (var position in offsets)
             {

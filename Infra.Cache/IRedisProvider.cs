@@ -76,7 +76,7 @@ namespace Infra.Cache
 
         #endregion Keys
 
-        #region String
+        #region string
 
         /// <summary>
         /// https://redis.io/commands/incrby
@@ -194,7 +194,7 @@ namespace Infra.Cache
         /// <returns></returns>
         Task<string> StringGetRangeAsync(string cacheKey, long start, long end);
 
-        #endregion String
+        #endregion string
 
         #region Hashes
 

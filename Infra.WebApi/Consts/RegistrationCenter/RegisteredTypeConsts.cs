@@ -8,9 +8,9 @@ namespace Infra.WebApi.Consts.RegistrationCenter
     /// </summary>
     public class RegisteredTypeConsts
     {
-        public const String Direct = "direct";
-        public const String Consul = "consul";
-        public const String Nacos = "nacos";
-        public const String ClusterIP = "clusterip";
+        public const string Direct = "direct";
+        public const string Consul = "consul";
+        public const string Nacos = "nacos";
+        public const string ClusterIP = "clusterip";
     }
 }

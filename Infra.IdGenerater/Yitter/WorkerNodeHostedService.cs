@@ -1,31 +1,23 @@
 ﻿using Infra.Core.Abstract;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Infra.Core.Extensions;
 using Infra.Core.System.Extensions;
 
 namespace Infra.IdGenerater.Yitter
 {
-    public sealed class WorkerNodeHostedService : BackgroundService
-    {
-        private readonly ILogger<WorkerNodeHostedService> _logger;
-        private readonly string _serviceName;
-        private readonly WorkerNode _workerNode;
-        private readonly int _millisecondsDelay = 1000 * 60;
-
-        public WorkerNodeHostedService(ILogger<WorkerNodeHostedService> logger
+    public sealed class WorkerNodeHostedService(ILogger<WorkerNodeHostedService> logger
            , WorkerNode workerNode
-           , IServiceInfo serviceInfo)
-        {
-            _serviceName = serviceInfo.ShortName;
-            _workerNode = workerNode;
-            _logger = logger;
-        }
+           , IServiceInfo serviceInfo) : BackgroundService
+    {
+        private readonly ILogger<WorkerNodeHostedService> logger = logger;
+        private readonly string serviceName = serviceInfo.ShortName;
+        private readonly WorkerNode workerNode = workerNode;
+        private readonly int millisecondsDelay = 1000 * 60;
 
         public override async Task StartAsync(CancellationToken cancellationToken)
         {
-            await _workerNode.InitWorkerNodesAsync(_serviceName);
-            var workerId = await _workerNode.GetWorkerIdAsync(_serviceName);
+            await workerNode.InitWorkerNodesAsync(serviceName);
+            var workerId = await workerNode.GetWorkerIdAsync(serviceName);
 
             IdGenerater.SetWorkerId((ushort)workerId);
 
@@ -36,13 +28,13 @@ namespace Infra.IdGenerater.Yitter
         {
             await base.StopAsync(cancellationToken);
 
-            _logger.LogInformation("stopping service {0}", _serviceName);
+            logger.LogInformation("stopping service {serviceName}", serviceName);
 
-            var subtractionMilliseconds = 0 - (_millisecondsDelay * 1.5);
+            var subtractionMilliseconds = 0 - (millisecondsDelay * 1.5);
             var score = DateTime.Now.AddMilliseconds(subtractionMilliseconds).GetTotalMilliseconds();
-            await _workerNode.RefreshWorkerIdScoreAsync(_serviceName, IdGenerater.CurrentWorkerId, score);
+            await workerNode.RefreshWorkerIdScoreAsync(serviceName, IdGenerater.CurrentWorkerId, score);
 
-            _logger.LogInformation("stopped service {0}:{1}", _serviceName, score);
+            logger.LogInformation("stopped service {serviceName}:{score}", serviceName, score);
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -51,16 +43,16 @@ namespace Infra.IdGenerater.Yitter
             {
                 try
                 {
-                    await Task.Delay(_millisecondsDelay, stoppingToken);
+                    await Task.Delay(millisecondsDelay, stoppingToken);
 
                     if (stoppingToken.IsCancellationRequested) break;
 
-                    await _workerNode.RefreshWorkerIdScoreAsync(_serviceName, IdGenerater.CurrentWorkerId);
+                    await workerNode.RefreshWorkerIdScoreAsync(serviceName, IdGenerater.CurrentWorkerId);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex.Message, ex);
-                    await Task.Delay(_millisecondsDelay / 3, stoppingToken);
+                    logger.LogError("异常:{ex}", [ex]);
+                    await Task.Delay(millisecondsDelay / 3, stoppingToken);
                 }
             }
         }

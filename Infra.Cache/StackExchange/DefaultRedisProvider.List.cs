@@ -12,30 +12,30 @@ namespace Infra.Cache.StackExchange
     /// </summary>
     public partial class DefaultRedisProvider : IRedisProvider
     {
-        public T LIndex<T>(String cacheKey, long index)
+        public T LIndex<T>(string cacheKey, long index)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var bytes = _redisDb.ListGetByIndex(cacheKey, index);
-            return _serializer.Deserialize<T>(bytes);
+            var bytes = redisDb.ListGetByIndex(cacheKey, index);
+            return serializer.Deserialize<T>(bytes);
         }
 
-        public long LLen(String cacheKey)
+        public long LLen(string cacheKey)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            return _redisDb.ListLength(cacheKey);
+            return redisDb.ListLength(cacheKey);
         }
 
-        public T LPop<T>(String cacheKey)
+        public T LPop<T>(string cacheKey)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var bytes = _redisDb.ListLeftPop(cacheKey);
-            return _serializer.Deserialize<T>(bytes);
+            var bytes = redisDb.ListLeftPop(cacheKey);
+            return serializer.Deserialize<T>(bytes);
         }
 
-        public long LPush<T>(String cacheKey, IList<T> cacheValues)
+        public long LPush<T>(string cacheKey, IList<T> cacheValues)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
             ArgumentCheck.NotNullAndCountGTZero(cacheValues, nameof(cacheValues));
@@ -44,89 +44,89 @@ namespace Infra.Cache.StackExchange
 
             foreach (var item in cacheValues)
             {
-                list.Add(_serializer.Serialize(item));
+                list.Add(serializer.Serialize(item));
             }
 
-            var len = _redisDb.ListLeftPush(cacheKey, list.ToArray());
+            var len = redisDb.ListLeftPush(cacheKey, list.ToArray());
             return len;
         }
 
-        public List<T> LRange<T>(String cacheKey, long start, long stop)
+        public List<T> LRange<T>(string cacheKey, long start, long stop)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
             var list = new List<T>();
 
-            var bytes = _redisDb.ListRange(cacheKey, start, stop);
+            var bytes = redisDb.ListRange(cacheKey, start, stop);
 
             foreach (var item in bytes)
             {
-                list.Add(_serializer.Deserialize<T>(item));
+                list.Add(serializer.Deserialize<T>(item));
             }
 
             return list;
         }
 
-        public long LRem<T>(String cacheKey, long count, T cacheValue)
+        public long LRem<T>(string cacheKey, long count, T cacheValue)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var bytes = _serializer.Serialize(cacheValue);
-            return _redisDb.ListRemove(cacheKey, bytes, count);
+            var bytes = serializer.Serialize(cacheValue);
+            return redisDb.ListRemove(cacheKey, bytes, count);
         }
 
-        public bool LSet<T>(String cacheKey, long index, T cacheValue)
+        public bool LSet<T>(string cacheKey, long index, T cacheValue)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var bytes = _serializer.Serialize(cacheValue);
-            _redisDb.ListSetByIndex(cacheKey, index, bytes);
+            var bytes = serializer.Serialize(cacheValue);
+            redisDb.ListSetByIndex(cacheKey, index, bytes);
             return true;
         }
 
-        public bool LTrim(String cacheKey, long start, long stop)
+        public bool LTrim(string cacheKey, long start, long stop)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            _redisDb.ListTrim(cacheKey, start, stop);
+            redisDb.ListTrim(cacheKey, start, stop);
             return true;
         }
 
-        public long LPushX<T>(String cacheKey, T cacheValue)
+        public long LPushX<T>(string cacheKey, T cacheValue)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var bytes = _serializer.Serialize(cacheValue);
-            return _redisDb.ListLeftPush(cacheKey, bytes);
+            var bytes = serializer.Serialize(cacheValue);
+            return redisDb.ListLeftPush(cacheKey, bytes);
         }
 
-        public long LInsertBefore<T>(String cacheKey, T pivot, T cacheValue)
+        public long LInsertBefore<T>(string cacheKey, T pivot, T cacheValue)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var pivotbytes = _serializer.Serialize(pivot);
-            var cacheValuebytes = _serializer.Serialize(cacheValue);
-            return _redisDb.ListInsertBefore(cacheKey, pivotbytes, cacheValuebytes);
+            var pivotbytes = serializer.Serialize(pivot);
+            var cacheValuebytes = serializer.Serialize(cacheValue);
+            return redisDb.ListInsertBefore(cacheKey, pivotbytes, cacheValuebytes);
         }
 
-        public long LInsertAfter<T>(String cacheKey, T pivot, T cacheValue)
+        public long LInsertAfter<T>(string cacheKey, T pivot, T cacheValue)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var pivotbytes = _serializer.Serialize(pivot);
-            var cacheValuebytes = _serializer.Serialize(cacheValue);
-            return _redisDb.ListInsertAfter(cacheKey, pivotbytes, cacheValuebytes);
+            var pivotbytes = serializer.Serialize(pivot);
+            var cacheValuebytes = serializer.Serialize(cacheValue);
+            return redisDb.ListInsertAfter(cacheKey, pivotbytes, cacheValuebytes);
         }
 
-        public long RPushX<T>(String cacheKey, T cacheValue)
+        public long RPushX<T>(string cacheKey, T cacheValue)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var bytes = _serializer.Serialize(cacheValue);
-            return _redisDb.ListRightPush(cacheKey, bytes);
+            var bytes = serializer.Serialize(cacheValue);
+            return redisDb.ListRightPush(cacheKey, bytes);
         }
 
-        public long RPush<T>(String cacheKey, IList<T> cacheValues)
+        public long RPush<T>(string cacheKey, IList<T> cacheValues)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
             ArgumentCheck.NotNullAndCountGTZero(cacheValues, nameof(cacheValues));
@@ -135,45 +135,45 @@ namespace Infra.Cache.StackExchange
 
             foreach (var item in cacheValues)
             {
-                list.Add(_serializer.Serialize(item));
+                list.Add(serializer.Serialize(item));
             }
 
-            var len = _redisDb.ListRightPush(cacheKey, list.ToArray());
+            var len = redisDb.ListRightPush(cacheKey, list.ToArray());
             return len;
         }
 
-        public T RPop<T>(String cacheKey)
+        public T RPop<T>(string cacheKey)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var bytes = _redisDb.ListRightPop(cacheKey);
-            return _serializer.Deserialize<T>(bytes);
+            var bytes = redisDb.ListRightPop(cacheKey);
+            return serializer.Deserialize<T>(bytes);
         }
 
-        public async Task<T> LIndexAsync<T>(String cacheKey, long index)
+        public async Task<T> LIndexAsync<T>(string cacheKey, long index)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var bytes = await _redisDb.ListGetByIndexAsync(cacheKey, index);
-            return _serializer.Deserialize<T>(bytes);
+            var bytes = await redisDb.ListGetByIndexAsync(cacheKey, index);
+            return serializer.Deserialize<T>(bytes);
         }
 
-        public async Task<long> LLenAsync(String cacheKey)
+        public async Task<long> LLenAsync(string cacheKey)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            return await _redisDb.ListLengthAsync(cacheKey);
+            return await redisDb.ListLengthAsync(cacheKey);
         }
 
-        public async Task<T> LPopAsync<T>(String cacheKey)
+        public async Task<T> LPopAsync<T>(string cacheKey)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var bytes = await _redisDb.ListLeftPopAsync(cacheKey);
-            return _serializer.Deserialize<T>(bytes);
+            var bytes = await redisDb.ListLeftPopAsync(cacheKey);
+            return serializer.Deserialize<T>(bytes);
         }
 
-        public async Task<long> LPushAsync<T>(String cacheKey, IList<T> cacheValues)
+        public async Task<long> LPushAsync<T>(string cacheKey, IList<T> cacheValues)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
             ArgumentCheck.NotNullAndCountGTZero(cacheValues, nameof(cacheValues));
@@ -182,55 +182,55 @@ namespace Infra.Cache.StackExchange
 
             foreach (var item in cacheValues)
             {
-                list.Add(_serializer.Serialize(item));
+                list.Add(serializer.Serialize(item));
             }
 
-            var len = await _redisDb.ListLeftPushAsync(cacheKey, list.ToArray());
+            var len = await redisDb.ListLeftPushAsync(cacheKey, list.ToArray());
             return len;
         }
 
-        public async Task<List<T>> LRangeAsync<T>(String cacheKey, long start, long stop)
+        public async Task<List<T>> LRangeAsync<T>(string cacheKey, long start, long stop)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
             var list = new List<T>();
 
-            var bytes = await _redisDb.ListRangeAsync(cacheKey, start, stop);
+            var bytes = await redisDb.ListRangeAsync(cacheKey, start, stop);
 
             foreach (var item in bytes)
             {
-                list.Add(_serializer.Deserialize<T>(item));
+                list.Add(serializer.Deserialize<T>(item));
             }
 
             return list;
         }
 
-        public async Task<long> LRemAsync<T>(String cacheKey, long count, T cacheValue)
+        public async Task<long> LRemAsync<T>(string cacheKey, long count, T cacheValue)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var bytes = _serializer.Serialize(cacheValue);
-            return await _redisDb.ListRemoveAsync(cacheKey, bytes, count);
+            var bytes = serializer.Serialize(cacheValue);
+            return await redisDb.ListRemoveAsync(cacheKey, bytes, count);
         }
 
-        public async Task<bool> LSetAsync<T>(String cacheKey, long index, T cacheValue)
+        public async Task<bool> LSetAsync<T>(string cacheKey, long index, T cacheValue)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var bytes = _serializer.Serialize(cacheValue);
-            await _redisDb.ListSetByIndexAsync(cacheKey, index, bytes);
+            var bytes = serializer.Serialize(cacheValue);
+            await redisDb.ListSetByIndexAsync(cacheKey, index, bytes);
             return true;
         }
 
-        public async Task<bool> LTrimAsync(String cacheKey, long start, long stop)
+        public async Task<bool> LTrimAsync(string cacheKey, long start, long stop)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            await _redisDb.ListTrimAsync(cacheKey, start, stop);
+            await redisDb.ListTrimAsync(cacheKey, start, stop);
             return true;
         }
 
-        public Task<long> LPushXAsync<T>(String cacheKey, T cacheValue)
+        public Task<long> LPushXAsync<T>(string cacheKey, T cacheValue)
         {
             //ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
@@ -239,25 +239,25 @@ namespace Infra.Cache.StackExchange
             throw new NotImplementedException();
         }
 
-        public async Task<long> LInsertBeforeAsync<T>(String cacheKey, T pivot, T cacheValue)
+        public async Task<long> LInsertBeforeAsync<T>(string cacheKey, T pivot, T cacheValue)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var pivotbytes = _serializer.Serialize(pivot);
-            var cacheValuebytes = _serializer.Serialize(cacheValue);
-            return await _redisDb.ListInsertBeforeAsync(cacheKey, pivotbytes, cacheValuebytes);
+            var pivotbytes = serializer.Serialize(pivot);
+            var cacheValuebytes = serializer.Serialize(cacheValue);
+            return await redisDb.ListInsertBeforeAsync(cacheKey, pivotbytes, cacheValuebytes);
         }
 
-        public async Task<long> LInsertAfterAsync<T>(String cacheKey, T pivot, T cacheValue)
+        public async Task<long> LInsertAfterAsync<T>(string cacheKey, T pivot, T cacheValue)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var pivotbytes = _serializer.Serialize(pivot);
-            var cacheValuebytes = _serializer.Serialize(cacheValue);
-            return await _redisDb.ListInsertAfterAsync(cacheKey, pivotbytes, cacheValuebytes);
+            var pivotbytes = serializer.Serialize(pivot);
+            var cacheValuebytes = serializer.Serialize(cacheValue);
+            return await redisDb.ListInsertAfterAsync(cacheKey, pivotbytes, cacheValuebytes);
         }
 
-        public Task<long> RPushXAsync<T>(String cacheKey, T cacheValue)
+        public Task<long> RPushXAsync<T>(string cacheKey, T cacheValue)
         {
             //ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
@@ -266,7 +266,7 @@ namespace Infra.Cache.StackExchange
             throw new NotImplementedException();
         }
 
-        public async Task<long> RPushAsync<T>(String cacheKey, IList<T> cacheValues)
+        public async Task<long> RPushAsync<T>(string cacheKey, IList<T> cacheValues)
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
             ArgumentCheck.NotNullAndCountGTZero(cacheValues, nameof(cacheValues));
@@ -275,10 +275,10 @@ namespace Infra.Cache.StackExchange
 
             foreach (var item in cacheValues)
             {
-                list.Add(_serializer.Serialize(item));
+                list.Add(serializer.Serialize(item));
             }
 
-            var len = await _redisDb.ListRightPushAsync(cacheKey, list.ToArray());
+            var len = await redisDb.ListRightPushAsync(cacheKey, list.ToArray());
             return len;
         }
 
@@ -286,8 +286,8 @@ namespace Infra.Cache.StackExchange
         {
             ArgumentCheck.NotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
-            var bytes = await _redisDb.ListRightPopAsync(cacheKey);
-            return _serializer.Deserialize<T>(bytes);
+            var bytes = await redisDb.ListRightPopAsync(cacheKey);
+            return serializer.Deserialize<T>(bytes);
         }
     }
 }

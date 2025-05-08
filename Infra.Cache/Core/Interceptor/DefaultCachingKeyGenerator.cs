@@ -23,9 +23,9 @@ namespace Louge.Infra.Core.Interceptor
         //    return GenerateCacheKey(methodInfo, prefix, methodArguments);
         //}
 
-        public String GetCacheKey(MethodInfo methodInfo, object[] args, String prefix)
+        public string GetCacheKey(MethodInfo methodInfo, object[] args, string prefix)
         {
-            IEnumerable<String> methodArguments = new[] { "0" };
+            IEnumerable<string> methodArguments = new[] { "0" };
             if (args?.Any() == true)
             {
                 var cacheParams = methodInfo.GetParameters().Where(x => x.GetCustomAttribute<CachingParamAttribute>() != null)
@@ -40,9 +40,9 @@ namespace Louge.Infra.Core.Interceptor
             return GenerateCacheKey(methodInfo, prefix, methodArguments);
         }
 
-        public String[] GetCacheKeys(MethodInfo methodInfo, object[] args, String prefix)
+        public string[] GetCacheKeys(MethodInfo methodInfo, object[] args, string prefix)
         {
-            var cacheKeys = new List<String>();
+            var cacheKeys = new List<string>();
             if (args?.Any() == true && args[0].GetType().IsArray)
             {
                 foreach (var arg0 in (Array)args[0])
@@ -60,9 +60,9 @@ namespace Louge.Infra.Core.Interceptor
             return cacheKeys.ToArray();
         }
 
-        public String GetCacheKeyPrefix(MethodInfo methodInfo, String prefix)
+        public string GetCacheKeyPrefix(MethodInfo methodInfo, string prefix)
         {
-            if (!String.IsNullOrWhiteSpace(prefix)) return $"{prefix}{LinkChar}";
+            if (!string.IsNullOrWhiteSpace(prefix)) return $"{prefix}{LinkChar}";
 
             var typeName = methodInfo.DeclaringType?.Name;
             var methodName = methodInfo.Name;
@@ -70,13 +70,13 @@ namespace Louge.Infra.Core.Interceptor
             return $"{typeName}{LinkChar}{methodName}{LinkChar}";
         }
 
-        private String GenerateCacheKey(MethodInfo methodInfo, String prefix, IEnumerable<String> parameters)
+        private string GenerateCacheKey(MethodInfo methodInfo, string prefix, IEnumerable<string> parameters)
         {
             var cacheKeyPrefix = GetCacheKeyPrefix(methodInfo, prefix);
 
             var builder = new StringBuilder();
             builder.Append(cacheKeyPrefix);
-            builder.Append(String.Join(LinkChar.ToString(), parameters));
+            builder.Append(string.Join(LinkChar.ToString(), parameters));
             return builder.ToString();
         }
     }

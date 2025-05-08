@@ -8,7 +8,7 @@ namespace Infra.WebApi.Consts.Caching.Common
         protected CachingConsts()
         { }
 
-        public const String LinkChar = ":";
+        public const string LinkChar = ":";
 
         public const Int32 OneYear = 365 * 24 * 60 * 60;
         public const Int32 OneMonth = 30 * 24 * 60 * 60;
@@ -17,7 +17,7 @@ namespace Infra.WebApi.Consts.Caching.Common
         public const Int32 OneHour = 60 * 60;
         public const Int32 OneMinute = 60;
 
-        public static String Prefix
+        public static string Prefix
         {
             get
             {
@@ -45,6 +45,6 @@ namespace Infra.WebApi.Consts.Caching.Common
             }
         }
 
-        public static String WorkerIdSortedSetCacheKey => $"louge:{{0}}:workids";
+        public static string WorkerIdSortedSetCacheKey => $"louge:{{0}}:workids";
     }
 }
