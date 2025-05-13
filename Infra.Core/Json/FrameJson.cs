@@ -75,15 +75,8 @@ namespace Infra.Core.Json
 
             }
         }
-        public static string Serialize<T>(T obj, JsonSerializerOptions serializerOptions = null) where T : IObject
-        {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(obj, new Newtonsoft.Json.JsonSerializerSettings
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
-            });
-        }
 
-        private bool IsIObject(string json)
+        private static bool IsIObject(string json)
         {
             return json.Contains("ObjectName") || json.Contains("objectName");
         }

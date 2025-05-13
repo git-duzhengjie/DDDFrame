@@ -22,7 +22,7 @@ namespace Infra.EF.Context
         {
             base.OnModelCreating(modelBuilder);
             IgnoreTypes(modelBuilder);
-            var entities = this.assembly.GetExportedTypes()
+            var entities = assemblies.SelectMany(x => x.GetExportedTypes())
                 .Where(x => x.IsAssignableTo(typeof(EntityBase)))
                 .Where(x=>x.IsNotAbstractClass(true))
                 .Where(x=>x.IsPublic)

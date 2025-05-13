@@ -21,7 +21,7 @@ namespace Infra.EF.Context
 
 
     {
-        protected readonly Assembly assembly = serviceInfo?.GetDomainAssembly();
+        protected readonly Assembly[] assemblies = [serviceInfo?.GetDomainAssembly(),serviceInfo?.GetApplicationContractAssembly()];
 
         /// <summary>
         /// 是否是关系型数据库
@@ -35,9 +35,9 @@ namespace Infra.EF.Context
 
         protected void IgnoreTypes(ModelBuilder modelBuilder)
         {
-            if (assembly != null)
+            if (assemblies != null)
             {
-                var ignoreTypes = assembly.GetExportedTypes()
+                var ignoreTypes = assemblies.SelectMany(x => x.GetExportedTypes())
                 .Where(x => x.IsAssignableTo(typeof(EntityBase)))
                 .Where(x => x.IsAbstract || x.GetCustomAttribute<NotMappedAttribute>() != null)
                 .ToArray();
