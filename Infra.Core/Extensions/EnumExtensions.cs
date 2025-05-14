@@ -105,13 +105,14 @@ namespace Infra.Core.Extensions
             var type=typeof(T);
             if (type.IsEnum)
             {
+                name = name.ToLower();
                 var fields = type.GetFields();
                 foreach (var field in fields)
                 {
                     var customAttribute = field.GetCustomAttribute(typeof(NameAttribute), inherit: true) as NameAttribute;
                     if (customAttribute != null)
                     {
-                        if (customAttribute.Name == name||customAttribute.Name.Contains(name))
+                        if (customAttribute.Name.ToLower() == name||customAttribute.Name.ToLower().Contains(name))
                         {
                             return (T)Enum.Parse(type,field.Name);
                         }
