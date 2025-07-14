@@ -85,7 +85,7 @@ namespace Infra.Core.Extensions.Entities
             //通过Tuple元组，实现Sql参数化。
             switch (condition.QuerySymbol)
             {
-                case ConditionSymbol.NotContains:
+                case ConditionSymbol.NotContain:
                     var values = condition.Value.ToString().Split(',');
                     Expression result = null;
                     foreach (var v in values)
@@ -101,7 +101,7 @@ namespace Infra.Core.Extensions.Entities
                         }
                     }
                     return Expression.Not(result);
-                case ConditionSymbol.NotContainsAll:
+                case ConditionSymbol.NotContainAll:
                     values = condition.Value.ToString().Split(',');
                     result = null;
                     foreach (var v in values)
@@ -117,7 +117,7 @@ namespace Infra.Core.Extensions.Entities
                         }
                     }
                     return Expression.Not(result);
-                case ConditionSymbol.Contains:
+                case ConditionSymbol.Contain:
                     values=condition.Value.ToString().Split(',');
                     result=null;
                     foreach(var v in values)
@@ -133,7 +133,39 @@ namespace Infra.Core.Extensions.Entities
                         }
                     }
                     return result;
-                case ConditionSymbol.ContainsAll:
+                case ConditionSymbol.Contains:
+                    result = null;
+                    if (condition.Value is IList containList)
+                    {
+                        foreach(var item in containList)
+                        {
+                            values = item.ToString().Split(',');
+                            Expression containResult = null;
+                            foreach (var v in values)
+                            {
+                                var ve = ToValue(v, key.Type);
+                                if (containResult == null)
+                                {
+                                    containResult = Expression.Call(key, typeof(string).GetMethod("Contains", [typeof(string)]), ve);
+                                }
+                                else
+                                {
+                                    containResult = Expression.Or(containResult, Expression.Call(key, typeof(string).GetMethod("Contains", [typeof(string)]), ve));
+                                }
+                            }
+                            if (result == null)
+                            {
+                                result = containResult;
+                            }
+                            else
+                            {
+                                result = Expression.And(result,containResult);
+                            }
+                        }
+                    }
+                    
+                    return result;
+                case ConditionSymbol.ContainAll:
                     values = condition.Value.ToString().Split(',');
                     result = null;
                     foreach (var v in values)

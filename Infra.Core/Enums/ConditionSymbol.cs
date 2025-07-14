@@ -3,9 +3,10 @@
     public enum ConditionSymbol
     {
         Contains,
-        ContainsAll,
-        NotContains,
-        NotContainsAll,
+        Contain,
+        ContainAll,
+        NotContain,
+        NotContainAll,
         Equal,
         Equals,
         NotEqual,
