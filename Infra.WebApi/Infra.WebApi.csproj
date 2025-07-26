@@ -6,11 +6,14 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Platforms>AnyCPU;x64</Platforms>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+    <PackageReference Include="Infra.Consul" Version="1.0.1" />
+    <PackageReference Include="Infra.EF" Version="1.0.1" />
     <PackageReference Include="LiteX.HealthChecks.Redis" Version="3.0.0" />
     <PackageReference Include="MicroElements.Swashbuckle.FluentValidation" Version="6.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.0" />
@@ -22,12 +25,6 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="7.2.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Infra.Consul\Infra.Consul.csproj" />
-    <ProjectReference Include="..\Infra.Core\Infra.Core.csproj" />
-    <ProjectReference Include="..\Infra.EF.PG\Infra.EF.csproj" />
   </ItemGroup>
 
   <ItemGroup>

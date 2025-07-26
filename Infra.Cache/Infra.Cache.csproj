@@ -6,19 +6,17 @@
 		<Nullable>enable</Nullable>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Platforms>AnyCPU;x64</Platforms>
+		<Version>1.0.1</Version>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Castle.Core.AsyncInterceptor" Version="2.1.0" />
+		<PackageReference Include="Infra.Core" Version="1.0.2" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
 		<PackageReference Include="Polly" Version="8.5.0" />
 		<PackageReference Include="StackExchange.Redis" Version="2.8.24" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\Infra.Core\Infra.Core.csproj" />
 	</ItemGroup>
 
 </Project>

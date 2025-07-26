@@ -6,21 +6,18 @@
 		<Nullable>enable</Nullable>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Platforms>AnyCPU;x64</Platforms>
+		<Version>1.0.1</Version>
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Infra.IdGenerater" Version="1.0.1" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="MongoDB.EntityFrameworkCore" Version="1.0.0" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.2" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\..\..\mongo-efcore-provider\src\MongoDB.EntityFrameworkCore\MongoDB.EntityFrameworkCore.csproj" />
-	  <ProjectReference Include="..\Infra.Core\Infra.Core.csproj" />
-	  <ProjectReference Include="..\Infra.IdGenerater\Infra.IdGenerater.csproj" />
 	</ItemGroup>
 
 </Project>
