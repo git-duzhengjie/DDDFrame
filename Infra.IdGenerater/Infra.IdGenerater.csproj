@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="Infra.Cache" Version="1.0.1" />
+    <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
     <PackageReference Include="Yitter.IdGenerator" Version="1.0.14" />
   </ItemGroup>
 
