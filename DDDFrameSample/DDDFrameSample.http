@@ -1,6 +1,0 @@
-@DDDFrameSample_HostAddress = http://localhost:5206
-
-GET {{DDDFrameSample_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
