@@ -10,4 +10,4 @@ DDDMicroServiceArchitecture是基于领域驱动设计模型构建的一套后�
 架构类图
 
 
-![领域驱动微服务架构类图](https://github.com/user-attachments/assets/99eb4908-ea45-4888-87a5-da4e64a15082)
+<img width="4416" height="1716" alt="领域驱动微服务架构类图" src="https://github.com/user-attachments/assets/7573232c-d8ad-4618-837b-606909807966" />
