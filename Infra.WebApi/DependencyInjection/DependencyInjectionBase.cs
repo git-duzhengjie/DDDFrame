@@ -373,6 +373,23 @@ namespace Infra.WebApi.DependInjection
 
         protected async virtual Task OnMessageReceived(MessageReceivedContext context)
         {
+            // Case 1: Get token from Authorization header (standard)
+            var tokenFromHeader = context.Request.Headers["Authorization"]
+                .FirstOrDefault()?.Split(" ").Last();
+
+            if (!string.IsNullOrEmpty(tokenFromHeader))
+            {
+                context.Token = tokenFromHeader;
+                await Task.CompletedTask;
+            }
+
+            // Case 2: Get token from URL query parameter (for SSE/EventSource)
+            var tokenFromUrl = context.Request.Query["token"].FirstOrDefault();
+            if (!string.IsNullOrEmpty(tokenFromUrl))
+            {
+                context.Token = tokenFromUrl;
+            }
+
             await Task.CompletedTask;
         }
 
