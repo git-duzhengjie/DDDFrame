@@ -113,11 +113,12 @@ namespace Infra.EF.Context
             {
                 querable = querable.OrderByDescending(typeof(T).Key());
             }
+            decimal total = await querable.CountAsync();
+            offset=offset>=total?0:offset;
             var data = await querable
                 .Skip(offset)
                 .Take(query.Count)
                 .ToArrayAsync();
-            decimal total = await querable.CountAsync();
             return new PagedList<IEntity>
             {
                 DataList = data,
